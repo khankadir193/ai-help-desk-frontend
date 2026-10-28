@@ -1,0 +1,25 @@
+import { QueryClient } from '@tanstack/react-query';
+
+export const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5, // Data considered fresh for 5 minutes
+      gcTime: 1000 * 60 * 10,    // Cache preserved for 10 minutes (formerly cacheTime)
+      retry: (failureCount, error) => {
+        // Do not retry client auth/permission or not found errors
+        const status = error?.response?.status;
+        if (status === 401 || status === 403 || status === 404) {
+          return false;
+        }
+        return failureCount < 1;
+      },
+      refetchOnWindowFocus: false, // Avoid unexpected layout shifts while filling forms
+    },
+    mutations: {
+      retry: 0, // Never retry mutations automatically to prevent duplicate side effects
+    },
+  },
+});
+
+export default queryClient;
+
