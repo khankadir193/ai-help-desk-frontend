@@ -1,63 +1,32 @@
-const TOKEN_KEY = 'ai_helpdesk_token';
-const USER_KEY = 'ai_helpdesk_user';
-
+/**
+ * Client storage utility for non-sensitive UI preferences only.
+ * IMPORTANT: In accordance with security requirements, session tokens,
+ * access tokens, and passwords must NEVER be stored here.
+ * Authentication is strictly maintained via secure, HttpOnly session cookies.
+ */
 export const storage = {
-  getToken: () => {
+  getItem: (key) => {
     try {
-      return localStorage.getItem(TOKEN_KEY);
+      const value = localStorage.getItem(key);
+      return value ? JSON.parse(value) : null;
     } catch {
       return null;
     }
   },
 
-  setToken: (token) => {
+  setItem: (key, value) => {
     try {
-      if (token) {
-        localStorage.setItem(TOKEN_KEY, token);
-      } else {
-        localStorage.removeItem(TOKEN_KEY);
-      }
+      localStorage.setItem(key, JSON.stringify(value));
     } catch {
-      // Ignore storage errors in restricted contexts
+      // Ignore quota/permission errors
     }
   },
 
-  removeToken: () => {
+  removeItem: (key) => {
     try {
-      localStorage.removeItem(TOKEN_KEY);
+      localStorage.removeItem(key);
     } catch {
-      // Ignore storage errors
-    }
-  },
-
-  getUser: () => {
-    try {
-      const user = localStorage.getItem(USER_KEY);
-      return user ? JSON.parse(user) : null;
-    } catch {
-      return null;
-    }
-  },
-
-  setUser: (user) => {
-    try {
-      if (user) {
-        localStorage.setItem(USER_KEY, JSON.stringify(user));
-      } else {
-        localStorage.removeItem(USER_KEY);
-      }
-    } catch {
-      // Ignore storage errors
-    }
-  },
-
-  clearAuth: () => {
-    try {
-      localStorage.removeItem(TOKEN_KEY);
-      localStorage.removeItem(USER_KEY);
-    } catch {
-      // Ignore storage errors
+      // Ignore
     }
   },
 };
-
