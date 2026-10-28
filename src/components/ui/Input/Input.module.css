@@ -5,10 +5,24 @@
   width: 100%;
 }
 
+.labelRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .label {
   font-size: var(--text-sm);
   font-weight: var(--font-medium);
   color: var(--color-text-primary);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.requiredStar {
+  color: var(--color-danger);
+  font-size: var(--text-xs);
 }
 
 .inputContainer {
@@ -20,7 +34,7 @@
 
 .input {
   width: 100%;
-  height: 40px;
+  height: 44px; /* Touch-friendly height */
   padding: 0 var(--space-3);
   font-size: var(--text-sm);
   font-family: var(--font-sans);
@@ -28,13 +42,22 @@
   background-color: var(--color-bg-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  transition: all var(--transition-fast);
+}
+
+.input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.input:hover:not(:disabled) {
+  border-color: var(--color-border-strong);
 }
 
 .input:focus {
   outline: none;
-  border-color: var(--color-border-focus);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+  border-color: var(--color-primary);
+  background-color: var(--color-bg-surface);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.14);
 }
 
 .input:disabled {
@@ -45,11 +68,26 @@
 
 .hasError {
   border-color: var(--color-danger);
+  background-color: #fffbfb;
 }
 
 .hasError:focus {
   border-color: var(--color-danger);
-  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.14);
+}
+
+.hasLeftIcon {
+  padding-left: 40px;
+}
+
+.leftIcon {
+  position: absolute;
+  left: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-muted);
+  pointer-events: none;
 }
 
 .hasRightElement {
@@ -58,7 +96,7 @@
 
 .rightElement {
   position: absolute;
-  right: var(--space-2);
+  right: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -71,10 +109,17 @@
   display: flex;
   align-items: center;
   gap: var(--space-1);
+  margin-top: 2px;
+}
+
+.errorIcon {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
 }
 
 .helperText {
   font-size: var(--text-xs);
   color: var(--color-text-secondary);
+  margin-top: 2px;
 }
-
