@@ -16,6 +16,21 @@ export const authService = {
   },
 
   /**
+   * Register a new user account with default CUSTOMER role
+   * Note: Public registration cannot select roles. Backend assigns CUSTOMER automatically.
+   * @param {Object} data - { name, email, password }
+   * @returns {Promise<Object>} created user safe profile
+   */
+  register: async ({ name, email, password }) => {
+    const response = await apiClient.post(API_ENDPOINTS.AUTH.REGISTER, {
+      name: name.trim(),
+      email: email.trim().toLowerCase(),
+      password,
+    });
+    return response.data?.user;
+  },
+
+  /**
    * Fetch currently authenticated user's session profile
    * @returns {Promise<Object>} user profile object
    */
@@ -35,4 +50,3 @@ export const authService = {
 };
 
 export default authService;
-

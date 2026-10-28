@@ -111,11 +111,18 @@ export default function AppLayout() {
               </Button>
             </>
           ) : (
-            <Link to={ROUTES.LOGIN}>
-              <Button variant="primary" size="sm">
-                Sign in
-              </Button>
-            </Link>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+              <Link to={ROUTES.LOGIN}>
+                <Button variant="ghost" size="sm">
+                  Sign in
+                </Button>
+              </Link>
+              <Link to={ROUTES.REGISTER}>
+                <Button variant="primary" size="sm">
+                  Sign up
+                </Button>
+              </Link>
+            </div>
           )}
         </div>
       </header>

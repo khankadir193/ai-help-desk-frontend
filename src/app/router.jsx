@@ -4,6 +4,7 @@ import AuthLayout from '../layouts/AuthLayout/AuthLayout';
 import ProtectedRoute from './ProtectedRoute';
 import RoleRoute from './RoleRoute';
 import LoginPage from '../features/auth/pages/LoginPage';
+import RegisterPage from '../features/auth/pages/RegisterPage';
 import UnauthorizedPage from '../components/feedback/UnauthorizedPage/UnauthorizedPage';
 import { ROUTES } from '../constants/routes';
 import { ROLES } from '../constants/roles';
@@ -129,6 +130,10 @@ export const router = createBrowserRouter([
       {
         path: ROUTES.LOGIN,
         element: <LoginPage />,
+      },
+      {
+        path: ROUTES.REGISTER,
+        element: <RegisterPage />,
       },
     ],
   },
