@@ -1,7 +1,6 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '../features/auth/hooks/useAuth';
 import Spinner from '../components/feedback/Spinner/Spinner';
-import UnauthorizedPage from '../components/feedback/UnauthorizedPage/UnauthorizedPage';
 import { ROUTES } from '../constants/routes';
 
 /**
@@ -11,9 +10,10 @@ import { ROUTES } from '../constants/routes';
  *
  * @param {Object} props
  * @param {Array<string>} props.allowedRoles - e.g. [ROLES.ADMIN, ROLES.AGENT]
+ * @param {React.ReactNode} [props.children] - optional children
  */
-export default function RoleRoute({ allowedRoles = [] }) {
-  const { isAuthenticated, isLoading, role } = useAuth();
+export default function RoleRoute({ allowedRoles = [], children }) {
+  const { user, isAuthenticated, isLoading, role } = useAuth();
   const location = useLocation();
 
   if (isLoading) {
@@ -24,10 +24,11 @@ export default function RoleRoute({ allowedRoles = [] }) {
     return <Navigate to={ROUTES.LOGIN} state={{ from: location }} replace />;
   }
 
-  if (allowedRoles.length > 0 && !allowedRoles.includes(role)) {
-    return <UnauthorizedPage />;
+  const effectiveRole = role || user?.role;
+  if (allowedRoles.length > 0 && !allowedRoles.includes(effectiveRole)) {
+    return <Navigate to={ROUTES.UNAUTHORIZED} replace />;
   }
 
-  return <Outlet />;
+  return children || <Outlet />;
 }
 

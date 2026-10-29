@@ -51,8 +51,16 @@ export default function RegisterForm({ onSuccess }) {
           onSuccess(user, formData.email);
         }
       }, 1200);
-    } catch {
-      // Handled by mutation
+    } catch (err) {
+      if (err?.response?.data?.errors && Array.isArray(err.response.data.errors)) {
+        const backendFieldErrors = {};
+        err.response.data.errors.forEach((e) => {
+          if (e.field) {
+            backendFieldErrors[e.field] = e.message;
+          }
+        });
+        setValidationErrors((prev) => ({ ...prev, ...backendFieldErrors }));
+      }
     }
   };
 

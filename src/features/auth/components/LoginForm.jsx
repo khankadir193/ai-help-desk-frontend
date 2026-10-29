@@ -50,12 +50,20 @@ export default function LoginForm({ onSuccess }) {
     }
 
     try {
-      await login(formData);
+      const user = await login(formData);
       if (onSuccess) {
-        onSuccess();
+        onSuccess(user);
       }
-    } catch {
-      // Handled by mutation
+    } catch (err) {
+      if (err?.response?.data?.errors && Array.isArray(err.response.data.errors)) {
+        const backendFieldErrors = {};
+        err.response.data.errors.forEach((e) => {
+          if (e.field) {
+            backendFieldErrors[e.field] = e.message;
+          }
+        });
+        setValidationErrors((prev) => ({ ...prev, ...backendFieldErrors }));
+      }
     }
   };
 

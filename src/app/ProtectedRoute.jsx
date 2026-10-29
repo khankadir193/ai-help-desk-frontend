@@ -6,9 +6,14 @@ import { ROUTES } from '../constants/routes';
 /**
  * Route guard that ensures the user is authenticated.
  * Prevents protected views from rendering until session restoration resolves.
+ * Supports both children and nested Route Outlet, with optional role restriction.
+ *
+ * @param {Object} props
+ * @param {React.ReactNode} [props.children]
+ * @param {Array<string>} [props.allowedRoles]
  */
-export default function ProtectedRoute() {
-  const { isAuthenticated, isLoading } = useAuth();
+export default function ProtectedRoute({ children, allowedRoles }) {
+  const { user, isAuthenticated, isLoading, role } = useAuth();
   const location = useLocation();
 
   if (isLoading) {
@@ -20,6 +25,11 @@ export default function ProtectedRoute() {
     return <Navigate to={ROUTES.LOGIN} state={{ from: location }} replace />;
   }
 
-  return <Outlet />;
+  const effectiveRole = role || user?.role;
+  if (allowedRoles && allowedRoles.length > 0 && !allowedRoles.includes(effectiveRole)) {
+    return <Navigate to={ROUTES.UNAUTHORIZED} replace />;
+  }
+
+  return children || <Outlet />;
 }
 

@@ -2,7 +2,7 @@ import axios from 'axios';
 import { getErrorMessage } from '../utils/errorHandler';
 
 const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || '/api/v1',
+  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api/v1',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -18,13 +18,16 @@ apiClient.interceptors.response.use(
     // Attach clean user-facing error message
     error.userMessage = getErrorMessage(error);
 
-    // If an authenticated request encounters 401 (excluding the initial /auth/me check),
+    // If an authenticated request encounters 401 (excluding auth endpoints like /me, /login, /register),
     // broadcast session expiry so the auth layer can sync without infinite loops.
     if (error.response?.status === 401) {
       const requestUrl = error.config?.url || '';
-      const isInitialSessionCheck = requestUrl.includes('/auth/me');
+      const isAuthEndpoint =
+        requestUrl.includes('/auth/me') ||
+        requestUrl.includes('/auth/login') ||
+        requestUrl.includes('/auth/register');
 
-      if (!isInitialSessionCheck) {
+      if (!isAuthEndpoint) {
         window.dispatchEvent(new CustomEvent('auth:session-expired'));
       }
     }

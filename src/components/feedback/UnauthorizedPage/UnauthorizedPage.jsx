@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../features/auth/hooks/useAuth';
-import { ROLE_LABELS } from '../../../constants/roles';
+import { ROLES, ROLE_LABELS } from '../../../constants/roles';
 import { ROUTES } from '../../../constants/routes';
 import Button from '../../ui/Button/Button';
 import styles from './UnauthorizedPage.module.css';
@@ -10,6 +10,7 @@ export default function UnauthorizedPage() {
   const navigate = useNavigate();
 
   const userRoleLabel = user?.role ? (ROLE_LABELS[user.role] || user.role) : 'Guest';
+  const isCustomer = user?.role === ROLES.CUSTOMER;
 
   return (
     <div className={styles.container}>
@@ -28,9 +29,9 @@ export default function UnauthorizedPage() {
 
       <Button
         variant="primary"
-        onClick={() => navigate(ROUTES.DASHBOARD)}
+        onClick={() => navigate(isCustomer ? ROUTES.TICKETS : ROUTES.DASHBOARD)}
       >
-        Go to Dashboard
+        {isCustomer ? 'Go to Tickets' : 'Go to Dashboard'}
       </Button>
     </div>
   );
