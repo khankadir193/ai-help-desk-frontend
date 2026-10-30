@@ -188,6 +188,7 @@ export default function RegisterForm({ onSuccess }) {
           fullWidth
           isLoading={isRegistering}
           disabled={isRegistering || isSuccessNotification}
+          className={styles.submitButton}
         >
           Create Customer Account
         </Button>

@@ -170,6 +170,7 @@ export default function LoginForm({ onSuccess }) {
           fullWidth
           isLoading={isLoggingIn}
           disabled={isLoggingIn}
+          className={styles.submitButton}
         >
           Sign in to HelpDesk
         </Button>
