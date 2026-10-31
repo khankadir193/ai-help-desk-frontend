@@ -8,8 +8,10 @@ import Input from '../../../components/ui/Input/Input';
 import styles from './LoginForm.module.css';
 
 export default function LoginForm({ onSuccess }) {
-  const { login, isLoggingIn, loginError, resetLoginError } = useAuth();
+  const { signIn } = useAuth();
   const location = useLocation();
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [loginError, setLoginError] = useState(null);
 
   const [successMessage, setSuccessMessage] = useState(
     location.state?.message || null
@@ -32,7 +34,7 @@ export default function LoginForm({ onSuccess }) {
     }
 
     if (loginError) {
-      resetLoginError();
+      setLoginError(null);
     }
 
     if (successMessage) {
@@ -49,21 +51,18 @@ export default function LoginForm({ onSuccess }) {
       return;
     }
 
-    try {
-      const user = await login(formData);
+    setIsLoggingIn(true);
+    setLoginError(null);
+
+    const result = signIn(formData.email, formData.password);
+    setIsLoggingIn(false);
+
+    if (result.ok) {
       if (onSuccess) {
-        onSuccess(user);
+        onSuccess(result.user);
       }
-    } catch (err) {
-      if (err?.response?.data?.errors && Array.isArray(err.response.data.errors)) {
-        const backendFieldErrors = {};
-        err.response.data.errors.forEach((e) => {
-          if (e.field) {
-            backendFieldErrors[e.field] = e.message;
-          }
-        });
-        setValidationErrors((prev) => ({ ...prev, ...backendFieldErrors }));
-      }
+    } else {
+      setLoginError(result.error);
     }
   };
 

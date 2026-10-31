@@ -16,7 +16,7 @@ export const authService = {
       email: (email || '').trim().toLowerCase(),
       password,
     });
-    return response.data?.user;
+    return response?.data?.user || response?.user || response;
   },
 
   /**
@@ -47,7 +47,7 @@ export const authService = {
       email: (email || '').trim().toLowerCase(),
       password,
     });
-    return response.data?.user;
+    return response?.data?.user || response?.user || response;
   },
 
   /**
@@ -56,8 +56,9 @@ export const authService = {
    */
   getMe: async () => {
     const response = await apiClient.get(API_ENDPOINTS.AUTH.ME);
-    return response.data?.user;
+    return response?.data?.user || response?.user || response;
   },
+
 
   /**
    * Invalidate server-side session and remove cookie

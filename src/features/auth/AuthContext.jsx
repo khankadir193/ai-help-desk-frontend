@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { AuthContext, AUTH_QUERY_KEY } from './authContextInstance';
 import authService from './services/authService';
@@ -49,6 +49,57 @@ export default function AuthProvider({ children }) {
     },
   });
 
+  // Compute initials from name or fallback
+  const getInitials = (name) => {
+    if (!name) return 'U';
+    const parts = name.trim().split(/\s+/);
+    if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  };
+
+  // Adapter methods for backward compatibility with components using signIn, signUp, signOut
+  const signIn = useCallback(
+    async (email, password) => {
+      try {
+        const loggedInUser = await loginMutation.mutateAsync({ email, password });
+        return { ok: true, user: loggedInUser };
+      } catch (err) {
+        const errorMsg =
+          err?.userMessage ||
+          err?.response?.data?.message ||
+          'Invalid email or password.';
+        return { ok: false, error: errorMsg };
+      }
+    },
+    [loginMutation]
+  );
+
+  const signUp = useCallback(
+    async ({ name, email, password }) => {
+      try {
+        const registeredUser = await authService.register({ name, email, password });
+        // Attempt immediate login after registration
+        const loggedInUser = await loginMutation.mutateAsync({ email, password });
+        return { ok: true, user: loggedInUser || registeredUser };
+      } catch (err) {
+        const errorMsg =
+          err?.userMessage ||
+          err?.response?.data?.message ||
+          'Registration failed.';
+        return { ok: false, error: errorMsg };
+      }
+    },
+    [loginMutation]
+  );
+
+  const signOut = useCallback(async () => {
+    try {
+      await logoutMutation.mutateAsync();
+    } catch {
+      // Handled in mutation
+    }
+  }, [logoutMutation]);
+
   // Listen to session expiry event dispatched by Axios interceptor
   useEffect(() => {
     const handleSessionExpired = () => {
@@ -62,11 +113,20 @@ export default function AuthProvider({ children }) {
     };
   }, [queryClient]);
 
+  // Enhanced user object with initials
+  const userWithInitials = useMemo(() => {
+    if (!user) return null;
+    return {
+      ...user,
+      initials: user.initials || getInitials(user.name),
+    };
+  }, [user]);
+
   const value = useMemo(
     () => ({
-      user,
-      role: user?.role || null,
-      isAuthenticated: Boolean(user),
+      user: userWithInitials,
+      role: userWithInitials?.role || null,
+      isAuthenticated: Boolean(userWithInitials),
       isLoading,
       isFetching,
       sessionError,
@@ -76,9 +136,12 @@ export default function AuthProvider({ children }) {
       isLoggingOut: logoutMutation.isPending,
       loginError: loginMutation.error?.userMessage || null,
       resetLoginError: loginMutation.reset,
+      signIn,
+      signUp,
+      signOut,
     }),
     [
-      user,
+      userWithInitials,
       isLoading,
       isFetching,
       sessionError,
@@ -88,6 +151,9 @@ export default function AuthProvider({ children }) {
       loginMutation.reset,
       logoutMutation.mutateAsync,
       logoutMutation.isPending,
+      signIn,
+      signUp,
+      signOut,
     ]
   );
 

@@ -1,0 +1,35 @@
+.avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-primary-tint);
+  color: var(--color-primary);
+  font-weight: 600;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+.avatar--sm {
+  width: 28px;
+  height: 28px;
+  font-size: 11px;
+}
+
+.avatar--md {
+  width: 32px;
+  height: 32px;
+  font-size: 12px;
+}
+
+.avatar--lg {
+  width: 36px;
+  height: 36px;
+  font-size: 13px;
+}
+
+.avatar--icon {
+  background-color: #F3E8FF;
+  color: #7C3AED;
+}
+

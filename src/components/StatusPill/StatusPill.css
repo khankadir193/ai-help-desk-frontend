@@ -1,0 +1,42 @@
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  border-radius: var(--radius-pill);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.status-pill--in-progress {
+  background-color: var(--color-amber-tint);
+  color: var(--color-amber-text);
+}
+
+.status-pill--open {
+  background-color: #FFFFFF;
+  border: 1px solid var(--color-blue);
+  color: var(--color-blue);
+  padding: 2px 8px; /* account for border */
+}
+
+.status-pill__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-blue);
+  flex-shrink: 0;
+}
+
+.status-pill--resolved {
+  background-color: var(--color-success-tint);
+  color: var(--color-success-text);
+}
+
+.status-pill__icon {
+  flex-shrink: 0;
+}
+

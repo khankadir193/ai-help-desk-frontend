@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useRegister } from '../hooks/useRegister';
+import { useAuth } from '../../../context/AuthContext';
 import { validateRegisterForm } from '../authValidation';
 import { ROUTES } from '../../../constants/routes';
 import Button from '../../../components/ui/Button/Button';
@@ -8,7 +8,9 @@ import Input from '../../../components/ui/Input/Input';
 import styles from './RegisterForm.module.css';
 
 export default function RegisterForm({ onSuccess }) {
-  const { register, isRegistering, registerError, resetRegisterError } = useRegister();
+  const { signUp } = useAuth();
+  const [isRegistering, setIsRegistering] = useState(false);
+  const [registerError, setRegisterError] = useState(null);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -29,7 +31,7 @@ export default function RegisterForm({ onSuccess }) {
     }
 
     if (registerError) {
-      resetRegisterError();
+      setRegisterError(null);
     }
   };
 
@@ -42,25 +44,26 @@ export default function RegisterForm({ onSuccess }) {
       return;
     }
 
-    try {
-      const user = await register(formData);
-      setIsSuccessNotification(true);
+    setIsRegistering(true);
+    setRegisterError(null);
 
+    const result = signUp({
+      name: formData.name,
+      email: formData.email,
+      password: formData.password,
+    });
+
+    setIsRegistering(false);
+
+    if (result.ok) {
+      setIsSuccessNotification(true);
       setTimeout(() => {
         if (onSuccess) {
-          onSuccess(user, formData.email);
+          onSuccess(result.user, formData.email);
         }
-      }, 1200);
-    } catch (err) {
-      if (err?.response?.data?.errors && Array.isArray(err.response.data.errors)) {
-        const backendFieldErrors = {};
-        err.response.data.errors.forEach((e) => {
-          if (e.field) {
-            backendFieldErrors[e.field] = e.message;
-          }
-        });
-        setValidationErrors((prev) => ({ ...prev, ...backendFieldErrors }));
-      }
+      }, 800);
+    } else {
+      setRegisterError(result.error);
     }
   };
 
