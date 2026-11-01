@@ -1,17 +1,39 @@
+/* Wrapper is exactly the viewport height: no page scrollbar, no white strip.
+   Box-sizing keeps any padding inside the 100dvh box. */
 .layoutContainer {
-  min-height: 100vh;
-  min-height: 100dvh;
+  height: 100vh; /* fallback for browsers without dynamic viewport units */
+  height: 100dvh;
+  min-height: 0;
   display: flex;
   width: 100%;
   background-color: var(--color-bg-base);
-  overflow-x: hidden;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* Scoped element baselines: nothing above the auth wrapper may add to the page height. */
+html:has(.layoutContainer),
+body:has(.layoutContainer),
+#root:has(.layoutContainer) {
+  margin: 0;
+  padding: 0;
 }
 
 @media (min-width: 1024px) {
   .layoutContainer {
     height: 100vh;
     height: 100dvh;
-    overflow-y: hidden;
+    overflow: hidden;
+  }
+
+  /* On the side-by-side layout the panels must never add height to the wrapper. */
+  .visualPanel,
+  .formSection {
+    min-height: 0;
+  }
+
+  .formSection {
+    height: 100%;
   }
 }
 
@@ -116,13 +138,15 @@
 .visualPanel {
   flex: 1.1;
   position: relative;
+  min-height: 0; /* flex child may never force the wrapper to overflow */
   background: var(--gradient-panel-dark);
   color: var(--color-text-inverse);
   display: flex;
   flex-direction: column;
+  height: 100%;
   justify-content: space-between;
   padding: clamp(var(--space-6), 3.5vh, var(--space-8)) clamp(var(--space-6), 3vw, var(--space-10));
-  overflow-y: auto;
+  overflow-y: hidden; /* clips decorative glow overhang; kills the phantom scrollbar between panels */
   overflow-x: hidden;
 }
 
@@ -157,6 +181,7 @@
   display: flex;
   flex-direction: column;
   height: 100%;
+  min-height: 0;
   justify-content: space-between;
 }
 
@@ -326,7 +351,7 @@
   line-height: var(--line-height-normal);
 }
 
-/* Stats Footer */
+/* Stats Footer — pinned to the very bottom of the left panel */
 .statsRow {
   display: flex;
   align-items: center;
@@ -367,6 +392,8 @@
   flex-direction: column;
   justify-content: space-between;
   padding: clamp(var(--space-3), 2.5vh, var(--space-6)) clamp(var(--space-6), 4vw, var(--space-12));
+  /* Stacked layouts (<1024px): fills at least the viewport so the footer sits low.
+     Desktop overrides this to min-height: 0 so the wrapper stays exactly 100dvh. */
   min-height: 100vh;
   min-height: 100dvh;
   background-color: var(--color-bg-base);
@@ -480,6 +507,7 @@
     min-height: 100vh;
     min-height: 100dvh;
     height: auto;
+    overflow: visible; /* stacked layout may scroll naturally */
   }
 
   .visualPanel {
@@ -568,5 +596,39 @@
 
   .formFooter {
     margin-top: var(--space-2);
+  }
+}
+
+/* ==========================================================================
+   Safety: short desktop viewports (~700px tall or less).
+   Nothing may be clipped: the wrapper may grow, the left panel is pinned to
+   the viewport height (so it is never stretched into an empty block) and both
+   panels may scroll internally if their content genuinely overflows.
+   ========================================================================== */
+@media (min-width: 1024px) and (max-height: 700px) {
+  .layoutContainer {
+    height: auto;
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow-y: auto;
+  }
+
+  .visualPanel {
+    height: 100vh;
+    height: 100dvh;
+    align-self: flex-start;
+    overflow-y: auto;
+  }
+
+  /* Neutralize the decorative glow overhang so it cannot create a phantom
+     scrollbar while the panel may scroll on very short screens. */
+  .visualGlowBottom {
+    bottom: 0;
+    right: 0;
+  }
+
+  .formSection {
+    min-height: 100vh;
+    min-height: 100dvh;
   }
 }
