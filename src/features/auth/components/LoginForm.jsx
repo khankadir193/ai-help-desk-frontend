@@ -54,7 +54,7 @@ export default function LoginForm({ onSuccess }) {
     setIsLoggingIn(true);
     setLoginError(null);
 
-    const result = signIn(formData.email, formData.password);
+    const result = await signIn(formData.email, formData.password);
     setIsLoggingIn(false);
 
     if (result.ok) {

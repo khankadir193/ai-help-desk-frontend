@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 import Icon from '../Icon/Icon';
 import Avatar from '../Avatar/Avatar';
 import { navigationSections } from '../../data/navigationData';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../features/auth/hooks/useAuth';
 import { useClickOutside } from '../../hooks/useClickOutside';
 import './Sidebar.css';
 

@@ -7,8 +7,7 @@ import PlaceholderPage from './pages/PlaceholderPage';
 import AuthLayout from './layouts/AuthLayout/AuthLayout';
 import LoginPage from './features/auth/pages/LoginPage';
 import RegisterPage from './features/auth/pages/RegisterPage';
-import { useAuth } from './context/AuthContext';
-import './styles/global.css';
+import { useAuth } from './features/auth/hooks/useAuth';
 import './App.css';
 
 export default function App() {

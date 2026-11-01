@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import Icon from '../Icon/Icon';
 import Avatar from '../Avatar/Avatar';
 import NotificationsPanel from '../NotificationsPanel/NotificationsPanel';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../features/auth/hooks/useAuth';
 import { useClickOutside } from '../../hooks/useClickOutside';
 import './Topbar.css';
 

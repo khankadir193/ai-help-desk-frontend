@@ -21,7 +21,6 @@ export default function Spinner({ size = 'md', fullPage = false, label = 'Loadin
           strokeWidth="5"
         />
       </svg>
-      <span className="sr-only" style={{ display: 'none' }}>{label}</span>
     </div>
   );
 

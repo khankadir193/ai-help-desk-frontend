@@ -11,8 +11,9 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--space-4);
-  background-color: var(--color-bg-base);
+  /* Fallbacks: outside .layoutContainer these tokens are not inherited */
+  gap: var(--space-4, 1rem);
+  background-color: var(--color-bg-base, #f8fafc);
 }
 
 .spinner {
@@ -42,9 +43,10 @@
 }
 
 .label {
-  font-size: var(--text-sm);
-  color: var(--color-text-secondary);
-  font-weight: var(--font-medium);
+  /* Fallbacks: outside .layoutContainer these tokens are not inherited */
+  font-size: var(--text-sm, 0.875rem);
+  color: var(--color-text-secondary, #475569);
+  font-weight: var(--font-medium, 500);
 }
 
 @keyframes rotate {

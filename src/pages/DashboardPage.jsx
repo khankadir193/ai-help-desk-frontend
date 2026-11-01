@@ -4,7 +4,7 @@ import PriorityDonut from '../components/PriorityDonut/PriorityDonut';
 import ActivityList from '../components/ActivityList/ActivityList';
 import TeamTable from '../components/TeamTable/TeamTable';
 import Icon from '../components/Icon/Icon';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../features/auth/hooks/useAuth';
 import { userProfile, kpiData } from '../data/dashboardData';
 
 export default function DashboardPage() {

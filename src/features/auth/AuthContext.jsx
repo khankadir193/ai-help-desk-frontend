@@ -10,8 +10,6 @@ export default function AuthProvider({ children }) {
   const {
     data: user = null,
     isLoading,
-    isFetching,
-    error: sessionError,
   } = useQuery({
     queryKey: AUTH_QUERY_KEY,
     queryFn: async () => {
@@ -128,33 +126,11 @@ export default function AuthProvider({ children }) {
       role: userWithInitials?.role || null,
       isAuthenticated: Boolean(userWithInitials),
       isLoading,
-      isFetching,
-      sessionError,
-      login: loginMutation.mutateAsync,
-      logout: logoutMutation.mutateAsync,
-      isLoggingIn: loginMutation.isPending,
-      isLoggingOut: logoutMutation.isPending,
-      loginError: loginMutation.error?.userMessage || null,
-      resetLoginError: loginMutation.reset,
       signIn,
       signUp,
       signOut,
     }),
-    [
-      userWithInitials,
-      isLoading,
-      isFetching,
-      sessionError,
-      loginMutation.mutateAsync,
-      loginMutation.isPending,
-      loginMutation.error,
-      loginMutation.reset,
-      logoutMutation.mutateAsync,
-      logoutMutation.isPending,
-      signIn,
-      signUp,
-      signOut,
-    ]
+    [userWithInitials, isLoading, signIn, signUp, signOut]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

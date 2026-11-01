@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../../../context/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 import { validateRegisterForm } from '../authValidation';
 import { ROUTES } from '../../../constants/routes';
 import Button from '../../../components/ui/Button/Button';
@@ -47,7 +47,7 @@ export default function RegisterForm({ onSuccess }) {
     setIsRegistering(true);
     setRegisterError(null);
 
-    const result = signUp({
+    const result = await signUp({
       name: formData.name,
       email: formData.email,
       password: formData.password,
