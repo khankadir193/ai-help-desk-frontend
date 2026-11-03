@@ -17,8 +17,11 @@ const AGENT_ID_PATTERN = /^[1-9]\d*$/;
  * The user module exposes no agent directory endpoint, so the target agent
  * must be referenced by numeric user ID; the backend validates that the ID
  * belongs to an existing, active AGENT.
+ *
+ * `onSuccess(message)` is called after a successful update so the details
+ * page can surface the result (same pattern as CreateTicketModal).
  */
-export default function TicketAssignDialog({ isOpen, onClose, ticket }) {
+export default function TicketAssignDialog({ isOpen, onClose, ticket, onSuccess }) {
   const assignmentMutation = useUpdateTicketAssignment();
 
   const [agentId, setAgentId] = useState(ticket?.assigned_agent?.id ?? '');
@@ -47,11 +50,19 @@ export default function TicketAssignDialog({ isOpen, onClose, ticket }) {
 
     const trimmed = String(agentId).trim();
     try {
-      await assignmentMutation.mutateAsync({
+      const updated = await assignmentMutation.mutateAsync({
         id: ticket.id,
         assignedAgentId: trimmed ? trimmed : null,
       });
 
+      const agentName = updated?.assigned_agent?.name;
+      if (onSuccess) {
+        onSuccess(
+          agentName
+            ? `Ticket assigned to ${agentName}.`
+            : 'Assignment updated.'
+        );
+      }
       onClose();
     } catch (err) {
       setError(getErrorMessage(err));
@@ -65,6 +76,9 @@ export default function TicketAssignDialog({ isOpen, onClose, ticket }) {
         id: ticket.id,
         assignedAgentId: null,
       });
+      if (onSuccess) {
+        onSuccess('Ticket unassigned.');
+      }
       onClose();
     } catch (err) {
       setError(getErrorMessage(err));

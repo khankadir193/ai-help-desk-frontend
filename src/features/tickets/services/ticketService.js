@@ -9,8 +9,11 @@ import { API_ENDPOINTS } from '../../../constants/apiEndpoints';
  *  - POST   /            (CUSTOMER only) 201 { status, data: { ticket } }
  *  - GET    /            role-scoped list; returns { status, data: { tickets, pagination } }
  *  - GET    /:id         role-scoped detail; 403 if not owner/assignee/admin
+ *  - GET    /:id/comments  comment thread (internal notes hidden for CUSTOMER)
+ *  - POST   /:id/comments  append comment; is_internal=true is 403 for CUSTOMER
  *  - PATCH  /:id/status  (AGENT assigned | ADMIN) { status }
  *  - PATCH  /:id/assignment (ADMIN) { assigned_agent_id } | { assigned_agent_id: null }
+ *  - GET    /:id/history  (AGENT assigned | ADMIN) audit trail, newest first
  */
 export const TICKET_STATUSES = ['OPEN', 'IN_PROGRESS', 'RESOLVED', 'CLOSED'];
 export const TICKET_PRIORITIES = ['LOW', 'MEDIUM', 'HIGH', 'URGENT'];
@@ -127,6 +130,56 @@ export const ticketService = {
       { assigned_agent_id: assignedAgentId === null ? null : assignedAgentId }
     );
     return response?.data?.ticket ?? response?.ticket ?? response;
+  },
+
+  /**
+   * List the comment thread of a ticket (ownership scoped by the backend).
+   * CUSTOMER callers receive public comments only — internal notes are
+   * filtered out server-side and never reach the client.
+   *
+   * @param {string|number} id
+   * @returns {Promise<Array<Object>>} comments, oldest first
+   */
+  listComments: async (id) => {
+    const response = await apiClient.get(API_ENDPOINTS.TICKETS.COMMENTS(id));
+    return response?.data?.comments ?? response?.comments ?? [];
+  },
+
+  /**
+   * List the audit-trail history of a ticket (AGENT assigned | ADMIN).
+   * The backend returns entries newest first, each shaped as:
+   *   { id, action, field_name, old_value, new_value,
+   *     changed_by: { id, name } | null, created_at }
+   * CUSTOMER callers are rejected server-side (403) and never see history.
+   *
+   * @param {string|number} id
+   * @returns {Promise<Array<Object>>} history entries, newest first
+   */
+  getTicketHistory: async (id) => {
+    const response = await apiClient.get(API_ENDPOINTS.TICKETS.HISTORY(id));
+    return response?.data?.history ?? response?.history ?? [];
+  },
+
+  /**
+   * Append a comment to a ticket (role-scoped by the backend).
+   * The author is always the authenticated session user; submitting
+   * is_internal as a CUSTOMER is rejected by the backend (403).
+   * Validation mirrors the backend: message required, trimmed, non-empty.
+   *
+   * @param {string|number} id
+   * @param {Object} data
+   * @param {string} data.message
+   * @param {boolean} [data.is_internal=false] - AGENT/ADMIN only
+   * @returns {Promise<Object>} created comment
+   */
+  addComment: async (id, { message, is_internal }) => {
+    const payload = {
+      message: (message || '').trim(),
+      is_internal: is_internal === true,
+    };
+
+    const response = await apiClient.post(API_ENDPOINTS.TICKETS.COMMENTS(id), payload);
+    return response?.data?.comment ?? response?.comment ?? response;
   },
 };
 

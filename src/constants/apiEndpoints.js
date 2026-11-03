@@ -15,5 +15,7 @@ export const API_ENDPOINTS = {
     BY_ID: (id) => `/tickets/${id}`,
     STATUS: (id) => `/tickets/${id}/status`,
     ASSIGNMENT: (id) => `/tickets/${id}/assignment`,
+    COMMENTS: (id) => `/tickets/${id}/comments`,
+    HISTORY: (id) => `/tickets/${id}/history`,
   },
 };

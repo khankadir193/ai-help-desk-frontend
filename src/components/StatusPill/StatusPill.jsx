@@ -2,7 +2,8 @@ import Icon from '../Icon/Icon';
 import './StatusPill.css';
 
 export default function StatusPill({ status, label }) {
-  const normalized = status.toLowerCase();
+  // Backend enums use underscores (IN_PROGRESS); CSS modifier classes use hyphens
+  const normalized = status.toLowerCase().replace(/_/g, '-');
 
   return (
     <span className={`status-pill status-pill--${normalized}`}>

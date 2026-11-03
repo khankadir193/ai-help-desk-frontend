@@ -1,0 +1,217 @@
+.card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-card);
+  padding: 24px;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.title {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.badgeCount {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-primary);
+  background-color: var(--color-primary-tint);
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+/* Chronological timeline (newest first, as returned by the backend) */
+.timeline {
+  list-style: none;
+  margin: 0;
+  padding: 4px 0 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  top: 18px;
+  bottom: 12px;
+  left: 13px;
+  width: 2px;
+  background-color: var(--border-color);
+  border-radius: var(--radius-pill);
+}
+
+.entry {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 4px 0;
+}
+
+.marker {
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+}
+
+.marker::after {
+  content: '';
+  position: absolute;
+  right: -9px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-primary);
+  border: 2px solid var(--bg-card);
+  box-sizing: border-box;
+}
+
+.body {
+  flex: 1;
+  min-width: 0;
+  background-color: var(--bg-page);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 10px 14px;
+  margin-left: 10px;
+}
+
+.actionRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.actionText {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.fieldName {
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+.changeChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-pill);
+  padding: 2px 10px;
+}
+
+.valueOld {
+  color: var(--text-subtle);
+  text-decoration: line-through;
+  overflow-wrap: anywhere;
+}
+
+.valueNew {
+  color: var(--color-success-text);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.valueArrow {
+  flex-shrink: 0;
+  color: var(--text-subtle);
+  transform: rotate(-90deg);
+}
+
+.valuePrefix {
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.metaRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.actor {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.timestamp {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.emptyText {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.errorBanner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background-color: var(--color-danger-tint);
+  border: 1px solid #FECACA;
+  border-radius: var(--radius-card);
+  color: var(--color-danger);
+  font-size: 13.5px;
+}
+
+.errorLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+.stateBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 20px;
+  gap: 12px;
+  text-align: center;
+}
+
+@media (max-width: 767px) {
+  .card {
+    padding: 16px;
+  }
+}

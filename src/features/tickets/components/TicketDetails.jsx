@@ -10,6 +10,8 @@ import Button from '../../../components/ui/Button/Button';
 import Icon from '../../../components/Icon/Icon';
 import Spinner from '../../../components/feedback/Spinner/Spinner';
 import TicketAssignDialog from './TicketAssignDialog';
+import TicketComments from './TicketComments';
+import TicketHistory from './TicketHistory';
 import { getErrorMessage } from '../../../utils/errorHandler';
 import styles from './TicketDetails.module.css';
 
@@ -65,6 +67,14 @@ export default function TicketDetails({ ticketId }) {
   const [successMessage, setSuccessMessage] = useState('');
   const [isAssignDialogOpen, setIsAssignDialogOpen] = useState(false);
 
+  // Transient success toast (status & assignment updates)
+  const showSuccess = (message) => {
+    setSuccessMessage(message);
+    setTimeout(() => {
+      setSuccessMessage('');
+    }, 4500);
+  };
+
   if (isLoading) {
     return (
       <main className="dashboard-content" aria-label="Ticket Details">
@@ -114,11 +124,8 @@ export default function TicketDetails({ ticketId }) {
     setStatusError('');
     try {
       await statusMutation.mutateAsync({ id: ticket.id, status: nextStatus });
-      setSuccessMessage(`Status updated to ${STATUS_LABELS[nextStatus] || nextStatus}.`);
+      showSuccess(`Status updated to ${STATUS_LABELS[nextStatus] || nextStatus}.`);
       setNextStatus('');
-      setTimeout(() => {
-        setSuccessMessage('');
-      }, 4500);
     } catch (err) {
       setStatusError(getErrorMessage(err));
     }
@@ -213,8 +220,23 @@ export default function TicketDetails({ ticketId }) {
             </div>
 
             <div className={styles.metaItem}>
+              <span className={styles.metaLabel}>Customer</span>
+              <span className={styles.metaValue}>
+                {ticket.customer?.name || '—'}
+                {ticket.customer?.email && (
+                  <span className={styles.metaSecond}>{ticket.customer.email}</span>
+                )}
+              </span>
+            </div>
+
+            <div className={styles.metaItem}>
               <span className={styles.metaLabel}>Created</span>
               <span className={styles.metaValue}>{formatDate(ticket.created_at) || '—'}</span>
+            </div>
+
+            <div className={styles.metaItem}>
+              <span className={styles.metaLabel}>Updated</span>
+              <span className={styles.metaValue}>{formatDate(ticket.updated_at) || '—'}</span>
             </div>
 
             {ticket.resolved_at && (
@@ -287,12 +309,19 @@ export default function TicketDetails({ ticketId }) {
             </div>
           )}
         </div>
+
+        {/* Audit History (AGENT assigned / ADMIN only; backend rejects others) */}
+        {isStaff && <TicketHistory ticketId={ticket.id} />}
+
+        {/* Comments & Internal Notes */}
+        <TicketComments ticketId={ticket.id} />
       </div>
 
       {isAssignDialogOpen && (
         <TicketAssignDialog
           isOpen={isAssignDialogOpen}
           onClose={() => setIsAssignDialogOpen(false)}
+          onSuccess={showSuccess}
           ticket={ticket}
         />
       )}

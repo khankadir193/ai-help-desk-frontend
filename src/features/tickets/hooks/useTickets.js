@@ -7,6 +7,10 @@ export const TICKET_QUERY_KEYS = {
   list: (filters = {}) => [...TICKET_QUERY_KEYS.lists(), filters],
   details: () => [...TICKET_QUERY_KEYS.all, 'detail'],
   detail: (id) => [...TICKET_QUERY_KEYS.details(), String(id)],
+  comments: () => [...TICKET_QUERY_KEYS.all, 'comments'],
+  commentList: (id) => [...TICKET_QUERY_KEYS.comments(), String(id)],
+  history: () => [...TICKET_QUERY_KEYS.all, 'history'],
+  historyList: (id) => [...TICKET_QUERY_KEYS.history(), String(id)],
 };
 
 /**
@@ -65,6 +69,9 @@ export function useUpdateTicketStatus() {
       queryClient.invalidateQueries({ queryKey: TICKET_QUERY_KEYS.lists() });
       if (variables.id) {
         queryClient.setQueryData(TICKET_QUERY_KEYS.detail(variables.id), data);
+        queryClient.invalidateQueries({
+          queryKey: TICKET_QUERY_KEYS.historyList(variables.id),
+        });
       }
     },
   });
@@ -83,6 +90,59 @@ export function useUpdateTicketAssignment() {
       queryClient.invalidateQueries({ queryKey: TICKET_QUERY_KEYS.lists() });
       if (variables.id) {
         queryClient.setQueryData(TICKET_QUERY_KEYS.detail(variables.id), data);
+        queryClient.invalidateQueries({
+          queryKey: TICKET_QUERY_KEYS.historyList(variables.id),
+        });
+      }
+    },
+  });
+}
+
+/**
+ * Hook to fetch the comment thread of a ticket.
+ * The backend scopes access and hides internal notes from CUSTOMER callers.
+ * @param {string|number} id - Ticket ID
+ */
+export function useTicketComments(id) {
+  return useQuery({
+    queryKey: TICKET_QUERY_KEYS.commentList(id),
+    queryFn: () => ticketService.listComments(id),
+    enabled: Boolean(id),
+  });
+}
+
+/**
+ * Hook to fetch the audit-trail history of a ticket.
+ * Backend allows only assigned AGENTs and ADMINs; a CUSTOMER caller
+ * receives 403 ("Ticket history is only available to support staff.") and
+ * this hook is consumed only from staff-visible surfaces.
+ * @param {string|number} id - Ticket ID
+ */
+export function useTicketHistory(id) {
+  return useQuery({
+    queryKey: TICKET_QUERY_KEYS.historyList(id),
+    queryFn: () => ticketService.getTicketHistory(id),
+    enabled: Boolean(id),
+  });
+}
+
+/**
+ * Hook to add a comment to a ticket (role rules enforced by the backend).
+ * CUSTOMER: public comment only; submitting an internal note is a 403.
+ * AGENT/ADMIN: public comment or internal note.
+ * On success the comment thread is invalidated and refetched.
+ */
+export function useAddComment() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, message, isInternal }) =>
+      ticketService.addComment(id, { message, is_internal: isInternal }),
+    onSuccess: (data, variables) => {
+      if (variables.id) {
+        queryClient.invalidateQueries({
+          queryKey: TICKET_QUERY_KEYS.commentList(variables.id),
+        });
       }
     },
   });
