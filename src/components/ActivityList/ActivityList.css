@@ -39,6 +39,13 @@
   gap: 16px;
 }
 
+.activity-card__empty {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-muted);
+  padding: 20px 0;
+}
+
 .activity-card__item {
   display: flex;
   align-items: center;

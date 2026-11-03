@@ -2,10 +2,26 @@ import { useState } from 'react';
 import { priorityData } from '../../data/dashboardData';
 import './PriorityDonut.css';
 
-export default function PriorityDonut() {
+export default function PriorityDonut({
+  data = priorityData,
+  centerLabel = 'open',
+  emptyText,
+}) {
   const [hoveredSlice, setHoveredSlice] = useState(null);
 
-  const totalOpen = priorityData.reduce((sum, item) => sum + item.count, 0);
+  const totalOpen = data.reduce((sum, item) => sum + item.count, 0);
+
+  // Zero-division guard: nothing to draw when the scope has no tickets
+  if (!data || data.length === 0 || totalOpen <= 0) {
+    return (
+      <div className="priority-donut-card">
+        <div className="priority-donut-card__header">
+          <h3 className="priority-donut-card__title">Priority distribution</h3>
+        </div>
+        <p className="priority-donut__empty">{emptyText || 'No tickets to chart yet.'}</p>
+      </div>
+    );
+  }
 
   // SVG Geometry
   const size = 160;
@@ -15,11 +31,11 @@ export default function PriorityDonut() {
 
   // Gap between slices in pixels on circumference
   const gap = 2.5;
-  const effectiveCircumference = circumference - priorityData.length * gap;
+  const effectiveCircumference = circumference - data.length * gap;
 
   // Pre-calculate pure slice offsets without mutating variables during render
-  const slices = priorityData.map((slice, index) => {
-    const priorPercent = priorityData
+  const slices = data.map((slice, index) => {
+    const priorPercent = data
       .slice(0, index)
       .reduce((sum, item) => sum + item.count / totalOpen, 0);
     const slicePercent = slice.count / totalOpen;
@@ -27,7 +43,7 @@ export default function PriorityDonut() {
     const offset =
       circumference -
       priorPercent * effectiveCircumference -
-      priorPercent * gap * priorityData.length;
+      priorPercent * gap * data.length;
 
     return {
       ...slice,
@@ -50,8 +66,8 @@ export default function PriorityDonut() {
             height={size}
             viewBox={`0 0 ${size} ${size}`}
             className="priority-donut__svg"
-            role="img"
-            aria-label={`Donut chart showing ${totalOpen} open tickets across priority levels`}
+              role="img"
+              aria-label={`Donut chart showing ${totalOpen} tickets across priority levels`}
           >
             <g transform={`rotate(-90 ${size / 2} ${size / 2})`}>
               {slices.map((slice) => {
@@ -91,7 +107,7 @@ export default function PriorityDonut() {
               textAnchor="middle"
               className="priority-donut__center-sub"
             >
-              open
+              {centerLabel}
             </text>
           </svg>
 
@@ -111,7 +127,7 @@ export default function PriorityDonut() {
 
         {/* Legend List */}
         <div className="priority-donut__legend">
-          {priorityData.map((item) => {
+          {data.map((item) => {
             const isHovered = hoveredSlice?.id === item.id;
             return (
               <div

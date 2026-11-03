@@ -18,6 +18,13 @@
   color: var(--text-primary);
 }
 
+.priority-donut__empty {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-muted);
+  padding: 28px 0;
+}
+
 .priority-donut-card__body {
   display: flex;
   align-items: center;

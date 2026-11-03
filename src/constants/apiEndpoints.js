@@ -18,4 +18,7 @@ export const API_ENDPOINTS = {
     COMMENTS: (id) => `/tickets/${id}/comments`,
     HISTORY: (id) => `/tickets/${id}/history`,
   },
+  DASHBOARD: {
+    BASE: '/dashboard',
+  },
 };

@@ -53,6 +53,8 @@ export function useCreateTicket() {
     mutationFn: (data) => ticketService.createTicket(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: TICKET_QUERY_KEYS.lists() });
+      // New tickets change the dashboard totals and recent list
+      queryClient.invalidateQueries({ queryKey: ['dashboard'] });
     },
   });
 }
@@ -67,6 +69,8 @@ export function useUpdateTicketStatus() {
     mutationFn: ({ id, status }) => ticketService.updateTicketStatus(id, status),
     onSuccess: (data, variables) => {
       queryClient.invalidateQueries({ queryKey: TICKET_QUERY_KEYS.lists() });
+      // Dashboard aggregates include status counts
+      queryClient.invalidateQueries({ queryKey: ['dashboard'] });
       if (variables.id) {
         queryClient.setQueryData(TICKET_QUERY_KEYS.detail(variables.id), data);
         queryClient.invalidateQueries({
@@ -88,6 +92,8 @@ export function useUpdateTicketAssignment() {
       ticketService.updateTicketAssignment(id, assignedAgentId),
     onSuccess: (data, variables) => {
       queryClient.invalidateQueries({ queryKey: TICKET_QUERY_KEYS.lists() });
+      // Agent workload on the admin dashboard depends on assignments
+      queryClient.invalidateQueries({ queryKey: ['dashboard'] });
       if (variables.id) {
         queryClient.setQueryData(TICKET_QUERY_KEYS.detail(variables.id), data);
         queryClient.invalidateQueries({
