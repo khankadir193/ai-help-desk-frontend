@@ -3,7 +3,9 @@ export const ROUTES = {
   LOGIN: '/signin',
   REGISTER: '/signup',
   DASHBOARD: '/',
+  CATEGORIES: '/categories',
   TICKETS: '/tickets',
+  TICKET_DETAIL: '/tickets/:id',
   AI_ASSISTANT: '/ai-assistant',
   KNOWLEDGE_BASE: '/knowledge-base',
   REPORTS: '/reports',
@@ -11,4 +13,3 @@ export const ROUTES = {
   SETTINGS: '/settings',
   NOT_FOUND: '*',
 };
-

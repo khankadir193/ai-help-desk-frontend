@@ -202,6 +202,72 @@ export default function Icon({
         </svg>
       );
 
+    case 'plus':
+      return (
+        <svg {...iconProps}>
+          <line x1="12" x2="12" y1="5" y2="19" />
+          <line x1="5" x2="19" y1="12" y2="12" />
+        </svg>
+      );
+
+    case 'tag':
+      return (
+        <svg {...iconProps}>
+          <path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z" />
+          <path d="M7 7h.01" />
+        </svg>
+      );
+
+    case 'edit':
+    case 'pencil':
+      return (
+        <svg {...iconProps}>
+          <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+          <path d="m15 5 4 4" />
+        </svg>
+      );
+
+    case 'power':
+      return (
+        <svg {...iconProps}>
+          <path d="M18.36 6.64a9 9 0 1 1-12.73 0" />
+          <line x1="12" x2="12" y1="2" y2="12" />
+        </svg>
+      );
+
+    case 'alert-circle':
+      return (
+        <svg {...iconProps}>
+          <circle cx="12" cy="12" r="10" />
+          <line x1="12" x2="12" y1="8" y2="12" />
+          <line x1="12" x2="12.01" y1="16" y2="16" />
+        </svg>
+      );
+
+    case 'rotate-cw':
+    case 'refresh':
+      return (
+        <svg {...iconProps}>
+          <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8" />
+          <polyline points="21 3 21 8 16 8" />
+        </svg>
+      );
+
+    case 'filter':
+      return (
+        <svg {...iconProps}>
+          <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
+        </svg>
+      );
+
+    case 'check-circle':
+      return (
+        <svg {...iconProps}>
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+          <polyline points="22 4 12 14.01 9 11.01" />
+        </svg>
+      );
+
     default:
       return null;
   }

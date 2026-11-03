@@ -33,6 +33,12 @@ export const navigationSections = [
     title: 'MANAGE',
     items: [
       {
+        id: 'categories',
+        label: 'Categories',
+        icon: 'tag',
+        path: '/categories',
+      },
+      {
         id: 'reports',
         label: 'Reports',
         icon: 'trending-up',

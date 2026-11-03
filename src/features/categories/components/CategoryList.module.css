@@ -1,0 +1,343 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.successToast {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 18px;
+  background-color: var(--color-success-tint);
+  border: 1px solid #A7F3D0;
+  border-radius: var(--radius-card);
+  color: var(--color-success-text);
+  font-size: 13.5px;
+  font-weight: 500;
+  animation: slideDown 200ms ease-out;
+}
+
+.successToastLeft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.toastCloseBtn {
+  background: transparent;
+  border: none;
+  color: var(--color-success-text);
+  cursor: pointer;
+  padding: 4px;
+  display: inline-flex;
+  border-radius: var(--radius-sm);
+  transition: opacity var(--transition-fast);
+}
+
+.toastCloseBtn:hover {
+  opacity: 0.7;
+}
+
+.card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-card);
+  padding: 24px;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.headerRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.titleArea {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.badgeCount {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-primary-tint);
+  color: var(--color-primary);
+}
+
+.subtext {
+  margin: 0;
+  font-size: 13.5px;
+  color: var(--text-muted);
+}
+
+.actionsArea {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.filterBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding-bottom: 4px;
+}
+
+.searchBox {
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-subtle);
+  pointer-events: none;
+}
+
+.searchInput {
+  width: 100%;
+  height: 38px;
+  padding: 0 12px 0 36px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-input);
+  font-size: 13.5px;
+  color: var(--text-primary);
+  outline: none;
+  transition: all var(--transition-fast);
+  box-sizing: border-box;
+}
+
+.searchInput:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-tint);
+}
+
+.tabsGroup {
+  display: flex;
+  align-items: center;
+  background-color: var(--bg-hover);
+  padding: 3px;
+  border-radius: var(--radius-input);
+  border: 1px solid var(--border-color);
+  gap: 2px;
+}
+
+.tabBtn {
+  background: transparent;
+  border: none;
+  padding: 6px 14px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text-muted);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.tabBtn:hover {
+  color: var(--text-primary);
+}
+
+.tabBtnActive {
+  background-color: #FFFFFF;
+  color: var(--text-primary);
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+}
+
+.tableWrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+
+.th {
+  text-align: left;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 10px 14px 12px 14px;
+  border-bottom: 1px solid var(--border-color);
+  user-select: none;
+}
+
+.tr {
+  border-bottom: 1px solid var(--border-light);
+  transition: background-color var(--transition-fast);
+}
+
+.tr:hover {
+  background-color: var(--bg-hover);
+}
+
+.td {
+  padding: 14px;
+  color: var(--text-primary);
+  vertical-align: middle;
+}
+
+.categoryMain {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.categoryName {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 14px;
+}
+
+.categoryDesc {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  line-height: 1.4;
+  max-width: 440px;
+}
+
+.categoryEmptyDesc {
+  font-size: 12px;
+  color: var(--text-subtle);
+  font-style: italic;
+}
+
+.dateCell {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.actionsCell {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.actionBtns {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.iconBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.iconBtn:hover {
+  background-color: var(--bg-hover);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+.iconBtnDanger:hover {
+  background-color: var(--color-danger-tint);
+  color: var(--color-danger);
+  border-color: #FECACA;
+}
+
+.iconBtnActivate:hover {
+  background-color: var(--color-success-tint);
+  color: var(--color-success-text);
+  border-color: #A7F3D0;
+}
+
+.stateBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 56px 20px;
+  gap: 12px;
+  text-align: center;
+}
+
+.stateIcon {
+  color: var(--text-subtle);
+  margin-bottom: 4px;
+}
+
+.stateTitle {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.stateText {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-muted);
+  max-width: 380px;
+}
+
+.errorBanner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  background-color: var(--color-danger-tint);
+  border: 1px solid #FECACA;
+  border-radius: var(--radius-card);
+  color: var(--color-danger);
+  font-size: 13.5px;
+}
+
+.errorLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+

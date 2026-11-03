@@ -52,3 +52,17 @@ button {
   font-variant-numeric: tabular-nums;
 }
 
+/* Rotating utility (refresh icons while fetching) */
+.spin {
+  animation: spin 800ms linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+

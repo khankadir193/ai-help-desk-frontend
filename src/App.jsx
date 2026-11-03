@@ -3,6 +3,9 @@ import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import PublicRoute from './components/PublicRoute/PublicRoute';
 import AppLayout from './components/AppLayout/AppLayout';
 import DashboardPage from './pages/DashboardPage';
+import CategoriesPage from './features/categories/pages/CategoriesPage';
+import TicketsPage from './features/tickets/pages/TicketsPage';
+import TicketDetailPage from './features/tickets/pages/TicketDetailPage';
 import PlaceholderPage from './pages/PlaceholderPage';
 import AuthLayout from './layouts/AuthLayout/AuthLayout';
 import LoginPage from './features/auth/pages/LoginPage';
@@ -27,7 +30,9 @@ export default function App() {
       <Route element={<ProtectedRoute />}>
         <Route element={<AppLayout />}>
           <Route path="/" element={<DashboardPage />} />
-          <Route path="/tickets" element={<PlaceholderPage title="Tickets" />} />
+          <Route path="/categories" element={<CategoriesPage />} />
+          <Route path="/tickets" element={<TicketsPage />} />
+          <Route path="/tickets/:id" element={<TicketDetailPage />} />
           <Route path="/ai-assistant" element={<PlaceholderPage title="AI Assistant" />} />
           <Route path="/knowledge-base" element={<PlaceholderPage title="Knowledge Base" />} />
           <Route path="/reports" element={<PlaceholderPage title="Reports" />} />

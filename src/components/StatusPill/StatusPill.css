@@ -36,7 +36,57 @@
   color: var(--color-success-text);
 }
 
+.status-pill--active {
+  background-color: var(--color-success-tint);
+  color: var(--color-success-text);
+}
+
+.status-pill__dot--active {
+  background-color: var(--color-success);
+}
+
+.status-pill--inactive {
+  background-color: #F1F5F9;
+  border: 1px solid var(--border-color);
+  color: var(--color-slate-dark);
+}
+
+.status-pill__dot--inactive {
+  background-color: var(--color-slate);
+}
+
 .status-pill__icon {
   flex-shrink: 0;
+}
+
+/* Ticket statuses */
+.status-pill--closed {
+  background-color: #F1F5F9;
+  border: 1px solid var(--border-color);
+  color: var(--color-slate-dark);
+  padding: 2px 8px; /* account for border */
+}
+
+/* Ticket priorities */
+.status-pill--low {
+  background-color: #F1F5F9;
+  border: 1px solid var(--border-color);
+  color: var(--color-slate-dark);
+  padding: 2px 8px; /* account for border */
+}
+
+.status-pill--medium {
+  background-color: var(--color-blue-tint);
+  color: var(--color-blue);
+}
+
+.status-pill--high {
+  background-color: var(--color-amber-tint);
+  color: var(--color-amber-text);
+}
+
+.status-pill--urgent {
+  background-color: var(--color-danger-tint);
+  color: var(--color-danger);
 }
 
