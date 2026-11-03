@@ -153,3 +153,189 @@ export function useAddComment() {
     },
   });
 }
+
+/**
+ * Cache key family for AI classification results, deliberately OUTSIDE the
+ * ['tickets'] family so ticket list/detail invalidations never touch it.
+ * The backend exposes no GET endpoint for ai_suggestions (review endpoints
+ * are not implemented yet), so the latest POST response is cached client-side
+ * per ticket and simply survives navigation within the session.
+ * @param {string|number} id - Ticket ID
+ */
+export const AI_CLASSIFICATION_KEY = (id) => ['ai-classification', String(id)];
+
+/**
+ * Hook to trigger AI ticket classification (AGENT assigned / ADMIN — the
+ * backend is the source of truth and rejects everyone else).
+ * Backend contract: POST /api/v1/tickets/:id/ai/classify with NO request
+ * body → { status: "success", data: { suggestion } }, where the suggestion
+ * is stored PENDING and the ticket is never modified automatically.
+ * The returned suggestion is cached per ticket for the reviewable UI.
+ */
+export function useClassifyTicket() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id }) => ticketService.classifyTicket(id),
+    onSuccess: (suggestion, variables) => {
+      if (variables?.id != null) {
+        queryClient.setQueryData(AI_CLASSIFICATION_KEY(variables.id), suggestion);
+      }
+    },
+  });
+}
+
+/**
+ * Read-only subscription to the latest classification suggestion for a
+ * ticket (written by useClassifyTicket). It never fetches — the backend has
+ * no read endpoint for suggestions — so every refetch trigger is disabled.
+ * @param {string|number} id - Ticket ID
+ */
+export function useAiClassification(id) {
+  return useQuery({
+    queryKey: AI_CLASSIFICATION_KEY(id),
+    enabled: false,
+    staleTime: Infinity,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+  });
+}
+
+/**
+ * Cache key family for AI priority suggestions (same read/api.model as
+ * classification — no GET endpoint exists, so the latest POST response is
+ * cached per ticket outside the ['tickets'] family).
+ * @param {string|number} id - Ticket ID
+ */
+export const AI_PRIORITY_KEY = (id) => ['ai-priority', String(id)];
+
+/**
+ * Hook to trigger an AI priority suggestion (AGENT assigned / ADMIN — the
+ * backend is the source of truth and rejects everyone else). Backend
+ * contract: POST /api/v1/tickets/:id/ai/priority with NO request body
+ * → { status: "success", data: { suggestion } }, where the suggestion is
+ * stored PENDING and the ticket priority is never modified automatically.
+ */
+export function useSuggestTicketPriority() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id }) => ticketService.suggestTicketPriority(id),
+    onSuccess: (suggestion, variables) => {
+      if (variables?.id != null) {
+        queryClient.setQueryData(AI_PRIORITY_KEY(variables.id), suggestion);
+      }
+    },
+  });
+}
+
+/**
+ * Read-only subscription to the latest AI priority suggestion for a ticket
+ * (written by useSuggestTicketPriority). Never fetches — the backend has
+ * no read endpoint for suggestions.
+ * @param {string|number} id - Ticket ID
+ */
+export function useAiPrioritySuggestion(id) {
+  return useQuery({
+    queryKey: AI_PRIORITY_KEY(id),
+    enabled: false,
+    staleTime: Infinity,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+  });
+}
+
+/**
+ * Cache key family for AI reply drafts (same read model as the other AI
+ * suggestions — no GET endpoint exists, so the latest POST response is
+ * cached per ticket outside the ['tickets'] family).
+ * @param {string|number} id - Ticket ID
+ */
+export const AI_REPLY_DRAFT_KEY = (id) => ['ai-reply-draft', String(id)];
+
+/**
+ * Hook to generate an AI customer-facing reply draft (AGENT assigned /
+ * ADMIN — the backend is the source of truth and rejects everyone else).
+ * Backend contract: POST /api/v1/tickets/:id/ai/reply-draft with NO request
+ * body → { status: "success", data: { suggestion } }, stored PENDING with
+ * result { draft }. The draft is generated ONLY and is never posted or
+ * published automatically — promoting it is an explicit agent action.
+ */
+export function useGenerateReplyDraft() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id }) => ticketService.generateReplyDraft(id),
+    onSuccess: (suggestion, variables) => {
+      if (variables?.id != null) {
+        queryClient.setQueryData(AI_REPLY_DRAFT_KEY(variables.id), suggestion);
+      }
+    },
+  });
+}
+
+/**
+ * Read-only subscription to the latest AI reply draft for a ticket (written
+ * by useGenerateReplyDraft). Never fetches — the backend has no read
+ * endpoint for suggestions.
+ * @param {string|number} id - Ticket ID
+ */
+export function useAiReplyDraft(id) {
+  return useQuery({
+    queryKey: AI_REPLY_DRAFT_KEY(id),
+    enabled: false,
+    staleTime: Infinity,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+  });
+}
+
+/**
+ * Cache key family for AI conversation summaries (same read model as the
+ * other AI suggestions — no GET endpoint exists, so the latest POST response
+ * is cached per ticket outside the ['tickets'] family).
+ * @param {string|number} id - Ticket ID
+ */
+export const AI_SUMMARY_KEY = (id) => ['ai-summary', String(id)];
+
+/**
+ * Hook to generate an AI conversation summary (AGENT assigned / ADMIN — the
+ * backend is the source of truth and rejects everyone else). Backend
+ * contract: POST /api/v1/tickets/:id/ai/summary with NO request body
+ * → { status: "success", data: { suggestion } }, stored PENDING with
+ * result { mainIssue, details, troubleshootingDone, currentStatus, nextSteps,
+ * ticketStatus }. The summary is informational only and never modifies the
+ * ticket or comments.
+ */
+export function useGenerateSummary() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id }) => ticketService.generateSummary(id),
+    onSuccess: (suggestion, variables) => {
+      if (variables?.id != null) {
+        queryClient.setQueryData(AI_SUMMARY_KEY(variables.id), suggestion);
+      }
+    },
+  });
+}
+
+/**
+ * Read-only subscription to the latest AI conversation summary for a ticket
+ * (written by useGenerateSummary). Never fetches — the backend has no read
+ * endpoint for suggestions.
+ * @param {string|number} id - Ticket ID
+ */
+export function useAiSummary(id) {
+  return useQuery({
+    queryKey: AI_SUMMARY_KEY(id),
+    enabled: false,
+    staleTime: Infinity,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+  });
+}

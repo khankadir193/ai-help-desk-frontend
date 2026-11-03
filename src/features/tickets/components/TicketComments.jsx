@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTicketComments, useAddComment } from '../hooks/useTickets';
 import { useAuth } from '../../auth/hooks/useAuth';
 import Avatar from '../../../components/Avatar/Avatar';
@@ -28,7 +28,7 @@ const formatDate = (dateStr) => {
   }
 };
 
-export default function TicketComments({ ticketId }) {
+export default function TicketComments({ ticketId, message = '', onMessageChange }) {
   const { role } = useAuth();
   const isStaff = role === 'AGENT' || role === 'ADMIN';
 
@@ -42,9 +42,23 @@ export default function TicketComments({ ticketId }) {
 
   const addCommentMutation = useAddComment();
 
-  const [message, setMessage] = useState('');
   const [isInternal, setIsInternal] = useState(false);
   const [fieldError, setFieldError] = useState('');
+  const messageInputRef = useRef(null);
+
+  /**
+   * The composer text is controlled by the parent (TicketDetails), which
+   * inserts AI reply drafts on explicit agent action (AiReplyDraft →
+   * cut-in "Use in Composer"). Nothing is ever posted automatically — this
+   * only fills the editable composer text. Focus follows the message so an
+   * inserted draft scrolls the composer into view; typing already keeps the
+   * textarea focused (a no-op refocus).
+   */
+  useEffect(() => {
+    if (message) {
+      messageInputRef.current?.focus();
+    }
+  }, [message]);
 
   const isPending = addCommentMutation.isPending;
 
@@ -64,7 +78,7 @@ export default function TicketComments({ ticketId }) {
         message: trimmed,
         isInternal: isStaff && isInternal,
       });
-      setMessage('');
+      onMessageChange?.('');
       setIsInternal(false);
     } catch {
       // Failure is rendered from the mutation state below
@@ -152,11 +166,12 @@ export default function TicketComments({ ticketId }) {
         </label>
         <textarea
           id="ticket-comment-message"
+          ref={messageInputRef}
           className={`${styles.textarea} ${fieldError ? styles.textareaError : ''}`}
           rows={4}
           value={message}
           onChange={(e) => {
-            setMessage(e.target.value);
+            onMessageChange?.(e.target.value);
             if (fieldError) setFieldError('');
           }}
           placeholder={

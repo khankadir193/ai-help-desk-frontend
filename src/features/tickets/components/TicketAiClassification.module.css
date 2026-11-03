@@ -1,0 +1,237 @@
+/* AI Ticket Classification card — follows the TicketHistory/TicketComments
+   card conventions (same tokens and radii). */
+
+.card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-card);
+  padding: 24px;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.title {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.titleIcon {
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.pendingBadge {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-amber-text);
+  background-color: var(--color-amber-tint);
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.hint {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--text-muted);
+}
+
+.errorBanner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 16px;
+  background-color: var(--color-danger-tint);
+  border: 1px solid #FECACA;
+  border-radius: var(--radius-card);
+  color: var(--color-danger);
+  font-size: 13.5px;
+}
+
+.errorLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.errorLeft span {
+  min-width: 0;
+}
+
+.analyzing {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.suggestion {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  background-color: var(--bg-page);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+}
+
+.suggestionHead {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.suggestedLabel {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.suggestedName {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.suggestionChips {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.confidenceChip,
+.matchChip {
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+}
+
+.confidenceChip {
+  color: var(--color-primary);
+  background-color: var(--color-primary-tint);
+}
+
+.matchChip {
+  color: var(--color-slate-dark);
+  background-color: var(--bg-hover);
+}
+
+.reason {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--text-secondary);
+  white-space: pre-line;
+}
+
+.meta {
+  margin: 0;
+  font-size: 11.5px;
+  color: var(--text-subtle);
+}
+
+.advisory {
+  margin: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.advisory svg {
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* AI Reply Draft (only used by AiReplyDraft.jsx) */
+
+.draftEmpty {
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--color-amber-text);
+}
+
+.draftTextarea {
+  width: 100%;
+  min-height: 130px;
+  resize: vertical;
+  padding: 10px 12px;
+  font-family: var(--font-family);
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--text-primary);
+  background-color: var(--bg-page);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-input);
+  outline: none;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.draftTextarea:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-tint);
+}
+
+.draftActions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* AI Conversation Summary (only used by AiConversationSummary.jsx) */
+
+.summaryBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.summaryText {
+  margin: 0;
+  font-size: 13.5px;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--text-primary);
+}
+
+.summaryList {
+  margin: 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  list-style: disc;
+}

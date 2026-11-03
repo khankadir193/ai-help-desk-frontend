@@ -14,6 +14,15 @@ import { API_ENDPOINTS } from '../../../constants/apiEndpoints';
  *  - PATCH  /:id/status  (AGENT assigned | ADMIN) { status }
  *  - PATCH  /:id/assignment (ADMIN) { assigned_agent_id } | { assigned_agent_id: null }
  *  - GET    /:id/history  (AGENT assigned | ADMIN) audit trail, newest first
+ *  - POST   /:id/ai/classify (AGENT assigned | ADMIN) AI category suggestion,
+ *           no request body; stored backend-side with status PENDING; the
+ *           result is advisory only and never modifies the ticket
+ *  - POST   /:id/ai/priority (AGENT assigned | ADMIN) AI priority suggestion,
+ *           same contract as classify; ticket priority never auto-updated
+ *  - POST   /:id/ai/reply-draft (AGENT assigned | ADMIN) AI reply draft,
+ *           generated ONLY; never posted automatically
+ *  - POST   /:id/ai/summary (AGENT assigned | ADMIN) AI conversation summary,
+ *           generated ONLY; informational for staff, never modifies anything
  */
 export const TICKET_STATUSES = ['OPEN', 'IN_PROGRESS', 'RESOLVED', 'CLOSED'];
 export const TICKET_PRIORITIES = ['LOW', 'MEDIUM', 'HIGH', 'URGENT'];
@@ -180,6 +189,138 @@ export const ticketService = {
 
     const response = await apiClient.post(API_ENDPOINTS.TICKETS.COMMENTS(id), payload);
     return response?.data?.comment ?? response?.comment ?? response;
+  },
+
+  /**
+   * Request an AI category suggestion for a ticket.
+   *
+   * Backend contract (ai.routes.js / ai.controller.js — the source of truth):
+   *   POST /api/v1/tickets/:id/ai/classify
+   *   - No request body: ticket content, active categories and the requesting
+   *     user are all resolved server-side.
+   *   - Roles: AGENT (must be the assigned agent) or ADMIN; enforced by the
+   *     backend, ownership is re-scoped in the AI service.
+   *   - 200 { status: "success", data: { suggestion } } where suggestion is
+   *     stored with status PENDING and result:
+   *       { suggestedCategory, suggestedCategoryId, confidence (0-1), reason }
+   *   - Errors are { status: "error", message } (403/404/429/502/503/504…).
+   *   - Advisory only: the suggestion is stored in ai_suggestions as PENDING
+   *     and the ticket is never modified automatically. There is no GET
+   *     endpoint for suggestions (review endpoints are not implemented yet).
+   *
+   * A dedicated 30s timeout is used for this call because the backend's own
+   * AI provider timeout defaults to 15s (GROQ_TIMEOUT_MS); the shared 15s
+   * Axios timeout could otherwise abort the request just as the backend
+   * finishes storing the pending suggestion.
+   *
+   * @param {string|number} id
+   * @returns {Promise<Object>} suggestion object (suggestion_type CLASSIFICATION)
+   */
+  classifyTicket: async (id) => {
+    const response = await apiClient.post(
+      API_ENDPOINTS.AI.CLASSIFY(id),
+      undefined,
+      { timeout: 30000 },
+    );
+    return response?.data?.suggestion ?? response?.suggestion ?? null;
+  },
+
+  /**
+   * Request an AI priority suggestion for a ticket.
+   *
+   * Backend contract (ai.routes.js / ai.controller.js — the source of truth):
+   *   POST /api/v1/tickets/:id/ai/priority
+   *   - No request body: ticket content and the requesting user are resolved
+   *     server-side (same middleware chain as classification: AI rate limit,
+   *     authorize AGENT/ADMIN, validate ticket id).
+   *   - 422 if the ticket title or description is blank on the server.
+   *   - 200 { status: "success", data: { suggestion } } where suggestion is
+   *     stored with status PENDING and result:
+   *       { suggestedPriority ('LOW'|'MEDIUM'|'HIGH'|'URGENT', normalized
+   *        uppercase), currentPriority, confidence (0-1), reason }
+   *   - Errors are { status: "error", message } (403/404/422/429/502/503/504…).
+   *   - Advisory only: the ticket's actual priority is never modified
+   *     automatically; there is no GET endpoint for suggestions.
+   *
+   * Same dedicated 30s timeout as classifyTicket (backend AI provider
+   * timeout defaults to 15s).
+   *
+   * @param {string|number} id
+   * @returns {Promise<Object>} suggestion object (suggestion_type PRIORITY)
+   */
+  suggestTicketPriority: async (id) => {
+    const response = await apiClient.post(
+      API_ENDPOINTS.AI.PRIORITY(id),
+      undefined,
+      { timeout: 30000 },
+    );
+    return response?.data?.suggestion ?? response?.suggestion ?? null;
+  },
+
+  /**
+   * Generate an AI customer-facing reply draft for a ticket.
+   *
+   * Backend contract (ai.routes.js / ai.controller.js — the source of truth):
+   *   POST /api/v1/tickets/:id/ai/reply-draft
+   *   - No request body: ticket content, the customer-visible comment thread
+   *     (internal notes never leave the server) and the requesting user are
+   *     resolved server-side; same middleware chain as the other AI actions.
+   *   - 422 if the ticket title or description is blank on the server.
+   *   - 200 { status: "success", data: { suggestion } } where suggestion is
+   *     stored with status PENDING, suggestion_type REPLY_DRAFT and result:
+   *       { draft } — a trimmed, non-empty plain-text reply (≤4000 chars).
+   *   - Errors are { status: "error", message } (403/404/422/429/502/503/504…).
+   *   - Generated ONLY: the draft is never posted, sent, or converted into a
+   *     comment automatically, and nothing on the ticket is ever changed.
+   *     Posting is an explicit agent action through the comment composer.
+   *
+   * Same dedicated 30s timeout as the other AI calls (backend AI provider
+   * timeout defaults to 15s).
+   *
+   * @param {string|number} id
+   * @returns {Promise<Object>} suggestion object (suggestion_type REPLY_DRAFT)
+   */
+  generateReplyDraft: async (id) => {
+    const response = await apiClient.post(
+      API_ENDPOINTS.AI.REPLY_DRAFT(id),
+      undefined,
+      { timeout: 30000 },
+    );
+    return response?.data?.suggestion ?? response?.suggestion ?? null;
+  },
+
+  /**
+   * Generate an internal AI conversation summary for a ticket.
+   *
+   * Backend contract (ai.routes.js / ai.controller.js — the source of truth):
+   *   POST /api/v1/tickets/:id/ai/summary
+   *   - No request body: ticket content, the customer-visible comment thread
+   *     (internal notes never leave the server) and the requesting user are
+   *     resolved server-side; same middleware chain as the other AI actions.
+   *   - 422 if the ticket title or description is blank on the server.
+   *   - 200 { status: "success", data: { suggestion } } where suggestion is
+   *     stored with status PENDING, suggestion_type SUMMARY and result:
+   *       { mainIssue, details: [], troubleshootingDone: [],
+   *         currentStatus, nextSteps: [], ticketStatus }
+   *     (ticketStatus is the ticket's actual status at request time — a
+   *     server-side fact, not AI output.)
+   *   - Errors are { status: "error", message } (403/404/422/429/502/503/504…).
+   *   - Generated ONLY: the summary never modifies the ticket (status,
+   *     priority, category, assignment) and creates no comment.
+   *
+   * Same dedicated 30s timeout as the other AI calls (backend AI provider
+   * timeout defaults to 15s).
+   *
+   * @param {string|number} id
+   * @returns {Promise<Object>} suggestion object (suggestion_type SUMMARY)
+   */
+  generateSummary: async (id) => {
+    const response = await apiClient.post(
+      API_ENDPOINTS.AI.SUMMARY(id),
+      undefined,
+      { timeout: 30000 },
+    );
+    return response?.data?.suggestion ?? response?.suggestion ?? null;
   },
 };
 

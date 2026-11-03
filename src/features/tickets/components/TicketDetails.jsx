@@ -10,6 +10,10 @@ import Button from '../../../components/ui/Button/Button';
 import Icon from '../../../components/Icon/Icon';
 import Spinner from '../../../components/feedback/Spinner/Spinner';
 import TicketAssignDialog from './TicketAssignDialog';
+import AiConversationSummary from './AiConversationSummary';
+import AiPrioritySuggestion from './AiPrioritySuggestion';
+import AiReplyDraft from './AiReplyDraft';
+import TicketAiClassification from './TicketAiClassification';
 import TicketComments from './TicketComments';
 import TicketHistory from './TicketHistory';
 import { getErrorMessage } from '../../../utils/errorHandler';
@@ -66,6 +70,9 @@ export default function TicketDetails({ ticketId }) {
   const [statusError, setStatusError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [isAssignDialogOpen, setIsAssignDialogOpen] = useState(false);
+  // Controlled composer text owned here so the AI reply draft card can fill
+  // it on explicit agent action (see handleUseDraft / TicketComments).
+  const [composerMessage, setComposerMessage] = useState('');
 
   // Transient success toast (status & assignment updates)
   const showSuccess = (message) => {
@@ -73,6 +80,12 @@ export default function TicketDetails({ ticketId }) {
     setTimeout(() => {
       setSuccessMessage('');
     }, 4500);
+  };
+
+  /** Fill the existing comment composer with the reviewed AI reply draft. */
+  const handleUseDraft = (text) => {
+    setComposerMessage(text);
+    showSuccess('Draft added to the reply composer below.');
   };
 
   if (isLoading) {
@@ -310,11 +323,39 @@ export default function TicketDetails({ ticketId }) {
           )}
         </div>
 
+        {/* AI Category Suggestion (AGENT assigned / ADMIN only; the backend
+            rejects CUSTOMERs and unassigned agents) */}
+        {isStaff && (
+          <TicketAiClassification ticket={ticket} ticketId={ticket.id} />
+        )}
+
+        {/* AI Priority Suggestion (AGENT assigned / ADMIN only; the backend
+            rejects CUSTOMERs and unassigned agents) */}
+        {isStaff && (
+          <AiPrioritySuggestion ticket={ticket} ticketId={ticket.id} />
+        )}
+
+        {/* AI Reply Draft (AGENT assigned / ADMIN only; the backend rejects
+            CUSTOMERs and unassigned agents). Generated ONLY — the agent
+            reviews/edits and explicitly hands it to the composer. */}
+        {isStaff && (
+          <AiReplyDraft ticketId={ticket.id} onUseDraft={handleUseDraft} />
+        )}
+
+        {/* AI Conversation Summary (AGENT assigned / ADMIN only; the backend
+            rejects CUSTOMERs and unassigned agents). Informational only —
+            never modifies the ticket or creates comments. */}
+        {isStaff && <AiConversationSummary ticketId={ticket.id} />}
+
         {/* Audit History (AGENT assigned / ADMIN only; backend rejects others) */}
         {isStaff && <TicketHistory ticketId={ticket.id} />}
 
         {/* Comments & Internal Notes */}
-        <TicketComments ticketId={ticket.id} />
+        <TicketComments
+          ticketId={ticket.id}
+          message={composerMessage}
+          onMessageChange={setComposerMessage}
+        />
       </div>
 
       {isAssignDialogOpen && (

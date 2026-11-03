@@ -18,6 +18,16 @@ export const API_ENDPOINTS = {
     COMMENTS: (id) => `/tickets/${id}/comments`,
     HISTORY: (id) => `/tickets/${id}/history`,
   },
+  AI: {
+    // Mounted under /tickets on the backend: POST /api/v1/tickets/:id/ai/classify
+    CLASSIFY: (id) => `/tickets/${id}/ai/classify`,
+    // Mounted under /tickets on the backend: POST /api/v1/tickets/:id/ai/priority
+    PRIORITY: (id) => `/tickets/${id}/ai/priority`,
+    // Mounted under /tickets on the backend: POST /api/v1/tickets/:id/ai/reply-draft
+    REPLY_DRAFT: (id) => `/tickets/${id}/ai/reply-draft`,
+    // Mounted under /tickets on the backend: POST /api/v1/tickets/:id/ai/summary
+    SUMMARY: (id) => `/tickets/${id}/ai/summary`,
+  },
   DASHBOARD: {
     BASE: '/dashboard',
   },
