@@ -278,6 +278,33 @@ export default function Icon({
         </svg>
       );
 
+    /* Used by the Knowledge Base feature (src/features/knowledgeBase).
+       Purely additive cases — no other module behavior is affected. */
+    case 'clock':
+      return (
+        <svg {...iconProps}>
+          <circle cx="12" cy="12" r="10" />
+          <polyline points="12 6 12 12 16 14" />
+        </svg>
+      );
+
+    case 'arrow-right':
+      return (
+        <svg {...iconProps}>
+          <line x1="5" x2="19" y1="12" y2="12" />
+          <polyline points="12 5 19 12 12 19" />
+        </svg>
+      );
+
+    case 'lightbulb':
+      return (
+        <svg {...iconProps}>
+          <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5" />
+          <path d="M9 18h6" />
+          <path d="M10 22h4" />
+        </svg>
+      );
+
     case 'file-text':
       return (
         <svg {...iconProps}>

@@ -12,7 +12,6 @@ export const navigationSections = [
         id: 'tickets',
         label: 'Tickets',
         icon: 'ticket',
-        badge: '24',
         path: '/tickets',
       },
       {
