@@ -21,18 +21,6 @@
   color: var(--text-primary);
 }
 
-.team-card__full-report-btn {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--color-primary);
-  transition: color var(--transition-fast);
-}
-
-.team-card__full-report-btn:hover {
-  color: var(--color-primary-hover);
-  text-decoration: underline;
-}
-
 .team-card__table-wrapper {
   width: 100%;
   overflow-x: auto;

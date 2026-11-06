@@ -1,20 +1,28 @@
-import Avatar from '../Avatar/Avatar';
-import StatusPill from '../StatusPill/StatusPill';
-import { recentActivityData } from '../../data/dashboardData';
+import { useNavigate } from 'react-router-dom';
+import Avatar from '../../../../components/Avatar/Avatar';
+import StatusPill from '../../../../components/StatusPill/StatusPill';
 import './ActivityList.css';
 
 export default function ActivityList({
-  data = recentActivityData,
+  data = [],
   title = 'Recent ticket activity',
   emptyText,
 }) {
+  const navigate = useNavigate();
+
   return (
     <div className="activity-card">
       <div className="activity-card__header">
         <h3 className="activity-card__title">{title}</h3>
-        <button type="button" className="activity-card__view-all-btn">
-          View all
-        </button>
+        {data.length > 0 && (
+          <button
+            type="button"
+            className="activity-card__view-all-btn"
+            onClick={() => navigate('/tickets')}
+          >
+            View all
+          </button>
+        )}
       </div>
 
       {(!data || data.length === 0) ? (

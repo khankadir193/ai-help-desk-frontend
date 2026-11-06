@@ -2,7 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import PublicRoute from './components/PublicRoute/PublicRoute';
 import AppLayout from './components/AppLayout/AppLayout';
-import DashboardPage from './pages/DashboardPage';
+import DashboardPage from './features/dashboard/pages/DashboardPage';
 import CategoriesPage from './features/categories/pages/CategoriesPage';
 import TicketsPage from './features/tickets/pages/TicketsPage';
 import TicketDetailPage from './features/tickets/pages/TicketDetailPage';

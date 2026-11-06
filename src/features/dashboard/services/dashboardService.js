@@ -34,7 +34,11 @@ export const dashboardService = {
     if (limit) query.limit = String(limit);
 
     const response = await apiClient.get(API_ENDPOINTS.DASHBOARD.BASE, { params: query });
-    return response?.data?.dashboard ?? response?.dashboard ?? response;
+    // The shared axios client unwraps the transport response to the server
+    // body ({ status, data: { dashboard } }); take dashboard from either the
+    // body or the raw transport response. A malformed envelope resolves to
+    // null so the page renders its error state instead of zero-filled data.
+    return response?.data?.dashboard ?? response?.dashboard ?? null;
   },
 };
 

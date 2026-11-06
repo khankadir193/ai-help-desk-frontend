@@ -1,9 +1,8 @@
 import { useState } from 'react';
-import { priorityData } from '../../data/dashboardData';
 import './PriorityDonut.css';
 
 export default function PriorityDonut({
-  data = priorityData,
+  data = [],
   centerLabel = 'open',
   emptyText,
 }) {
