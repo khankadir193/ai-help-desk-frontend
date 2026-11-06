@@ -43,13 +43,16 @@ export default function AppLayout() {
   };
 
   // Auto-collapse sidebar on tablet screens (768px - 1023px)
+  // and reset stale mobile drawer state on desktop/tablet
   useEffect(() => {
     const handleResize = () => {
       const width = window.innerWidth;
       if (width >= 768 && width <= 1023) {
         setCollapsed(true);
+        setIsMobileOpen(false);
       } else if (width >= 1024) {
         setCollapsed(persistedCollapsed);
+        setIsMobileOpen(false);
       }
     };
 
@@ -57,6 +60,24 @@ export default function AppLayout() {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, [persistedCollapsed]);
+
+  // Mobile drawer: Escape to close + lock body scroll while open
+  useEffect(() => {
+    if (!isMobileOpen) return;
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setIsMobileOpen(false);
+      }
+    };
+
+    document.body.style.overflow = 'hidden';
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.body.style.overflow = '';
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isMobileOpen]);
 
   // Mark all notifications as read
   const handleMarkAllAsRead = () => {
@@ -73,9 +94,9 @@ export default function AppLayout() {
 
   return (
     <div className="app-layout">
-      {/* Sidebar Navigation */}
+      {/* Sidebar Navigation (always expanded inside the mobile drawer) */}
       <Sidebar
-        collapsed={collapsed}
+        collapsed={collapsed && !isMobileOpen}
         onToggleCollapse={handleToggleCollapse}
         isMobileOpen={isMobileOpen}
         onCloseMobile={() => setIsMobileOpen(false)}

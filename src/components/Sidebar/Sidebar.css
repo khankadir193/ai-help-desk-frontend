@@ -1,3 +1,10 @@
+/* ==========================================================================
+   Sidebar — matches reference design
+   Changes: hidden scrollbar, no underlines, larger logo tile, refined
+   spacing, badge pill styling, active bg-only highlight (no accent bar),
+   icon container alignment, full responsiveness preserved.
+   ========================================================================== */
+
 .sidebar {
   position: sticky;
   top: 0;
@@ -9,8 +16,13 @@
   transition: var(--transition-sidebar);
   z-index: 30;
   flex-shrink: 0;
-  overflow-x: hidden;
-  overflow-y: auto;
+  overflow: hidden;
+  /* Scrollbar is intentionally hidden — nav fits within 100vh */
+  scrollbar-width: none;
+}
+
+.sidebar::-webkit-scrollbar {
+  display: none;
 }
 
 .sidebar--expanded {
@@ -21,10 +33,13 @@
   width: var(--sidebar-width-collapsed);
 }
 
-/* Header */
+/* ==========================================================================
+   Header / Logo
+   ========================================================================== */
+
 .sidebar__header {
   height: var(--topbar-height);
-  padding: 0 16px;
+  padding: 0 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -44,9 +59,10 @@
   gap: 12px;
 }
 
+/* Slightly larger tile matching the reference image */
 .sidebar__logo-tile {
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   border-radius: var(--radius-lg);
   background-color: var(--color-primary);
   color: var(--text-inverse);
@@ -58,10 +74,10 @@
 }
 
 .sidebar__brand-name {
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 700;
   color: var(--text-primary);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
   white-space: nowrap;
 }
 
@@ -73,6 +89,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
   transition: background-color var(--transition-fast), color var(--transition-fast);
 }
 
@@ -85,7 +102,7 @@
   display: none;
 }
 
-/* On hover of collapsed header, show toggle button */
+/* Reveal toggle on hover of collapsed sidebar */
 .sidebar--collapsed:hover .sidebar__toggle-btn {
   display: flex;
   position: absolute;
@@ -94,13 +111,25 @@
   background-color: var(--bg-hover);
 }
 
-/* Navigation */
+/* ==========================================================================
+   Navigation
+   ========================================================================== */
+
 .sidebar__nav {
   flex: 1;
-  padding: 12px 12px;
+  padding: 16px 12px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
+  min-height: 0;
+  /* Allow scrolling only when viewport is too small to show all items */
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+}
+
+.sidebar__nav::-webkit-scrollbar {
+  display: none;
 }
 
 .sidebar--collapsed .sidebar__nav {
@@ -111,16 +140,16 @@
 .sidebar__section {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
 }
 
 .sidebar__section-title {
   font-size: 11px;
   font-weight: 600;
   color: var(--text-subtle);
-  letter-spacing: 0.06em;
+  letter-spacing: 0.07em;
   text-transform: uppercase;
-  padding: 8px 12px 4px 12px;
+  padding: 4px 12px 8px 12px;
   user-select: none;
 }
 
@@ -142,26 +171,43 @@
   position: relative;
 }
 
+/* ==========================================================================
+   Nav Links — no underlines in any state
+   ========================================================================== */
+
 .sidebar__link {
   width: 100%;
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 9px 12px;
+  padding: 10px 12px;
   border-radius: var(--radius-button);
   color: var(--text-secondary);
-  font-size: 13.5px;
+  font-size: 14px;
   font-weight: 500;
-  transition: all var(--transition-fast);
+  transition: background-color var(--transition-fast), color var(--transition-fast);
   text-align: left;
   user-select: none;
   position: relative;
+  /* Explicitly remove underline in every state */
+  text-decoration: none;
+}
+
+.sidebar__link:hover,
+.sidebar__link:focus,
+.sidebar__link:active,
+.sidebar__link:visited {
+  text-decoration: none;
+}
+
+/* No left accent bar — reference uses background highlight only */
+.sidebar__link::after {
+  display: none;
 }
 
 .sidebar--collapsed .sidebar__link {
   padding: 10px;
   justify-content: center;
-  border-radius: var(--radius-button);
 }
 
 .sidebar__link:hover {
@@ -169,40 +215,72 @@
   color: var(--text-primary);
 }
 
+.sidebar__link:hover .sidebar__link-icon {
+  color: var(--text-secondary);
+}
+
+/* Active state — subtle indigo tint bg + indigo text/icon */
 .sidebar__link--active {
   background-color: var(--color-primary-tint) !important;
   color: var(--color-primary) !important;
   font-weight: 600;
+  text-decoration: none !important;
 }
 
 .sidebar__link--active .sidebar__link-icon {
   color: var(--color-primary);
 }
 
+/* ==========================================================================
+   Icon container — fixed size keeps all icons pixel-aligned
+   ========================================================================== */
+
 .sidebar__link-icon {
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 20px;
+  height: 20px;
   color: var(--text-muted);
   flex-shrink: 0;
+  transition: color var(--transition-fast);
 }
 
 .sidebar__link-label {
   white-space: nowrap;
   flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
+
+/* ==========================================================================
+   Badge — pill style matching reference (grey bg, border, subtle)
+   ========================================================================== */
 
 .sidebar__badge {
-  font-size: 11px;
+  font-size: 11.5px;
   font-weight: 500;
+  line-height: 1;
   color: var(--text-muted);
-  background-color: var(--bg-hover);
+  background-color: var(--bg-card);
   border: 1px solid var(--border-color);
-  padding: 1px 7px;
+  padding: 2px 7px;
   border-radius: var(--radius-pill);
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
 }
 
-/* Tooltip for collapsed mode */
+/* Keep badge subtle even on the active item — matches reference */
+.sidebar__link--active .sidebar__badge {
+  background-color: var(--bg-card);
+  border-color: var(--border-color);
+  color: var(--text-muted);
+}
+
+/* ==========================================================================
+   Tooltip (collapsed mode)
+   ========================================================================== */
+
 .sidebar__tooltip {
   position: absolute;
   left: calc(100% + 12px);
@@ -233,12 +311,16 @@
   border-right-color: var(--text-primary);
 }
 
-.sidebar--collapsed .sidebar__item:hover .sidebar__tooltip {
+.sidebar--collapsed .sidebar__item:hover .sidebar__tooltip,
+.sidebar--collapsed .sidebar__item:focus-within .sidebar__tooltip {
   opacity: 1;
   visibility: visible;
 }
 
-/* Footer / User Profile */
+/* ==========================================================================
+   Footer / User Profile
+   ========================================================================== */
+
 .sidebar__footer {
   padding: 16px 12px;
   border-top: 1px solid var(--border-color);
@@ -263,6 +345,11 @@
   border-radius: var(--radius-lg);
   border: 1px solid var(--border-color);
   background-color: var(--bg-card);
+  transition: border-color var(--transition-fast);
+}
+
+.sidebar__user-card:hover {
+  border-color: var(--color-slate-light);
 }
 
 .sidebar__user-info {
@@ -296,13 +383,29 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
 }
 
 .sidebar__user-menu-btn:hover {
+  background-color: var(--bg-hover);
   color: var(--text-primary);
 }
 
-/* Kebab Popup Menu */
+/* ==========================================================================
+   Kebab Popup Menu
+   ========================================================================== */
+
+@keyframes sidebarFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .sidebar__kebab-menu {
   position: absolute;
   bottom: calc(100% + 8px);
@@ -317,7 +420,7 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-  animation: notifFadeIn 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  animation: sidebarFadeIn 150ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .sidebar__kebab-header {
@@ -353,7 +456,10 @@
   background-color: var(--color-danger-tint);
 }
 
-/* Mobile Off-Canvas Overlay & Drawer */
+/* ==========================================================================
+   Mobile Off-Canvas Overlay & Drawer
+   ========================================================================== */
+
 .sidebar-overlay {
   display: none;
 }
@@ -378,6 +484,13 @@
     transition: transform 250ms ease;
     z-index: 100;
     box-shadow: var(--shadow-dropdown);
+    /* Allow internal scrolling on very short phone screens */
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+
+  .sidebar::-webkit-scrollbar {
+    display: none;
   }
 
   .sidebar--mobile-open {
@@ -385,7 +498,15 @@
   }
 
   .sidebar__toggle-btn {
-    display: flex !important;
+    display: none !important;
+  }
+
+  .sidebar--collapsed:hover .sidebar__toggle-btn {
+    display: none !important;
+  }
+
+  /* Give the off-canvas drawer a defined header edge */
+  .sidebar__header {
+    border-bottom-color: var(--border-color);
   }
 }
-

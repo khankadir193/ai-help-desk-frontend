@@ -52,6 +52,12 @@ button {
   font-variant-numeric: tabular-nums;
 }
 
+/* Navigation links — strip browser/router default underlines everywhere */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
 /* Rotating utility (refresh icons while fetching) */
 .spin {
   animation: spin 800ms linear infinite;

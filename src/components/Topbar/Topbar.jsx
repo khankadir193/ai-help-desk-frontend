@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import Icon from '../Icon/Icon';
 import Avatar from '../Avatar/Avatar';
 import NotificationsPanel from '../NotificationsPanel/NotificationsPanel';
+import CreateTicketModal from '../../features/tickets/components/CreateTicketModal';
 import { useAuth } from '../../features/auth/hooks/useAuth';
 import { useClickOutside } from '../../hooks/useClickOutside';
 import './Topbar.css';
@@ -20,8 +21,14 @@ export default function Topbar({
   const searchInputRef = useRef(null);
   const userMenuRef = useRef(null);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [isCreateTicketOpen, setIsCreateTicketOpen] = useState(false);
 
   const unreadCount = notifications.filter((n) => n.unread).length;
+
+  // ⌘K on Apple devices, Ctrl+K on Windows/Linux
+  const searchShortcutLabel = /Mac|iPhone|iPad/i.test(navigator.userAgent)
+    ? '⌘K'
+    : 'Ctrl K';
 
   useClickOutside(userMenuRef, () => setIsUserMenuOpen(false));
 
@@ -84,14 +91,20 @@ export default function Topbar({
             placeholder="Search tickets, customers, articles..."
             aria-label="Search tickets, customers, articles"
           />
-          <kbd className="topbar__search-kbd">⌘K</kbd>
+          <kbd className="topbar__search-kbd">{searchShortcutLabel}</kbd>
         </div>
       </div>
 
       {/* Right Controls */}
       <div className="topbar__right">
-        <button type="button" className="topbar__btn-new-ticket">
-          New ticket
+        <button
+          type="button"
+          className="topbar__btn-new-ticket"
+          onClick={() => setIsCreateTicketOpen(true)}
+          aria-label="Create new ticket"
+        >
+          <Icon name="plus" size={16} strokeWidth={2.25} />
+          <span className="topbar__btn-new-ticket-label">New ticket</span>
         </button>
 
         {/* Notifications Trigger & Dropdown */}
@@ -161,6 +174,14 @@ export default function Topbar({
           )}
         </div>
       </div>
+
+      {/* New Ticket Dialog */}
+      {isCreateTicketOpen && (
+        <CreateTicketModal
+          isOpen={isCreateTicketOpen}
+          onClose={() => setIsCreateTicketOpen(false)}
+        />
+      )}
     </header>
   );
 }
