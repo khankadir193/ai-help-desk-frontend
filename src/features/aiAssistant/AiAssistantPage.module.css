@@ -1,0 +1,1227 @@
+/* ==========================================================================
+   AI Assistant page styles.
+
+   Single CSS module shared by the page, the feature cards, the ticket
+   picker and the results panel (features/aiAssistant). Built entirely on
+   the app design tokens from styles/variables.css so everything stays
+   consistent with Dashboard / Tickets / Categories styling.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Page frame
+   The page root reuses the global `dashboard-content` wrapper (padding and
+   column gap come from App.css).
+   -------------------------------------------------------------------------- */
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  grid-template-areas:
+    'features picker'
+    'results  picker';
+  align-items: start;
+  gap: 20px;
+}
+
+.areaFeatures {
+  grid-area: features;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.areaResults {
+  grid-area: results;
+  min-width: 0;
+}
+
+.areaPicker {
+  grid-area: picker;
+  min-width: 0;
+}
+
+.areaHead {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.sectionTitle {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+.sectionSub {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   A. Hero header
+   -------------------------------------------------------------------------- */
+
+.hero {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 20px 24px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+}
+
+/* Soft on-brand AI aura — kept intentionally faint. */
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -110px;
+  right: -70px;
+  width: 320px;
+  height: 240px;
+  background: radial-gradient(
+    closest-side,
+    rgba(79, 70, 229, 0.08),
+    transparent 72%
+  );
+  pointer-events: none;
+}
+
+.heroMain {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.heroIconBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  background: var(--gradient-primary);
+  color: var(--color-text-inverse);
+  box-shadow: var(--shadow-button-primary);
+  flex-shrink: 0;
+}
+
+.heroText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.heroTitle {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  color: var(--text-primary);
+}
+
+.heroSubtitle {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+
+.heroStatusWrap {
+  display: flex;
+  align-items: center;
+}
+
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-card);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.statusDot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-pill);
+  flex-shrink: 0;
+}
+
+/* Ready */
+.statusLive {
+  border-color: #A7F3D0;
+  background-color: var(--color-success-tint);
+  color: var(--color-success-text);
+}
+
+.dotLive {
+  background-color: var(--color-success);
+}
+
+/* Generating… */
+.statusBusy {
+  border-color: #FDE68A;
+  background-color: var(--color-amber-tint);
+  color: var(--color-amber-text);
+}
+
+.dotBusy {
+  background-color: var(--color-amber);
+  animation: aiStatusPulse 1.4s ease-in-out infinite;
+}
+
+/* Staff only */
+.statusLocked {
+  background-color: #F1F5F9;
+  color: var(--color-slate-dark);
+}
+
+.dotLocked {
+  background-color: var(--color-slate);
+}
+
+@keyframes aiStatusPulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.45;
+    transform: scale(0.8);
+  }
+}
+
+/* Customer notice (role-aware) */
+.customerNotice {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 16px;
+  background-color: var(--color-blue-tint);
+  border: 1px solid #BFDBFE;
+  border-radius: var(--radius-card);
+  color: var(--color-blue);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.customerNotice svg {
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* --------------------------------------------------------------------------
+   B. Feature cards
+   -------------------------------------------------------------------------- */
+
+.cardsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.featureCard {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+  min-height: 100%;
+  text-align: left;
+  padding: 20px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.featureCard:hover:not(:disabled) {
+  border-color: var(--color-primary);
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
+  transform: translateY(-2px);
+}
+
+.featureCard:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.featureCardActive,
+.featureCardActive:hover:not(:disabled) {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-tint);
+  transform: none;
+}
+
+.featureCard:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+  transform: none;
+  box-shadow: var(--shadow-card);
+}
+
+/* Locked for CUSTOMER accounts */
+.featureCardLocked {
+  background-color: #FBFCFE;
+  color: var(--text-muted);
+}
+
+.featureCardLocked .iconChip {
+  filter: grayscale(1);
+}
+
+.iconChip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.chip--indigo {
+  background-color: var(--color-primary-tint);
+  color: var(--color-primary);
+}
+
+.chip--amber {
+  background-color: var(--color-amber-tint);
+  color: var(--color-amber-text);
+}
+
+.chip--success {
+  background-color: var(--color-success-tint);
+  color: var(--color-success-text);
+}
+
+.chip--blue {
+  background-color: var(--color-blue-tint);
+  color: var(--color-blue);
+}
+
+.featureTitle {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+.featureDesc {
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--text-muted);
+}
+
+.featureFoot {
+  margin-top: auto;
+  padding-top: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+}
+
+.footLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.featureCard:disabled .footLabel {
+  color: var(--text-subtle);
+}
+
+.footCheck {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--color-success-text);
+  white-space: nowrap;
+}
+
+/* --------------------------------------------------------------------------
+   D. Results panel
+   -------------------------------------------------------------------------- */
+
+.resultsPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 20px 24px 24px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+}
+
+.resultHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.resultHeadMain {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.resultTitle {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.resultTitleIcon {
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.resultTicketRef {
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pendingBadge {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-amber-text);
+  background-color: var(--color-amber-tint);
+  padding: 3px 9px;
+  border-radius: var(--radius-pill);
+  white-space: nowrap;
+}
+
+/* Loading */
+.resultLoading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  flex-wrap: wrap;
+  padding: 14px 16px;
+  background-color: var(--bg-page);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+}
+
+.resultLoadingHint {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text-subtle);
+}
+
+/* Error (shared look with the ticket picker) */
+.errorBanner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 16px;
+  background-color: var(--color-danger-tint);
+  border: 1px solid #FECACA;
+  border-radius: var(--radius-lg);
+  color: var(--color-danger);
+  font-size: 13px;
+}
+
+.errorLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.errorLeft svg {
+  flex-shrink: 0;
+}
+
+.errorLeft span {
+  min-width: 0;
+}
+
+/* Empty / awaiting */
+.resultsEmpty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+  padding: 36px 20px;
+  border: 1px dashed var(--color-slate-light);
+  border-radius: var(--radius-lg);
+  background-color: var(--bg-page);
+}
+
+.resultsEmptyIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-primary-tint);
+  color: var(--color-primary);
+  margin-bottom: 4px;
+}
+
+.resultsEmptyTitle {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.resultsEmptyText {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--text-muted);
+  max-width: 340px;
+}
+
+.resultAwaiting {
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  background-color: var(--bg-page);
+}
+
+.resultEmptyNote {
+  margin: 0;
+  padding: 14px 16px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+/* Suggestion body */
+.suggestion {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  background-color: var(--bg-page);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+}
+
+.suggestionHead {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.suggestedLabel {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.suggestedName {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.chipsRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.confidenceChip,
+.matchChip {
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+}
+
+.confidenceChip {
+  color: var(--color-primary);
+  background-color: var(--color-primary-tint);
+}
+
+.matchChip {
+  color: var(--color-slate-dark);
+  background-color: var(--bg-hover);
+}
+
+.reason {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--text-secondary);
+  white-space: pre-line;
+}
+
+.resultMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 11.5px;
+  color: var(--text-subtle);
+}
+
+.resultFootnote {
+  margin: 0;
+  font-size: 11.5px;
+  color: var(--text-subtle);
+}
+
+/* Summary sections */
+.summaryBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.summaryText {
+  margin: 0;
+  font-size: 13.5px;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--text-primary);
+}
+
+.summaryList {
+  margin: 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  list-style: disc;
+}
+
+/* Reply draft editor */
+.draftHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.draftTextarea {
+  width: 100%;
+  min-height: 150px;
+  resize: vertical;
+  padding: 10px 12px;
+  font-family: var(--font-sans);
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--text-primary);
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-input);
+  outline: none;
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.draftTextarea:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-tint);
+}
+
+.draftHint {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.openTicketLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--color-primary);
+  text-decoration: none;
+  width: fit-content;
+}
+
+.openTicketLink:hover {
+  text-decoration: underline;
+}
+
+.advisory {
+  margin: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.advisory svg {
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* --------------------------------------------------------------------------
+   C. Ticket picker (aside)
+   -------------------------------------------------------------------------- */
+
+.pickerSection {
+  position: sticky;
+  top: calc(var(--topbar-height) + 20px);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 20px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+}
+
+.pickerHead {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.pickerHeadText {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.pickerControls {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pickerSearch {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.pickerSearchIcon {
+  position: absolute;
+  left: 11px;
+  color: var(--text-subtle);
+  pointer-events: none;
+}
+
+.pickerInput {
+  width: 100%;
+  height: 36px;
+  padding: 0 10px 0 33px;
+  font-size: 12.5px;
+  color: var(--text-primary);
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-input);
+  outline: none;
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.pickerInput::placeholder {
+  color: var(--text-subtle);
+}
+
+.pickerInput:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-tint);
+}
+
+.pickerStatusSelect {
+  height: 36px;
+  padding: 0 10px;
+  font-size: 12.5px;
+  color: var(--text-primary);
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-input);
+  cursor: pointer;
+  transition: border-color var(--transition-fast);
+}
+
+.pickerStatusSelect:focus {
+  border-color: var(--color-primary);
+}
+
+/* Ticket rows */
+.ticketRows {
+  list-style: none;
+  margin: 0;
+  padding: 2px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.ticketRows::-webkit-scrollbar {
+  width: 6px;
+}
+
+.ticketRows::-webkit-scrollbar-thumb {
+  background-color: var(--color-slate-light);
+  border-radius: var(--radius-pill);
+}
+
+.ticketRows::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+.ticketRow {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  width: 100%;
+  text-align: left;
+  padding: 12px 14px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  transition:
+    border-color var(--transition-fast),
+    background-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.ticketRow:hover {
+  border-color: var(--color-slate-light);
+  background-color: var(--bg-hover);
+}
+
+.ticketRowSelected,
+.ticketRowSelected:hover {
+  border-color: var(--color-primary);
+  background-color: var(--color-primary-tint);
+  box-shadow: inset 0 0 0 1px var(--color-primary);
+}
+
+.rowTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.rowId {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.rowMain {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.rowTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.35;
+}
+
+.rowDesc {
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--text-muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.rowBottom {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  row-gap: 4px;
+}
+
+.rowCategory {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.rowDate {
+  font-size: 11.5px;
+  color: var(--text-subtle);
+  white-space: nowrap;
+  margin-left: auto;
+}
+
+/* Skeletons */
+.pickerSkeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.skeletonRow {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 12px 14px;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+}
+
+.skeletonLine {
+  height: 10px;
+  border-radius: var(--radius-sm);
+  background-color: #F1F5F9;
+  animation: skeletonPulse 1.4s ease-in-out infinite;
+}
+
+.skeletonMain {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  width: 100%;
+}
+
+.skeletonMain .skeletonLine {
+  width: 78%;
+  height: 12px;
+}
+
+.skeletonMain .skeletonShort {
+  width: 46%;
+}
+
+.skeletonId {
+  width: 42px;
+}
+
+.skeletonPill {
+  width: 72px;
+  height: 16px;
+  border-radius: var(--radius-pill);
+}
+
+.skeletonMeta {
+  width: 132px;
+}
+
+@keyframes skeletonPulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+/* Empty state */
+.pickerEmpty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+  padding: 28px 16px;
+  border: 1px dashed var(--color-slate-light);
+  border-radius: var(--radius-lg);
+  background-color: var(--bg-page);
+}
+
+.pickerEmptyIcon {
+  color: var(--color-slate);
+  margin-bottom: 2px;
+}
+
+.pickerEmptyTitle {
+  margin: 0;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.pickerEmptyText {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-muted);
+  max-width: 280px;
+}
+
+/* Selected ticket snapshot */
+.selectedBox {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  background-color: var(--color-primary-tint);
+  border: 1px solid #D9DCFA;
+  border-radius: var(--radius-card);
+}
+
+.selectedKicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-primary);
+}
+
+.selectedCheck {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-primary);
+  color: var(--color-text-inverse);
+  flex-shrink: 0;
+}
+
+.selHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.selHeadMain {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.selId {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--color-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.selTitle {
+  margin: 0;
+  font-size: 14.5px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--text-primary);
+}
+
+.selPills {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.selLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-primary);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.selLink:hover {
+  text-decoration: underline;
+}
+
+.selDesc {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--color-slate-dark);
+}
+
+.selMetaGrid {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 12px;
+}
+
+.selMetaItem {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.selMetaLabel {
+  font-size: 10.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-slate-dark);
+}
+
+.selMetaValue {
+  margin: 0;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Pagination */
+.pickerPagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.pageInfoText {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.pageControls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+
+/* ≤1199px: single column — cards, then picker, then results */
+@media (max-width: 1199px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'features'
+      'picker'
+      'results';
+  }
+
+  .pickerSection {
+    position: static;
+  }
+}
+
+/* ≤767px (mobile) */
+@media (max-width: 767px) {
+  .hero {
+    padding: 16px;
+  }
+
+  .heroIconBadge {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+  }
+
+  .heroTitle {
+    font-size: 19px;
+  }
+
+  .cardsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .resultsPanel {
+    padding: 16px;
+  }
+
+  .featureCard {
+    padding: 16px;
+  }
+
+  .resultTicketRef {
+    white-space: normal;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .featureCard,
+  .ticketRow,
+  .draftTextarea {
+    transition: none;
+  }
+
+  .dotBusy,
+  .skeletonLine {
+    animation: none !important;
+  }
+}

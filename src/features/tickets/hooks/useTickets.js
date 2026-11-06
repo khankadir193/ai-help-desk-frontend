@@ -194,6 +194,10 @@ export function useClassifyTicket() {
 export function useAiClassification(id) {
   return useQuery({
     queryKey: AI_CLASSIFICATION_KEY(id),
+    // Cache-only reader: the backend has no GET endpoint for suggestions, so
+    // the query only surfaces what the classify mutation wrote. React Query
+    // still requires a queryFn (even enabled:false) to avoid a console error.
+    queryFn: () => null,
     enabled: false,
     staleTime: Infinity,
     refetchOnMount: false,
@@ -239,6 +243,7 @@ export function useSuggestTicketPriority() {
 export function useAiPrioritySuggestion(id) {
   return useQuery({
     queryKey: AI_PRIORITY_KEY(id),
+    queryFn: () => null, // cache-only reader (see useAiClassification)
     enabled: false,
     staleTime: Infinity,
     refetchOnMount: false,
@@ -285,6 +290,7 @@ export function useGenerateReplyDraft() {
 export function useAiReplyDraft(id) {
   return useQuery({
     queryKey: AI_REPLY_DRAFT_KEY(id),
+    queryFn: () => null, // cache-only reader (see useAiClassification)
     enabled: false,
     staleTime: Infinity,
     refetchOnMount: false,
@@ -332,6 +338,7 @@ export function useGenerateSummary() {
 export function useAiSummary(id) {
   return useQuery({
     queryKey: AI_SUMMARY_KEY(id),
+    queryFn: () => null, // cache-only reader (see useAiClassification)
     enabled: false,
     staleTime: Infinity,
     refetchOnMount: false,

@@ -6,6 +6,7 @@ import DashboardPage from './pages/DashboardPage';
 import CategoriesPage from './features/categories/pages/CategoriesPage';
 import TicketsPage from './features/tickets/pages/TicketsPage';
 import TicketDetailPage from './features/tickets/pages/TicketDetailPage';
+import AiAssistantPage from './features/aiAssistant/AiAssistantPage';
 import PlaceholderPage from './pages/PlaceholderPage';
 import AuthLayout from './layouts/AuthLayout/AuthLayout';
 import LoginPage from './features/auth/pages/LoginPage';
@@ -33,7 +34,7 @@ export default function App() {
           <Route path="/categories" element={<CategoriesPage />} />
           <Route path="/tickets" element={<TicketsPage />} />
           <Route path="/tickets/:id" element={<TicketDetailPage />} />
-          <Route path="/ai-assistant" element={<PlaceholderPage title="AI Assistant" />} />
+          <Route path="/ai-assistant" element={<AiAssistantPage />} />
           <Route path="/knowledge-base" element={<PlaceholderPage title="Knowledge Base" />} />
           <Route path="/reports" element={<PlaceholderPage title="Reports" />} />
           <Route path="/team" element={<PlaceholderPage title="Team" />} />
