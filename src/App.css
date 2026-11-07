@@ -17,7 +17,7 @@
   padding: 24px 32px 36px 32px;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 20px;
 }
 
 /* Greeting Row */
@@ -112,11 +112,12 @@
   gap: 20px;
 }
 
-/* 2fr 1fr Grid Rows */
+/* 2fr 1fr Grid Rows — align-items: start so cards don't stretch to equal height */
 .dashboard-grid-row {
   display: grid;
   grid-template-columns: 2fr 1fr;
   gap: 20px;
+  align-items: start;
 }
 
 /* ==========================================================================

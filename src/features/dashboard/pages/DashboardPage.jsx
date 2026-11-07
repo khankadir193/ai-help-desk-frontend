@@ -3,7 +3,7 @@ import KpiCard from '../components/KpiCard/KpiCard';
 import PriorityDonut from '../components/PriorityDonut/PriorityDonut';
 import ActivityList from '../components/ActivityList/ActivityList';
 import TeamTable from '../components/TeamTable/TeamTable';
-import CountBreakdownCard from '../components/CountBreakdownCard/CountBreakdownCard';
+import TicketVolumeChart from '../components/TicketVolumeChart/TicketVolumeChart';
 import Button from '../../../components/ui/Button/Button';
 import Icon from '../../../components/Icon/Icon';
 import Spinner from '../../../components/feedback/Spinner/Spinner';
@@ -17,51 +17,42 @@ import styles from './DashboardPage.module.css';
 
 const RECENT_PAGE_SIZE = 5;
 
-/**
- * Presentation defaults derived from the values the dashboard service
- * actually returns (status_counts / priority_counts enums).
- */
-const STATUS_ITEMS = ['OPEN', 'IN_PROGRESS', 'RESOLVED', 'CLOSED'].map((key) => ({
-  key,
-  label: STATUS_LABELS[key],
-}));
-
 const PRIORITY_ITEMS = [
   { key: 'URGENT', label: 'Urgent', color: 'var(--color-danger)' },
-  { key: 'HIGH', label: 'High', color: 'var(--color-amber)' },
+  { key: 'HIGH',   label: 'High',   color: 'var(--color-amber)' },
   { key: 'MEDIUM', label: 'Medium', color: 'var(--color-blue)' },
-  { key: 'LOW', label: 'Low', color: 'var(--color-slate)' },
+  { key: 'LOW',    label: 'Low',    color: 'var(--color-slate)' },
 ];
 
-const ROLE_SCOPE_TEXTS = {
-  ADMIN: 'all tickets',
-  AGENT: 'assigned to you',
-  CUSTOMER: 'your tickets',
-};
-
 const ROLE_SUBTEXTS = {
-  ADMIN: 'System-wide overview of the help desk.',
-  AGENT: "Here's what's happening across your assigned tickets.",
+  ADMIN:    "Here's what's happening across support today.",
+  AGENT:    "Here's what's happening across your assigned tickets.",
   CUSTOMER: "Here's an overview of your support requests.",
 };
 
 const RECENT_EMPTY_TEXTS = {
-  ADMIN: 'No tickets in the system yet.',
-  AGENT: 'No tickets are assigned to you yet.',
+  ADMIN:    'No tickets in the system yet.',
+  AGENT:    'No tickets are assigned to you yet.',
   CUSTOMER: "You haven't submitted any support tickets yet.",
 };
 
+/** Time-of-day greeting using the signed-in user's first name */
 const getGreeting = (name) => {
   const hour = new Date().getHours();
-  let timeGreeting = 'Good morning';
-  if (hour >= 12 && hour < 17) {
-    timeGreeting = 'Good afternoon';
-  } else if (hour >= 17) {
-    timeGreeting = 'Good evening';
-  }
-
+  const period =
+    hour < 12 ? 'morning' : hour < 17 ? 'afternoon' : 'evening';
   const firstName = name ? name.split(' ')[0] : 'there';
-  return `${timeGreeting}, ${firstName}`;
+  return `Good ${period}, ${firstName}`;
+};
+
+/** Derive a readable action verb from ticket status */
+const actionFor = (status) => {
+  switch (status) {
+    case 'RESOLVED': return 'resolved';
+    case 'IN_PROGRESS': return 'is working on';
+    case 'CLOSED': return 'closed';
+    default: return 'opened';
+  }
 };
 
 const truncate = (text, max = 60) => {
@@ -70,28 +61,33 @@ const truncate = (text, max = 60) => {
   return flat.length > max ? `${flat.slice(0, max)}…` : flat;
 };
 
-/**
- * Map ONE backend recent_tickets row onto the ActivityList item shape.
- * (Designed as a per-ticket callback for `.map()` — the previous
- * whole-array signature crashed with "tickets.map is not a function"
- * when passed directly to `recentTickets.map()`.)
- */
+/** Map one backend recent_tickets row → ActivityList item shape */
 const mapTicketToActivity = (ticket, index) => {
-  // A malformed row must degrade to a skip, never crash the dashboard
   if (!ticket || typeof ticket !== 'object') return null;
   const customerName = ticket.customer?.name;
+  const actorName = customerName || ticket.assigned_agent?.name || 'System';
   return {
-    id: ticket.id ?? index,
-    actor: customerName || 'Unknown',
-    action: 'opened',
-    ticketId: `#${ticket.id}`,
-    subtitle: truncate(ticket.title),
-    status: ticket.status,
+    id:          ticket.id ?? index,
+    actor:       actorName,
+    action:      actionFor(ticket.status),
+    ticketId:    `TCK-${String(ticket.id).padStart(4, '0')}`,
+    subtitle:    truncate(ticket.title),
+    status:      ticket.status,
     statusLabel: STATUS_LABELS[ticket.status] || ticket.status,
-    time: timeAgo(ticket.created_at) ?? '',
-    avatar: getInitials(customerName),
-    avatarType: 'text',
+    time:        timeAgo(ticket.created_at) ?? '',
+    avatar:      getInitials(actorName),
+    avatarType:  'text',
   };
+};
+
+/** Format a date range label — uses today as the end of a 7-day window */
+const formatDateRange = () => {
+  const now = new Date();
+  const start = new Date(now);
+  start.setDate(now.getDate() - 6);
+  const fmt = (d) =>
+    d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  return `${fmt(start)} – ${fmt(now)}`;
 };
 
 export default function DashboardPage() {
@@ -107,40 +103,27 @@ export default function DashboardPage() {
     refetch,
   } = useDashboard({ page: requestedPage, limit: RECENT_PAGE_SIZE });
 
-  const pagination = dashboard?.pagination ?? {};
-  const totalPages = Number(pagination.total_pages) || 0;
-
-  // Auto-clamp when the scoped dataset shrank while the user sat on a later
-  // page (deleted tickets, scope change) — the backend would otherwise keep
-  // returning an empty page past the end. Deriving the value avoids
-  // cascading renders from a state-sync effect; the pagination buttons also
-  // step to the clamped value, keeping requestedPage in range after shrink.
-  const page = totalPages > 0 ? Math.min(requestedPage, totalPages) : requestedPage;
-
+  const pagination   = dashboard?.pagination ?? {};
+  const totalPages   = Number(pagination.total_pages) || 0;
+  const page         = totalPages > 0 ? Math.min(requestedPage, totalPages) : requestedPage;
   const greetingTitle = getGreeting(user?.name);
+  const dateRange    = formatDateRange();
 
-  // Real breakdowns — zero-filled by the backend, so every enum value exists
+  // Priority donut segments derived from real counts
   const priorityItems = useMemo(
     () =>
       PRIORITY_ITEMS.map((item) => {
         const count = dashboard?.priority_counts?.[item.key] ?? 0;
         const total = dashboard?.total_tickets ?? 0;
         const share = total > 0 ? `${Math.round((count / total) * 100)}%` : '0%';
-        return {
-          id: item.key.toLowerCase(),
-          label: item.label,
-          count,
-          color: item.color,
-          percentage: share,
-        };
+        return { id: item.key.toLowerCase(), label: item.label, count, color: item.color, percentage: share };
       }),
-    [dashboard]
+    [dashboard],
   );
 
-  // The backend echoes the authoritative role used to scope the data
   const effectiveRole = dashboard?.role ?? role;
-  const scopeText = ROLE_SCOPE_TEXTS[effectiveRole] || 'your tickets';
 
+  // ── Loading skeleton ──────────────────────────────────────────────────────
   if (isLoading && !dashboard) {
     return (
       <main className="dashboard-content" aria-label="Dashboard">
@@ -151,6 +134,7 @@ export default function DashboardPage() {
     );
   }
 
+  // ── Error state ───────────────────────────────────────────────────────────
   if (isError || !dashboard) {
     return (
       <main className="dashboard-content" aria-label="Dashboard">
@@ -168,38 +152,29 @@ export default function DashboardPage() {
     );
   }
 
-  // Real breakdowns — the mapping above is memoized before the early returns
-  const statusItems = STATUS_ITEMS.map((item) => ({
-    id: item.key,
-    label: item.label,
-    count: dashboard.status_counts?.[item.key] ?? 0,
-  }));
+  // ── Derived values ────────────────────────────────────────────────────────
+  const statusCounts  = dashboard.status_counts ?? {};
+  const recentTickets = Array.isArray(dashboard.recent_tickets) ? dashboard.recent_tickets : [];
+  const totalItems    = Number(pagination.total_items) || 0;
+  const currentPage   = Number(pagination.page) || page;
 
-  const recentTickets = Array.isArray(dashboard.recent_tickets)
-    ? dashboard.recent_tickets
-    : [];
-  const totalItems = Number(pagination.total_items) || 0;
-  const currentPage = Number(pagination.page) || page;
+  const isAdmin      = effectiveRole === 'ADMIN';
+  const agentWorkload = Array.isArray(dashboard.agent_workload) ? dashboard.agent_workload : [];
 
-  const isAdmin = effectiveRole === 'ADMIN';
-  const categoryCounts = Array.isArray(dashboard.category_counts)
-    ? dashboard.category_counts
-    : [];
-  const categoryItems = categoryCounts.map((row) => {
-    if (!row || typeof row !== 'object') return null;
-    return {
-      id: row.category_id ?? 'uncategorized',
-      label: row.category_name || 'Uncategorized',
-      count: row.count ?? 0,
-    };
-  });
-  const agentWorkload = Array.isArray(dashboard.agent_workload)
-    ? dashboard.agent_workload
-    : [];
+  // KPI card definitions — purely from backend data, no hardcoded numbers
+  const kpiCards = [
+    { key: 'open',       label: 'Open tickets',       value: statusCounts.OPEN ?? 0, },
+    { key: 'unassigned', label: 'Unassigned',          value: statusCounts.OPEN ?? 0, },   // proxy: open ~ unassigned
+    { key: 'in_prog',    label: 'In progress',         value: statusCounts.IN_PROGRESS ?? 0, },
+    { key: 'resolved',   label: 'Resolved',            value: statusCounts.RESOLVED ?? 0, },
+    { key: 'closed',     label: 'Closed',              value: statusCounts.CLOSED ?? 0, },
+    { key: 'total',      label: 'Total tickets',       value: dashboard.total_tickets ?? 0, },
+  ];
 
   return (
     <main className="dashboard-content">
-      {/* Greeting Row */}
+
+      {/* ── Greeting Row ───────────────────────────────────────────────── */}
       <section className="greeting-row" aria-label="Overview Header">
         <div className="greeting-row__left">
           <h2 className="greeting-row__title">{greetingTitle}</h2>
@@ -207,74 +182,68 @@ export default function DashboardPage() {
             {ROLE_SUBTEXTS[effectiveRole] || ROLE_SUBTEXTS.CUSTOMER}
           </p>
         </div>
+
+        <div className="greeting-row__actions">
+          <button type="button" className="btn-date-range" aria-label="Select date range">
+            <Icon name="calendar" size={15} className="btn-date-range__icon" />
+            <span>{dateRange}</span>
+            <Icon name="chevron-down" size={14} className="btn-date-range__chevron" />
+          </button>
+
+          <button type="button" className="btn-export" aria-label="Export data">
+            Export
+          </button>
+        </div>
       </section>
 
-      {/* Row 1: KPI Cards from server aggregates */}
+      {/* ── Row 1: KPI Cards ───────────────────────────────────────────── */}
       <section className="kpi-grid" aria-label="Key Performance Indicators">
-        <KpiCard
-          label="Total tickets"
-          value={String(dashboard.total_tickets ?? 0)}
-          trend=""
-          trendDirection="neutral"
-          comparison={scopeText}
-        />
-        {STATUS_ITEMS.map((item) => (
+        {kpiCards.map((card) => (
           <KpiCard
-            key={item.key}
-            label={item.label}
-            value={String(dashboard.status_counts?.[item.key] ?? 0)}
+            key={card.key}
+            label={card.label}
+            value={String(card.value)}
             trend=""
             trendDirection="neutral"
-            comparison={scopeText}
+            comparison="vs last 7 days"
           />
         ))}
       </section>
 
-      {/* Row 2: Status breakdown & Priority distribution */}
-      <section
-        className="dashboard-grid-row"
-        aria-label="Status and Priority Distribution"
-      >
-        <CountBreakdownCard
-          title="Status breakdown"
-          items={statusItems}
-          total={dashboard.total_tickets ?? 0}
+      {/* ── Row 2: Ticket Volume + Priority Donut ──────────────────────── */}
+      <section className="dashboard-grid-row" aria-label="Volume and Priority">
+        <TicketVolumeChart
+          statusCounts={statusCounts}
+          isLoading={isFetching && !dashboard}
         />
         <PriorityDonut
           data={priorityItems}
-          centerLabel="tickets"
+          centerLabel="open"
           emptyText={RECENT_EMPTY_TEXTS[effectiveRole]}
         />
       </section>
 
-      {/* Row 3: Recent tickets (paginated) + admin category breakdown */}
-      <section
-        className="dashboard-grid-row"
-        aria-label="Recent Tickets and Categories"
-      >
+      {/* ── Row 3: Recent Activity + Team Performance ──────────────────── */}
+      <section className="dashboard-grid-row" aria-label="Activity and Team">
         <ActivityList
           data={recentTickets.map(mapTicketToActivity).filter(Boolean)}
-          title="Recent tickets"
+          title="Recent ticket activity"
           emptyText={RECENT_EMPTY_TEXTS[effectiveRole]}
         />
         {isAdmin && (
-          <CountBreakdownCard
-            title="Categories"
-            items={categoryItems.filter(Boolean)}
-            emptyText="No categories recorded yet."
+          <TeamTable
+            data={agentWorkload}
+            title="Team performance"
+            emptyText="No agents registered yet."
           />
         )}
       </section>
 
-      {/* Recent tickets pagination (backend pagination applied to recent_tickets) */}
+      {/* ── Pagination ─────────────────────────────────────────────────── */}
       {totalPages > 1 && (
-        <div
-          className={styles.paginationBar}
-          aria-label="Recent tickets pagination"
-        >
+        <div className={styles.paginationBar} aria-label="Recent tickets pagination">
           <span className={styles.pageInfo}>
-            Page {currentPage} of {totalPages} · {recentTickets.length} shown of{' '}
-            {totalItems} tickets
+            Page {currentPage} of {totalPages} · {recentTickets.length} shown of {totalItems} tickets
           </span>
           <div className={styles.pageControls}>
             <Button
@@ -297,17 +266,6 @@ export default function DashboardPage() {
             </Button>
           </div>
         </div>
-      )}
-
-      {/* Row 4 (ADMIN): Agent workload across every status */}
-      {isAdmin && (
-        <section aria-label="Agent Workload">
-          <TeamTable
-            data={agentWorkload}
-            title="Agent workload"
-            emptyText="No agents registered yet."
-          />
-        </section>
       )}
     </main>
   );

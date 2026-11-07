@@ -12,18 +12,45 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 
 .team-card__title {
   font-size: 15px;
   font-weight: 600;
   color: var(--text-primary);
+  margin: 0;
+}
+
+/* "Full report" link button */
+.team-card__full-report-btn {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-primary);
+  transition: color var(--transition-fast);
+  white-space: nowrap;
+}
+
+.team-card__full-report-btn:hover {
+  color: var(--color-primary-hover);
+  text-decoration: underline;
+}
+
+.team-card__empty {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-muted);
+  padding: 20px 0;
 }
 
 .team-card__table-wrapper {
   width: 100%;
   overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.team-card__table-wrapper::-webkit-scrollbar {
+  display: none;
 }
 
 .team-table {
@@ -32,12 +59,14 @@
   font-size: 13px;
 }
 
+/* Column headers */
 .team-table__th {
   font-size: 11.5px;
   font-weight: 500;
   color: var(--text-muted);
-  padding-bottom: 12px;
+  padding-bottom: 10px;
   user-select: none;
+  white-space: nowrap;
 }
 
 .team-table__th--agent {
@@ -46,9 +75,10 @@
 
 .team-table__th--metric {
   text-align: right;
-  padding-left: 14px;
+  padding-left: 16px;
 }
 
+/* Row */
 .team-table__row {
   border-top: 1px solid var(--border-light);
   transition: background-color var(--transition-fast);
@@ -58,8 +88,9 @@
   background-color: var(--bg-hover);
 }
 
+/* Cells */
 .team-table__td {
-  padding: 10px 0;
+  padding: 11px 0;
   color: var(--text-primary);
   font-weight: 500;
 }
@@ -79,17 +110,28 @@
   font-weight: 500;
   color: var(--text-primary);
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;
 }
 
 .team-table__td--metric {
   text-align: right;
-  padding-left: 14px;
+  padding-left: 16px;
   font-size: 13px;
   color: var(--text-primary);
   white-space: nowrap;
 }
 
+/* CSAT column — slightly bolder, matches reference */
 .team-table__td--csat {
   font-weight: 600;
+  color: var(--text-secondary);
 }
 
+/* Mobile: allow horizontal scroll inside the card */
+@media (max-width: 767px) {
+  .team-table__agent-name {
+    max-width: 90px;
+  }
+}

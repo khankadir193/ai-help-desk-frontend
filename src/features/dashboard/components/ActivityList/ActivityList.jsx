@@ -25,7 +25,7 @@ export default function ActivityList({
         )}
       </div>
 
-      {(!data || data.length === 0) ? (
+      {!data || data.length === 0 ? (
         <p className="activity-card__empty">
           {emptyText || 'No tickets to show yet.'}
         </p>
