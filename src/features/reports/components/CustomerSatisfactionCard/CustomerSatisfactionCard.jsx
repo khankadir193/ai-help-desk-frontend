@@ -1,0 +1,92 @@
+import { formatCsat } from '../../utils/formatters';
+import './CustomerSatisfactionCard.css';
+
+/**
+ * CustomerSatisfactionCard
+ *
+ * Visual horizontal rating distribution bars (5★ to 1★).
+ *
+ * Props:
+ *  data: { average, max_rating, total_responses, distribution: Array<{ stars, count }>, note }
+ *  isLoading: boolean
+ */
+export default function CustomerSatisfactionCard({ data, isLoading }) {
+  const average        = formatCsat(data?.average ?? 4.8);
+  const maxRating      = data?.max_rating ?? 5;
+  const totalResponses = data?.total_responses ?? 200;
+  const note           = data?.note || 'Y: rating · X: responses (0–200). Sample only.';
+
+  const distribution = data?.distribution ?? [
+    { stars: 5, count: 168 },
+    { stars: 4, count: 24 },
+    { stars: 3, count: 6 },
+    { stars: 2, count: 2 },
+    { stars: 1, count: 0 },
+  ];
+
+  if (isLoading) {
+    return (
+      <section className="reports-csat-card" aria-label="Loading Customer Satisfaction">
+        <div className="reports-csat-card__title">Customer satisfaction</div>
+        <div className="reports-csat-skeleton-score" />
+        <div className="reports-csat-bars reports-csat-bars--skeleton" aria-hidden="true">
+          {[...Array(5)].map((_, i) => (
+            <div key={i} className="reports-csat-skeleton-bar-row">
+              <div className="reports-csat-skeleton-star" />
+              <div className="reports-csat-skeleton-track" />
+              <div className="reports-csat-skeleton-count" />
+            </div>
+          ))}
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <section className="reports-csat-card" aria-label="Customer Satisfaction">
+      <h2 className="reports-csat-card__title">Customer satisfaction</h2>
+
+      {/* Main Score & Response Count */}
+      <div className="reports-csat-score-row">
+        <span className="reports-csat-score tabular-nums">
+          {average} <span className="reports-csat-max">/ {maxRating}</span>
+        </span>
+        <span className="reports-csat-responses tabular-nums">
+          {totalResponses} survey responses
+        </span>
+      </div>
+
+      {/* Horizontal Rating Bars */}
+      <div className="reports-csat-bars" role="group" aria-label="Rating distribution from 5 stars to 1 star">
+        {distribution.map((item) => {
+          const pct = totalResponses > 0 ? (item.count / totalResponses) * 100 : 0;
+          return (
+            <div key={item.stars} className="reports-csat-bar-row">
+              <span className="reports-csat-star-label">
+                {item.stars} <span className="reports-csat-star-icon" aria-hidden="true">★</span>
+              </span>
+
+              <div className="reports-csat-track">
+                <div
+                  className="reports-csat-fill"
+                  style={{ width: `${pct}%` }}
+                  role="progressbar"
+                  aria-valuenow={item.count}
+                  aria-valuemin={0}
+                  aria-valuemax={totalResponses}
+                  aria-label={`${item.stars} stars: ${item.count} responses`}
+                />
+              </div>
+
+              <span className="reports-csat-count tabular-nums">{item.count}</span>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Footer note */}
+      <p className="reports-csat-note">{note}</p>
+    </section>
+  );
+}
+

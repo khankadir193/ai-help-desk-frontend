@@ -1,0 +1,155 @@
+/* ==========================================================================
+   ResolutionSlaCard — Circular ring & SLA stats card
+   ========================================================================== */
+
+.reports-sla-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-card);
+  padding: 20px;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.reports-sla-card__title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 16px 0;
+  line-height: 1.3;
+}
+
+.reports-sla-card__body {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin: auto 0;
+}
+
+/* Progress Ring */
+.reports-sla-ring-container {
+  position: relative;
+  width: 112px;
+  height: 112px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.reports-sla-ring-svg {
+  display: block;
+}
+
+.reports-sla-ring-track {
+  fill: none;
+  stroke: var(--color-primary-tint);
+}
+
+.reports-sla-ring-progress {
+  fill: none;
+  stroke: var(--color-primary);
+  stroke-linecap: round;
+  transition: stroke-dasharray 400ms ease;
+}
+
+.reports-sla-ring-text {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.reports-sla-ring-percent {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.reports-sla-ring-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+/* Breakdown Stats */
+.reports-sla-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.reports-sla-stat {
+  font-size: 13px;
+  line-height: 1.3;
+}
+
+.reports-sla-stat--within {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.reports-sla-stat--breached {
+  color: var(--color-danger);
+  font-weight: 600;
+}
+
+.reports-sla-stat--total {
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+/* Bottom Note */
+.reports-sla-note {
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--text-muted);
+  margin: 16px 0 0 0;
+}
+
+/* Skeleton Loading */
+.reports-sla-card__body--skeleton {
+  gap: 20px;
+}
+
+.reports-sla-skeleton-ring {
+  width: 112px;
+  height: 112px;
+  border-radius: 50%;
+  background: linear-gradient(90deg, var(--border-light) 25%, var(--border-color) 50%, var(--border-light) 75%);
+  background-size: 200% 100%;
+  animation: reports-shimmer 1.4s ease infinite;
+}
+
+.reports-sla-skeleton-stats {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.reports-sla-skeleton-line {
+  height: 16px;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(90deg, var(--border-light) 25%, var(--border-color) 50%, var(--border-light) 75%);
+  background-size: 200% 100%;
+  animation: reports-shimmer 1.4s ease infinite;
+}
+
+.reports-sla-skeleton-line:nth-child(1) { width: 85%; }
+.reports-sla-skeleton-line:nth-child(2) { width: 75%; }
+.reports-sla-skeleton-line:nth-child(3) { width: 65%; }
+
+@media (max-width: 480px) {
+  .reports-sla-card__body {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+

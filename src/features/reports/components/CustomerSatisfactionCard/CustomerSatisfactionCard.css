@@ -1,0 +1,159 @@
+/* ==========================================================================
+   CustomerSatisfactionCard — Rating score & star distribution bars card
+   ========================================================================== */
+
+.reports-csat-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-card);
+  padding: 20px;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.reports-csat-card__title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 12px 0;
+  line-height: 1.3;
+}
+
+/* Big Score Row */
+.reports-csat-score-row {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.reports-csat-score {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.reports-csat-max {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.reports-csat-responses {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* Horizontal Star Bars */
+.reports-csat-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.reports-csat-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.reports-csat-star-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+  min-width: 22px;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.reports-csat-star-icon {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.reports-csat-track {
+  flex: 1;
+  height: 8px;
+  background-color: #F1F5F9;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.reports-csat-fill {
+  height: 100%;
+  background-color: var(--color-primary);
+  border-radius: 4px;
+  min-width: 2px;
+  transition: width 400ms ease;
+}
+
+.reports-csat-count {
+  font-size: 12px;
+  color: var(--text-muted);
+  min-width: 28px;
+  text-align: right;
+}
+
+/* Bottom Note */
+.reports-csat-note {
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--text-muted);
+  margin: 16px 0 0 0;
+}
+
+/* Skeleton Loading */
+.reports-csat-skeleton-score {
+  width: 140px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(90deg, var(--border-light) 25%, var(--border-color) 50%, var(--border-light) 75%);
+  background-size: 200% 100%;
+  animation: reports-shimmer 1.4s ease infinite;
+  margin-bottom: 16px;
+}
+
+.reports-csat-bars--skeleton {
+  gap: 10px;
+}
+
+.reports-csat-skeleton-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.reports-csat-skeleton-star {
+  width: 22px;
+  height: 12px;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(90deg, var(--border-light) 25%, var(--border-color) 50%, var(--border-light) 75%);
+  background-size: 200% 100%;
+  animation: reports-shimmer 1.4s ease infinite;
+}
+
+.reports-csat-skeleton-track {
+  flex: 1;
+  height: 8px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--border-light) 25%, var(--border-color) 50%, var(--border-light) 75%);
+  background-size: 200% 100%;
+  animation: reports-shimmer 1.4s ease infinite;
+}
+
+.reports-csat-skeleton-count {
+  width: 24px;
+  height: 12px;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(90deg, var(--border-light) 25%, var(--border-color) 50%, var(--border-light) 75%);
+  background-size: 200% 100%;
+  animation: reports-shimmer 1.4s ease infinite;
+}
+

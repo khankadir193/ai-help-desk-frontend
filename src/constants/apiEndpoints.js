@@ -31,4 +31,7 @@ export const API_ENDPOINTS = {
   DASHBOARD: {
     BASE: '/dashboard',
   },
+  REPORTS: {
+    ANALYTICS: '/reports/analytics',
+  },
 };

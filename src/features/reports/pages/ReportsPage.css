@@ -1,0 +1,80 @@
+/* ==========================================================================
+   ReportsPage — Reports & Analytics screen styling
+   ========================================================================== */
+
+.reports-page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* 2fr 1fr Grid Rows */
+.reports-grid-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+/* Error State Container */
+.reports-error-box {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-card);
+  padding: 48px 24px;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  margin: auto 0;
+}
+
+.reports-error-icon {
+  color: var(--color-danger);
+  margin-bottom: 12px;
+}
+
+.reports-error-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 6px 0;
+}
+
+.reports-error-message {
+  font-size: 14px;
+  color: var(--text-muted);
+  max-width: 440px;
+  margin: 0 0 20px 0;
+  line-height: 1.4;
+}
+
+/* ==========================================================================
+   Responsive Breakpoints
+   ========================================================================== */
+
+/* 1024px to 1279px */
+@media (max-width: 1279px) {
+  .reports-grid-row {
+    gap: 16px;
+  }
+}
+
+/* 768px to 1023px */
+@media (max-width: 1023px) {
+  .reports-grid-row {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+
+/* Under 768px (Mobile) */
+@media (max-width: 767px) {
+  .reports-grid-row {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+

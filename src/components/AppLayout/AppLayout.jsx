@@ -13,7 +13,7 @@ const ROUTE_TITLES = {
   '/tickets': 'Tickets',
   '/ai-assistant': 'AI Assistant',
   '/knowledge-base': 'Knowledge Base',
-  '/reports': 'Reports',
+  '/reports': 'Reports & Analytics',
   '/team': 'Team',
   '/settings': 'Settings',
 };
