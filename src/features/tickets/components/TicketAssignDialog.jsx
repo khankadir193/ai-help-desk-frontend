@@ -1,22 +1,21 @@
 import { useState } from 'react';
 import Modal from '../../../components/ui/Modal/Modal';
 import Button from '../../../components/ui/Button/Button';
-import Input from '../../../components/ui/Input/Input';
 import Icon from '../../../components/Icon/Icon';
+import { useAgents } from '../../users/hooks/useAgents';
 import { useUpdateTicketAssignment } from '../hooks/useTickets';
 import { getErrorMessage } from '../../../utils/errorHandler';
 import styles from './CreateTicketModal.module.css';
 
-const AGENT_ID_PATTERN = /^[1-9]\d*$/;
-
 /**
  * Assign / reassign / unassign a ticket to an agent (Admin only).
- * Uses the actual backend contract:
- *   PATCH /api/v1/tickets/:id/assignment  { assigned_agent_id } | { assigned_agent_id: null }
+ * Uses the actual backend contracts:
+ *   GET   /api/v1/users/agents           — active-AGENT directory { id, name, email }
+ *   PATCH /api/v1/tickets/:id/assignment { assigned_agent_id } | { assigned_agent_id: null }
  *
- * The user module exposes no agent directory endpoint, so the target agent
- * must be referenced by numeric user ID; the backend validates that the ID
- * belongs to an existing, active AGENT.
+ * The Admin picks an agent from the fetched directory instead of typing a
+ * numeric user ID; only the selected agent's database ID is submitted and
+ * the backend re-validates it (exists, role AGENT, account active).
  *
  * `onSuccess(message)` is called after a successful update so the details
  * page can surface the result (same pattern as CreateTicketModal).
@@ -26,33 +25,33 @@ export default function TicketAssignDialog({ isOpen, onClose, ticket, onSuccess 
 
   const [agentId, setAgentId] = useState(ticket?.assigned_agent?.id ?? '');
   const [fieldError, setFieldError] = useState('');
-  const [error, setError] = useState('');
+  const [mutationError, setMutationError] = useState('');
 
-  const validate = () => {
-    const trimmed = String(agentId).trim();
-    if (!trimmed) {
-      setFieldError('Enter an agent ID, or use Unassign to remove the assignment.');
-      return false;
-    }
-    if (!AGENT_ID_PATTERN.test(trimmed)) {
-      setFieldError('Agent ID must be a positive integer.');
-      return false;
-    }
-    setFieldError('');
-    return true;
-  };
+  // Agent directory: fetched once on the first open (an admin opens this
+  // dialog, and the request is enabled only while the dialog is mounted).
+  const {
+    data: agents = [],
+    isLoading: agentsLoading,
+    isError: agentsError,
+    refetch: refetchAgents,
+  } = useAgents({ enabled: isOpen });
+
+  const canSubmit = !agentsLoading && !agentsError;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setFieldError('');
+    setMutationError('');
 
-    if (!validate()) return;
+    if (!String(agentId).trim()) {
+      setFieldError('Select an agent to assign, or use Unassign.');
+      return;
+    }
 
-    const trimmed = String(agentId).trim();
     try {
       const updated = await assignmentMutation.mutateAsync({
         id: ticket.id,
-        assignedAgentId: trimmed ? trimmed : null,
+        assignedAgentId: agentId,
       });
 
       const agentName = updated?.assigned_agent?.name;
@@ -65,12 +64,13 @@ export default function TicketAssignDialog({ isOpen, onClose, ticket, onSuccess 
       }
       onClose();
     } catch (err) {
-      setError(getErrorMessage(err));
+      setMutationError(getErrorMessage(err));
     }
   };
 
   const handleUnassign = async () => {
-    setError('');
+    setFieldError('');
+    setMutationError('');
     try {
       await assignmentMutation.mutateAsync({
         id: ticket.id,
@@ -81,7 +81,7 @@ export default function TicketAssignDialog({ isOpen, onClose, ticket, onSuccess 
       }
       onClose();
     } catch (err) {
-      setError(getErrorMessage(err));
+      setMutationError(getErrorMessage(err));
     }
   };
 
@@ -92,14 +92,14 @@ export default function TicketAssignDialog({ isOpen, onClose, ticket, onSuccess 
       isOpen={isOpen}
       onClose={onClose}
       title="Assign Ticket"
-      description="Assign this ticket to an active support agent by their user ID."
+      description="Choose an active support agent for this ticket."
       size="sm"
     >
       <form onSubmit={handleSubmit} className={styles.form} noValidate>
-        {error && (
+        {mutationError && (
           <div className={styles.errorBanner} role="alert">
             <Icon name="alert-circle" size={18} className={styles.errorBannerIcon} />
-            <span>{error}</span>
+            <span>{mutationError}</span>
           </div>
         )}
 
@@ -107,32 +107,73 @@ export default function TicketAssignDialog({ isOpen, onClose, ticket, onSuccess 
           {ticket.assigned_agent ? (
             <>
               Currently assigned to{' '}
-              <strong>{ticket.assigned_agent.name}</strong> (ID{' '}
-              {ticket.assigned_agent.id}).
+              <strong>{ticket.assigned_agent.name}</strong>
+              {ticket.assigned_agent.email && (
+                <> ({ticket.assigned_agent.email})</>
+              )}
+              .
             </>
           ) : (
             <>This ticket is currently unassigned.</>
           )}
         </p>
 
-        <Input
-          id="ticket-agent-id"
-          label="Agent User ID"
-          type="number"
-          min="1"
-          value={agentId}
-          onChange={(e) => {
-            setAgentId(e.target.value);
-            if (fieldError) setFieldError('');
-            if (error) setError('');
-          }}
-          placeholder="e.g., 42"
-          error={fieldError}
-          disabled={isPending}
-        />
+        {/* Directory feedback */}
+        {agentsError ? (
+          <div className={`${styles.errorBanner} ${styles.errorBannerWrap}`}>
+            <Icon name="alert-circle" size={18} className={styles.errorBannerIcon} />
+            <span>Could not load the agent list. Please try again.</span>
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={() => refetchAgents()}
+            >
+              Retry
+            </Button>
+          </div>
+        ) : !agentsLoading && agents.length === 0 ? (
+          <div className={styles.dialogInfoEmpty}>
+            <Icon name="users" size={20} className={styles.dialogInfoEmptyIcon} />
+            <p className={styles.dialogInfo}>
+              No active agents are available. Create or reactivate an agent
+              account to assign this ticket.
+            </p>
+          </div>
+        ) : null}
+
+        {/* Agent dropdown (names + emails; DB id submitted internally) */}
+        <div className={styles.fieldGroup}>
+          <label htmlFor="ticket-agent-select" className={styles.label}>
+            Agent
+          </label>
+          <select
+            id="ticket-agent-select"
+            className={`${styles.select} ${fieldError ? styles.selectError : ''}`}
+            value={agentId ?? ''}
+            onChange={(e) => {
+              setAgentId(e.target.value);
+              if (fieldError) setFieldError('');
+              if (mutationError) setMutationError('');
+            }}
+            disabled={agentsLoading || isPending || !canSubmit}
+          >
+            <option value="">
+              {agentsLoading ? 'Loading agents…' : 'Select an agent…'}
+            </option>
+            {agents.map((agent) => (
+              <option key={agent.id} value={agent.id}>
+                {`${agent.name} (${agent.email})`}
+              </option>
+            ))}
+          </select>
+          {fieldError && (
+            <span className={styles.fieldError}>{fieldError}</span>
+          )}
+        </div>
 
         <p className={styles.dialogHint}>
-          The backend verifies that the ID belongs to an existing, active agent.
+          Only active agent accounts are listed; the backend re-verifies the
+          selection before assigning.
         </p>
 
         <div className={styles.footerActions}>
@@ -145,7 +186,12 @@ export default function TicketAssignDialog({ isOpen, onClose, ticket, onSuccess 
               Unassign
             </Button>
           )}
-          <Button variant="primary" type="submit" isLoading={isPending}>
+          <Button
+            variant="primary"
+            type="submit"
+            isLoading={isPending}
+            disabled={!canSubmit}
+          >
             {ticket.assigned_agent ? 'Reassign' : 'Assign Agent'}
           </Button>
         </div>

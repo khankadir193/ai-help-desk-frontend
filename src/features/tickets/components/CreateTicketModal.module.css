@@ -145,3 +145,37 @@
   font-size: 12px;
   color: var(--text-muted);
 }
+
+/* Additive classes for the agent-directory feedback (TicketAssignDialog) */
+.errorBannerWrap {
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.dialogInfoEmpty {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 16px;
+  background-color: var(--color-amber-tint);
+  border: 1px solid #FDE68A;
+  border-radius: var(--radius-card);
+}
+
+.dialogInfoEmptyIcon {
+  flex-shrink: 0;
+  color: var(--color-amber-text);
+}
+
+.dialogInfoEmpty .dialogInfo {
+  margin: 0;
+}
+
+.selectError {
+  border-color: var(--color-danger);
+}
+
+.selectError:focus {
+  border-color: var(--color-danger);
+  box-shadow: 0 0 0 3px var(--color-danger-tint);
+}

@@ -31,6 +31,10 @@ export const API_ENDPOINTS = {
   DASHBOARD: {
     BASE: '/dashboard',
   },
+  USERS: {
+    // GET /api/v1/users/agents — Admin-only directory of active AGENT users
+    AGENTS: '/users/agents',
+  },
   REPORTS: {
     ANALYTICS: '/reports/analytics',
   },
