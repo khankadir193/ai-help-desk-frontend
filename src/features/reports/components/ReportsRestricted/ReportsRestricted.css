@@ -1,0 +1,190 @@
+/* ==========================================================================
+   ReportsRestricted — customer-facing "access restricted" screen
+   Rendered instead of the Reports dashboard for the CUSTOMER role.
+   ========================================================================== */
+
+.reports-restricted {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 0;
+}
+
+.reports-restricted__card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  max-width: 520px;
+  width: 100%;
+  padding: 48px 44px 44px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* "Customer Access" badge */
+.reports-restricted__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--color-primary);
+  background-color: var(--color-primary-tint);
+  border: 1px solid rgba(79, 70, 229, 0.14);
+  padding: 5px 14px;
+  border-radius: var(--radius-pill);
+}
+
+.reports-restricted__badge-icon {
+  flex-shrink: 0;
+}
+
+/* Illustration — analytics card with lock overlay */
+.reports-restricted__illustration {
+  margin: 28px 0 8px;
+  line-height: 0;
+}
+
+.reports-restricted__illustration svg {
+  display: inline-block;
+  max-width: 100%;
+  height: auto;
+}
+
+.reports-restricted__ill-halo {
+  fill: var(--color-primary-tint);
+  opacity: 0.7;
+}
+
+.reports-restricted__ill-halo--inner {
+  opacity: 0.45;
+}
+
+.reports-restricted__ill-sparkle {
+  fill: none;
+  stroke: var(--color-slate-light);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.reports-restricted__ill-dot {
+  fill: var(--color-slate-light);
+}
+
+.reports-restricted__ill-card {
+  fill: var(--bg-card);
+  stroke: var(--border-color);
+  stroke-width: 1.5;
+}
+
+.reports-restricted__ill-window-dot {
+  fill: var(--color-slate-light);
+}
+
+.reports-restricted__ill-titlebar {
+  fill: var(--border-light);
+}
+
+.reports-restricted__ill-bar {
+  fill: var(--color-primary);
+}
+
+.reports-restricted__ill-bar--low {
+  opacity: 0.35;
+}
+
+.reports-restricted__ill-bar--mid {
+  opacity: 0.55;
+}
+
+.reports-restricted__ill-bar--high {
+  opacity: 0.75;
+}
+
+.reports-restricted__ill-trend {
+  fill: none;
+  stroke: var(--color-primary);
+  stroke-width: 2.25;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.reports-restricted__ill-trend-dot {
+  fill: var(--color-primary);
+  stroke: var(--bg-card);
+  stroke-width: 1.5;
+}
+
+.reports-restricted__ill-lock-halo {
+  fill: var(--color-primary-tint);
+}
+
+.reports-restricted__ill-lock {
+  fill: var(--color-primary);
+}
+
+.reports-restricted__ill-lock-shackle {
+  fill: none;
+  stroke: var(--text-inverse);
+  stroke-width: 2.25;
+  stroke-linecap: round;
+}
+
+.reports-restricted__ill-lock-body {
+  fill: var(--text-inverse);
+}
+
+.reports-restricted__ill-lock-keyhole {
+  fill: var(--color-primary);
+  stroke: var(--color-primary);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+
+/* Copy */
+.reports-restricted__title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 16px 0 10px;
+}
+
+.reports-restricted__description {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.65;
+  max-width: 400px;
+  margin: 0 0 28px;
+}
+
+/* CTA */
+.reports-restricted__cta-icon {
+  vertical-align: -3px;
+}
+
+/* ==========================================================================
+   Responsive Breakpoints
+   ========================================================================== */
+
+@media (max-width: 767px) {
+  .reports-restricted {
+    padding: 32px 0;
+  }
+
+  .reports-restricted__card {
+    padding: 36px 22px 32px;
+  }
+
+  .reports-restricted__illustration {
+    margin-top: 20px;
+  }
+
+  .reports-restricted__title {
+    font-size: 20px;
+  }
+}

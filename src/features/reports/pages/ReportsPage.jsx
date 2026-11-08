@@ -9,6 +9,8 @@ import CustomerSatisfactionCard from '../components/CustomerSatisfactionCard/Cus
 import Button from '../../../components/ui/Button/Button';
 import Icon from '../../../components/Icon/Icon';
 import { useReports } from '../hooks/useReports';
+import ReportsRestricted from '../components/ReportsRestricted/ReportsRestricted';
+import { useAuth } from '../../../features/auth/hooks/useAuth';
 import {
   daysAgo,
   todayISO,
@@ -58,6 +60,9 @@ function formatDateRangeLabel(from, to) {
 }
 
 export default function ReportsPage() {
+  const { role } = useAuth();
+  const isCustomer = role === 'CUSTOMER';
+
   const [selectedPreset, setSelectedPreset] = useState('7d');
   const [selectedTeam, setSelectedTeam] = useState('all');
   const [selectedChannel, setSelectedChannel] = useState('all');
@@ -86,7 +91,7 @@ export default function ReportsPage() {
     error,
     isFetching,
     refetch,
-  } = useReports(filterParams);
+  } = useReports(filterParams, { enabled: !isCustomer });
 
   const dateRangeLabel = useMemo(
     () => formatDateRangeLabel(dateFrom, dateTo),
@@ -139,6 +144,20 @@ export default function ReportsPage() {
       setIsExporting(false);
     }
   }, [analytics, dateFrom, dateTo]);
+
+  // Customers get a dedicated access-restricted screen. The analytics query
+  // above stays disabled for this role, so no Reports API request is made
+  // and no analytics data (real or dummy) is displayed.
+  if (isCustomer) {
+    return (
+      <main
+        className="dashboard-content reports-page"
+        aria-label="Reports & Analytics"
+      >
+        <ReportsRestricted />
+      </main>
+    );
+  }
 
   // Inline full-error screen if network completely breaks with no cached data
   if (isError && !analytics) {
