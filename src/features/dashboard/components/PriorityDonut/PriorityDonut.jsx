@@ -94,16 +94,18 @@ export default function PriorityDonut({
             {/* Center Text (128 open) */}
             <text
               x={size / 2}
-              y={size / 2 - 2}
+              y={size / 2 - 6}
               textAnchor="middle"
+              dominantBaseline="central"
               className="priority-donut__center-num tabular-nums"
             >
               {totalOpen}
             </text>
             <text
               x={size / 2}
-              y={size / 2 + 16}
+              y={size / 2 + 14}
               textAnchor="middle"
+              dominantBaseline="central"
               className="priority-donut__center-sub"
             >
               {centerLabel}

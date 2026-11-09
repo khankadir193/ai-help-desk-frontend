@@ -235,6 +235,7 @@ export default function DashboardPage() {
             data={agentWorkload}
             title="Team performance"
             emptyText="No agents registered yet."
+            isLoading={isFetching && !dashboard}
           />
         )}
       </section>

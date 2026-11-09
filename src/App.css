@@ -112,12 +112,20 @@
   gap: 20px;
 }
 
+.kpi-grid > * {
+  min-width: 0;
+}
+
 /* 2fr 1fr Grid Rows — align-items: start so cards don't stretch to equal height */
 .dashboard-grid-row {
   display: grid;
   grid-template-columns: 2fr 1fr;
   gap: 20px;
   align-items: start;
+}
+
+.dashboard-grid-row > * {
+  min-width: 0;
 }
 
 /* ==========================================================================
