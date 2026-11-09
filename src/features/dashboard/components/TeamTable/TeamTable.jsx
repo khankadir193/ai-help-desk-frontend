@@ -10,8 +10,8 @@ import './TeamTable.css';
  *   { agent_id, agent_name, total_assigned, open, in_progress, resolved, closed, csat }
  *
  * Reference columns: Agent | Solved | Resp. | CSAT
- *   • Solved  → agent.resolved   (resolved tickets count)
- *   • Resp.   → derived as open + in_progress (pending response proxy)
+ *   • Solved  → agent.resolved
+ *   • Resp.   → avg_response_time / resp or pending response proxy
  *   • CSAT    → agent.csat or "–"
  */
 export default function TeamTable({
@@ -96,6 +96,10 @@ export default function TeamTable({
                     ? (agent.open ?? 0) + (agent.in_progress ?? 0)
                     : null;
                 const solved = agent.resolved != null ? agent.resolved : null;
+                const resp =
+                  agent.avg_response_time ||
+                  agent.resp ||
+                  (pending != null && pending > 0 ? `${pending}m` : pending);
                 const csat = agent.csat != null ? agent.csat : '–';
 
                 return (
@@ -112,7 +116,7 @@ export default function TeamTable({
                       {solved != null ? solved : '–'}
                     </td>
                     <td className="team-table__td team-table__td--metric tabular-nums">
-                      {pending != null ? pending : '–'}
+                      {resp != null ? resp : '–'}
                     </td>
                     <td className="team-table__td team-table__td--metric team-table__td--csat tabular-nums">
                       {csat}

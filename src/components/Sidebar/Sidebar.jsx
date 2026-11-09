@@ -59,7 +59,7 @@ export default function Sidebar({
         <div className="sidebar__header">
           <div className="sidebar__logo-group">
             <div className="sidebar__logo-tile" aria-hidden="true">
-              <Icon name="sparkle" size={22} strokeWidth={2} />
+              <Icon name="sparkle" size={18} strokeWidth={2} />
             </div>
             {!collapsed && <span className="sidebar__brand-name">HelpDesk AI</span>}
           </div>

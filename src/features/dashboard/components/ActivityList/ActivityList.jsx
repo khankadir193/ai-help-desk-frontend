@@ -37,7 +37,7 @@ export default function ActivityList({
                 initials={item.avatar}
                 type={item.avatarType}
                 icon="sparkle"
-                size="lg"
+                size="md"
               />
 
               <div className="activity-card__main">

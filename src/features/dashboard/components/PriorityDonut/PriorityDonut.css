@@ -6,12 +6,13 @@
   box-shadow: var(--shadow-card);
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+  height: 275px;
   min-width: 0;
   overflow: hidden;
 }
 
 .priority-donut-card__header {
-  margin-bottom: 12px;
   flex-shrink: 0;
 }
 
@@ -24,11 +25,11 @@
 }
 
 .priority-donut__empty {
-  margin: 0;
+  margin: auto 0;
   font-size: 13px;
   color: var(--text-muted);
-  padding: 28px 0;
   text-align: center;
+  padding: 28px 0;
 }
 
 .priority-donut-card__body {
@@ -45,8 +46,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 160px;
-  height: 160px;
+  width: 150px;
+  height: 150px;
   flex-shrink: 0;
 }
 
@@ -118,20 +119,20 @@
   border-radius: 2px;
 }
 
-/* Legend */
+/* Legend with Grid to prevent name truncation */
 .priority-donut__legend {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
   flex: 1;
   min-width: 0;
 }
 
 .priority-donut__legend-row {
-  display: flex;
+  display: grid;
+  grid-template-columns: 8px 1fr auto;
   align-items: center;
-  justify-content: space-between;
-  font-size: 13px;
+  gap: 8px;
   padding: 3px 6px;
   border-radius: var(--radius-sm);
   cursor: pointer;
@@ -144,14 +145,6 @@
   background-color: var(--bg-hover);
 }
 
-.priority-donut__legend-left {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  min-width: 0;
-  flex: 1;
-}
-
 .priority-donut__legend-dot {
   width: 8px;
   height: 8px;
@@ -161,6 +154,7 @@
 
 .priority-donut__legend-name {
   color: var(--text-secondary);
+  font-size: 13px;
   font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
@@ -173,8 +167,8 @@
   color: var(--text-muted);
   white-space: nowrap;
   flex-shrink: 0;
-  margin-left: 8px;
   text-align: right;
+  font-variant-numeric: tabular-nums;
 }
 
 .priority-donut__legend-stat strong {

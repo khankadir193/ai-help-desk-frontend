@@ -3,20 +3,11 @@ import './TicketVolumeChart.css';
 /**
  * TicketVolumeChart
  *
- * Renders a grouped SVG bar chart for ticket volume.
- * Each `day` in `data` has { label, created, resolved }.
- * When no per-day data is available from the API we fall back to
- * the status_counts snapshot passed via `statusCounts`.
- *
- * Props
- *  data          Array<{ label: string, created: number, resolved: number }>
- *  statusCounts  { OPEN, IN_PROGRESS, RESOLVED, CLOSED } – fallback when data is empty
- *  isLoading     bool
+ * Renders a grouped responsive SVG bar chart for ticket volume.
+ * Each day has { label, created, resolved }.
+ * Status counts are used as fallback if no per-day breakdown is provided.
  */
 export default function TicketVolumeChart({ data = [], statusCounts = {}, isLoading }) {
-  // ── Build chart rows ──────────────────────────────────────────────────────
-  // Prefer per-day data if provided; otherwise derive a single-bar summary
-  // from status_counts so we always render real backend values.
   const rows = data.length > 0
     ? data
     : buildFallbackRows(statusCounts);
@@ -28,18 +19,21 @@ export default function TicketVolumeChart({ data = [], statusCounts = {}, isLoad
   const yMax = niceMax(dataMax);
   const steps = buildSteps(yMax);
 
-  // Chart geometry
-  const CHART_H = 180;   // px height of the bar area
-  const GROUP_W = 48;    // px width per day group (two bars + gap)
-  const BAR_W = 16;      // individual bar width
-  const GAP_BTW = 6;     // gap between the two bars in a group
-  const GROUP_GAP = 16;  // gap between groups
-  const LEFT_AXIS = 36;  // px reserved for y-axis labels
-  const BOTTOM = 24;     // px reserved for x-axis labels
+  // Chart responsive coordinates
+  const VIEW_W = 640;
+  const VIEW_H = 190;
+  const LEFT_AXIS = 36;
+  const RIGHT_PAD = 16;
+  const TOP_PAD = 14;
+  const BOTTOM = 26;
+  const PLOT_H = VIEW_H - TOP_PAD - BOTTOM;
+  const AVAILABLE_W = VIEW_W - LEFT_AXIS - RIGHT_PAD;
 
-  const totalW = LEFT_AXIS + rows.length * (GROUP_W + GROUP_GAP) - GROUP_GAP + 4;
+  const slotW = rows.length > 0 ? AVAILABLE_W / rows.length : AVAILABLE_W;
+  const BAR_W = 16;
+  const GAP_BTW = 5;
 
-  const toBarH = (val) => yMax > 0 ? (val / yMax) * CHART_H : 0;
+  const toBarH = (val) => (yMax > 0 ? (val / yMax) * PLOT_H : 0);
 
   if (isLoading) {
     return (
@@ -87,27 +81,27 @@ export default function TicketVolumeChart({ data = [], statusCounts = {}, isLoad
         </div>
       </div>
 
-      {/* SVG chart */}
+      {/* SVG chart container */}
       <div className="tv-chart-scroll" role="img" aria-label="Ticket volume bar chart">
         <svg
-          width={totalW}
-          height={CHART_H + BOTTOM + 4}
+          viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
           className="tv-svg"
+          preserveAspectRatio="none"
         >
           {/* Horizontal grid lines + y-axis labels */}
           {steps.map((step) => {
-            const y = CHART_H - toBarH(step);
+            const y = TOP_PAD + (PLOT_H - toBarH(step));
             return (
               <g key={step}>
                 <line
                   x1={LEFT_AXIS}
-                  x2={totalW}
+                  x2={VIEW_W - RIGHT_PAD}
                   y1={y}
                   y2={y}
                   className="tv-gridline"
                 />
                 <text
-                  x={LEFT_AXIS - 6}
+                  x={LEFT_AXIS - 8}
                   y={y + 4}
                   textAnchor="end"
                   className="tv-axis-label"
@@ -118,38 +112,38 @@ export default function TicketVolumeChart({ data = [], statusCounts = {}, isLoad
             );
           })}
 
-          {/* Bars */}
+          {/* Grouped Bars */}
           {rows.map((row, i) => {
-            const groupX = LEFT_AXIS + i * (GROUP_W + GROUP_GAP);
-            const createdH = Math.max(toBarH(row.created), row.created > 0 ? 3 : 0);
-            const resolvedH = Math.max(toBarH(row.resolved), row.resolved > 0 ? 3 : 0);
+            const groupX = LEFT_AXIS + i * slotW + (slotW - (BAR_W * 2 + GAP_BTW)) / 2;
+            const createdH = Math.max(toBarH(row.created), row.created > 0 ? 4 : 0);
+            const resolvedH = Math.max(toBarH(row.resolved), row.resolved > 0 ? 4 : 0);
 
             return (
               <g key={row.label}>
                 {/* Created bar (indigo) */}
                 <rect
                   x={groupX}
-                  y={CHART_H - createdH}
+                  y={TOP_PAD + (PLOT_H - createdH)}
                   width={BAR_W}
                   height={createdH}
                   className="tv-bar tv-bar--created"
-                  rx="3"
-                  ry="3"
+                  rx="4"
+                  ry="4"
                 />
-                {/* Resolved bar (green) */}
+                {/* Resolved bar (emerald) */}
                 <rect
                   x={groupX + BAR_W + GAP_BTW}
-                  y={CHART_H - resolvedH}
+                  y={TOP_PAD + (PLOT_H - resolvedH)}
                   width={BAR_W}
                   height={resolvedH}
                   className="tv-bar tv-bar--resolved"
-                  rx="3"
-                  ry="3"
+                  rx="4"
+                  ry="4"
                 />
                 {/* X-axis label centered under the group */}
                 <text
                   x={groupX + (BAR_W * 2 + GAP_BTW) / 2}
-                  y={CHART_H + BOTTOM - 4}
+                  y={VIEW_H - 6}
                   textAnchor="middle"
                   className="tv-axis-label"
                 >
@@ -166,18 +160,12 @@ export default function TicketVolumeChart({ data = [], statusCounts = {}, isLoad
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
-/**
- * When no per-day array is available, synthesise day-labelled rows from the
- * status_counts snapshot so the chart still shows real backend numbers.
- * We split the last 7 "virtual" days evenly – but only if counts > 0.
- */
 function buildFallbackRows(statusCounts) {
   const created = (statusCounts.OPEN ?? 0) + (statusCounts.IN_PROGRESS ?? 0);
   const resolved = (statusCounts.RESOLVED ?? 0) + (statusCounts.CLOSED ?? 0);
 
   if (created === 0 && resolved === 0) return [];
 
-  // Spread across 7 day buckets (Mon–Sun) distributing unevenly for realism
   const DAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   const weights = [0.18, 0.17, 0.16, 0.17, 0.15, 0.09, 0.08];
 
@@ -188,22 +176,20 @@ function buildFallbackRows(statusCounts) {
   }));
 }
 
-/** Round up to a "nice" ceiling (multiples of 25 or 10) */
 function niceMax(raw) {
   if (raw === 0) return 0;
   if (raw <= 10) return 10;
   if (raw <= 25) return 25;
   if (raw <= 50) return 50;
   if (raw <= 75) return 75;
+  if (raw <= 100) return 100;
   const mag = Math.pow(10, Math.floor(Math.log10(raw)));
   return Math.ceil(raw / mag) * mag;
 }
 
-/** Evenly-spaced y-axis step values from 0 up to yMax */
 function buildSteps(yMax) {
   if (yMax === 0) return [0];
   const STEP_COUNT = 4;
   const step = yMax / STEP_COUNT;
   return Array.from({ length: STEP_COUNT + 1 }, (_, i) => Math.round(i * step));
 }
-

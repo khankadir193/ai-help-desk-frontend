@@ -23,7 +23,7 @@ export default function PriorityDonut({
   }
 
   // SVG Geometry
-  const size = 160;
+  const size = 150;
   const strokeWidth = 22;
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
@@ -65,8 +65,8 @@ export default function PriorityDonut({
             height={size}
             viewBox={`0 0 ${size} ${size}`}
             className="priority-donut__svg"
-              role="img"
-              aria-label={`Donut chart showing ${totalOpen} tickets across priority levels`}
+            role="img"
+            aria-label={`Donut chart showing ${totalOpen} tickets across priority levels`}
           >
             <g transform={`rotate(-90 ${size / 2} ${size / 2})`}>
               {slices.map((slice) => {
@@ -80,7 +80,7 @@ export default function PriorityDonut({
                     r={radius}
                     fill="transparent"
                     stroke={slice.color}
-                    strokeWidth={isHovered ? strokeWidth + 3 : strokeWidth}
+                    strokeWidth={isHovered ? strokeWidth + 2.5 : strokeWidth}
                     strokeDasharray={`${slice.dashLength} ${circumference - slice.dashLength}`}
                     strokeDashoffset={slice.offset}
                     className="priority-donut__slice"
@@ -91,10 +91,10 @@ export default function PriorityDonut({
               })}
             </g>
 
-            {/* Center Text (128 open) */}
+            {/* Center Text */}
             <text
               x={size / 2}
-              y={size / 2 - 6}
+              y={size / 2 - 7}
               textAnchor="middle"
               dominantBaseline="central"
               className="priority-donut__center-num tabular-nums"
@@ -103,7 +103,7 @@ export default function PriorityDonut({
             </text>
             <text
               x={size / 2}
-              y={size / 2 + 14}
+              y={size / 2 + 13}
               textAnchor="middle"
               dominantBaseline="central"
               className="priority-donut__center-sub"
@@ -139,19 +139,17 @@ export default function PriorityDonut({
                 onMouseEnter={() => setHoveredSlice(item)}
                 onMouseLeave={() => setHoveredSlice(null)}
               >
-                <div className="priority-donut__legend-left">
-                  <span
-                    className="priority-donut__legend-dot"
-                    style={{ backgroundColor: item.color }}
-                    aria-hidden="true"
-                  />
-                  <span className="priority-donut__legend-name">
-                    {item.label}
-                  </span>
-                </div>
-                <div className="priority-donut__legend-stat tabular-nums">
+                <span
+                  className="priority-donut__legend-dot"
+                  style={{ backgroundColor: item.color }}
+                  aria-hidden="true"
+                />
+                <span className="priority-donut__legend-name">
+                  {item.label}
+                </span>
+                <span className="priority-donut__legend-stat tabular-nums">
                   <strong>{item.count}</strong> · {item.percentage}
-                </div>
+                </span>
               </div>
             );
           })}

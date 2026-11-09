@@ -6,8 +6,8 @@
   box-shadow: var(--shadow-card);
   display: flex;
   flex-direction: column;
-  height: clamp(260px, 32vh, 340px);
-  max-height: clamp(260px, 32vh, 340px);
+  height: 270px;
+  max-height: 270px;
   min-width: 0;
   overflow: hidden;
 }
@@ -54,7 +54,7 @@
 .activity-card__list {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
   flex: 1;
   min-height: 0;
   overflow-y: auto;
@@ -84,7 +84,7 @@
 .activity-card__item {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
   min-width: 0;
 }
 
@@ -128,7 +128,7 @@
 .activity-card__meta {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   flex-shrink: 0;
 }
 
@@ -142,8 +142,8 @@
 /* Mobile responsive */
 @media (max-width: 767px) {
   .activity-card {
-    height: 320px;
-    max-height: 320px;
+    height: 300px;
+    max-height: 300px;
   }
 }
 

@@ -6,8 +6,8 @@
   box-shadow: var(--shadow-card);
   display: flex;
   flex-direction: column;
-  height: clamp(260px, 32vh, 340px);
-  max-height: clamp(260px, 32vh, 340px);
+  height: 270px;
+  max-height: 270px;
   min-width: 0;
   position: relative;
   overflow: hidden;
@@ -248,7 +248,7 @@
     min-width: 320px;
   }
   .team-card {
-    height: 320px;
-    max-height: 320px;
+    height: 300px;
+    max-height: 300px;
   }
 }

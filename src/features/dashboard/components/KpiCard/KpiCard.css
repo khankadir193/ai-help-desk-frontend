@@ -6,6 +6,8 @@
   box-shadow: var(--shadow-card);
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+  min-height: 120px;
   min-width: 0;
   overflow: hidden;
   transition: transform var(--transition-fast), box-shadow var(--transition-fast);
@@ -27,11 +29,11 @@
 }
 
 .kpi-card__value {
-  font-size: clamp(22px, 2vw, 28px);
+  font-size: clamp(22px, 1.8vw, 26px);
   font-weight: 700;
   color: var(--text-primary);
   letter-spacing: -0.025em;
-  margin: 10px 0 8px 0;
+  margin: 8px 0;
   line-height: 1.15;
   white-space: nowrap;
   overflow: hidden;
@@ -53,9 +55,10 @@
 .kpi-card__trend {
   display: inline-flex;
   align-items: center;
-  gap: 3px;
+  gap: 2px;
   font-weight: 600;
   flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
 }
 
 .kpi-card__trend--up {
@@ -76,6 +79,7 @@
 
 .kpi-card__dash {
   font-weight: 600;
+  margin-right: 2px;
 }
 
 .kpi-card__comparison {

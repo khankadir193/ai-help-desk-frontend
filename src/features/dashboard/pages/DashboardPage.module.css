@@ -27,34 +27,3 @@
   color: var(--text-muted);
   max-width: 380px;
 }
-
-.paginationBar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  flex-wrap: wrap;
-  margin-top: -8px;
-}
-
-.pageInfo {
-  font-size: 12.5px;
-  color: var(--text-muted);
-}
-
-.pageControls {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-@media (max-width: 767px) {
-  .paginationBar {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .pageControls {
-    justify-content: space-between;
-  }
-}

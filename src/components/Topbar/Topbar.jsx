@@ -103,7 +103,6 @@ export default function Topbar({
           onClick={() => setIsCreateTicketOpen(true)}
           aria-label="Create new ticket"
         >
-          <Icon name="plus" size={16} strokeWidth={2.25} />
           <span className="topbar__btn-new-ticket-label">New ticket</span>
         </button>
 

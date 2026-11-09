@@ -1,14 +1,13 @@
 /* ==========================================================================
    Sidebar — matches reference design
-   Changes: hidden scrollbar, no underlines, larger logo tile, refined
-   spacing, badge pill styling, active bg-only highlight (no accent bar),
-   icon container alignment, full responsiveness preserved.
+   248px wide, full viewport height (100dvh), pinned user card,
+   refined spacing, 32px logo tile, 40px nav items, active tint bg.
    ========================================================================== */
 
 .sidebar {
   position: sticky;
   top: 0;
-  height: 100vh;
+  height: 100dvh;
   background-color: var(--bg-sidebar);
   border-right: 1px solid var(--border-color);
   display: flex;
@@ -17,7 +16,6 @@
   z-index: 30;
   flex-shrink: 0;
   overflow: hidden;
-  /* Scrollbar is intentionally hidden — nav fits within 100vh */
   scrollbar-width: none;
 }
 
@@ -39,7 +37,7 @@
 
 .sidebar__header {
   height: var(--topbar-height);
-  padding: 0 20px;
+  padding: 0 16px 0 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -59,25 +57,24 @@
   gap: 12px;
 }
 
-/* Slightly larger tile matching the reference image */
+/* 32px tile matching the reference design */
 .sidebar__logo-tile {
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-lg);
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-button);
   background-color: var(--color-primary);
   color: var(--text-inverse);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.25);
 }
 
 .sidebar__brand-name {
-  font-size: 17px;
-  font-weight: 700;
+  font-size: 15px;
+  font-weight: 600;
   color: var(--text-primary);
-  letter-spacing: -0.025em;
+  letter-spacing: -0.01em;
   white-space: nowrap;
 }
 
@@ -96,6 +93,11 @@
 .sidebar__toggle-btn:hover {
   background-color: var(--bg-hover);
   color: var(--text-primary);
+}
+
+/* Hide collapse chevron in desktop expanded mode to match reference */
+.sidebar--expanded .sidebar__toggle-btn {
+  display: none;
 }
 
 .sidebar--collapsed .sidebar__toggle-btn {
@@ -122,7 +124,6 @@
   flex-direction: column;
   gap: 20px;
   min-height: 0;
-  /* Allow scrolling only when viewport is too small to show all items */
   overflow-y: auto;
   overflow-x: hidden;
   scrollbar-width: none;
@@ -146,10 +147,10 @@
 .sidebar__section-title {
   font-size: 11px;
   font-weight: 600;
-  color: var(--text-subtle);
-  letter-spacing: 0.07em;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
   text-transform: uppercase;
-  padding: 4px 12px 8px 12px;
+  padding: 4px 12px 6px 12px;
   user-select: none;
 }
 
@@ -172,15 +173,16 @@
 }
 
 /* ==========================================================================
-   Nav Links — no underlines in any state
+   Nav Links — 40px height, 14px text, 8px radius, no underlines
    ========================================================================== */
 
 .sidebar__link {
   width: 100%;
+  height: 40px;
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px 12px;
+  padding: 0 12px;
   border-radius: var(--radius-button);
   color: var(--text-secondary);
   font-size: 14px;
@@ -189,7 +191,6 @@
   text-align: left;
   user-select: none;
   position: relative;
-  /* Explicitly remove underline in every state */
   text-decoration: none;
 }
 
@@ -200,13 +201,12 @@
   text-decoration: none;
 }
 
-/* No left accent bar — reference uses background highlight only */
 .sidebar__link::after {
   display: none;
 }
 
 .sidebar--collapsed .sidebar__link {
-  padding: 10px;
+  padding: 0;
   justify-content: center;
 }
 
@@ -232,7 +232,7 @@
 }
 
 /* ==========================================================================
-   Icon container — fixed size keeps all icons pixel-aligned
+   Icon container — 20px fixed size keeps all icons pixel-aligned
    ========================================================================== */
 
 .sidebar__link-icon {
@@ -254,11 +254,11 @@
 }
 
 /* ==========================================================================
-   Badge — pill style matching reference (grey bg, border, subtle)
+   Badge — small pill matching reference
    ========================================================================== */
 
 .sidebar__badge {
-  font-size: 11.5px;
+  font-size: 11px;
   font-weight: 500;
   line-height: 1;
   color: var(--text-muted);
@@ -270,7 +270,6 @@
   flex-shrink: 0;
 }
 
-/* Keep badge subtle even on the active item — matches reference */
 .sidebar__link--active .sidebar__badge {
   background-color: var(--bg-card);
   border-color: var(--border-color);
@@ -318,13 +317,14 @@
 }
 
 /* ==========================================================================
-   Footer / User Profile
+   Footer / User Profile — pinned at bottom
    ========================================================================== */
 
 .sidebar__footer {
-  padding: 16px 12px;
+  padding: 12px;
   border-top: 1px solid var(--border-color);
   flex-shrink: 0;
+  margin-top: auto;
 }
 
 .sidebar--collapsed .sidebar__footer {
@@ -342,7 +342,7 @@
   align-items: center;
   gap: 10px;
   padding: 8px 10px;
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-button);
   border: 1px solid var(--border-color);
   background-color: var(--bg-card);
   transition: border-color var(--transition-fast);
@@ -366,14 +366,16 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  line-height: 1.25;
 }
 
 .sidebar__user-role {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--text-muted);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  line-height: 1.25;
 }
 
 .sidebar__user-menu-btn {
@@ -484,7 +486,6 @@
     transition: transform 250ms ease;
     z-index: 100;
     box-shadow: var(--shadow-dropdown);
-    /* Allow internal scrolling on very short phone screens */
     overflow-y: auto;
     scrollbar-width: none;
   }
@@ -505,7 +506,6 @@
     display: none !important;
   }
 
-  /* Give the off-canvas drawer a defined header edge */
   .sidebar__header {
     border-bottom-color: var(--border-color);
   }
