@@ -98,10 +98,10 @@ export default function ReportsFilters({
   const currentChannelLabel =
     CHANNEL_OPTIONS.find((c) => c.id === selectedChannel)?.label || 'All channels';
 
-  // Format backlog string
-  const openCount = backlogSummary?.open ?? 128;
-  const unassignedCount = backlogSummary?.unassigned ?? 17;
-  const inProgressCount = backlogSummary?.in_progress ?? 54;
+  // Dynamic backlog counts with null-safe fallbacks
+  const openCount = backlogSummary?.open ?? backlogSummary?.count ?? '–';
+  const unassignedCount = backlogSummary?.unassigned ?? '–';
+  const inProgressCount = backlogSummary?.in_progress ?? '–';
 
   return (
     <section className="reports-filters-row" aria-label="Report Filters and Backlog Summary">
@@ -224,4 +224,3 @@ export default function ReportsFilters({
     </section>
   );
 }
-

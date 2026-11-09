@@ -9,12 +9,15 @@ import './AgentPerformanceTable.css';
  * Table displaying per-agent resolution volume, first response time, SLA rate, and CSAT.
  *
  * Props:
- *  data: { agents: Array<{ agent_id, agent_name, resolved, avg_first_response_hours, sla_met_pct, csat_avg }>, meta_text }
+ *  data: { agents: Array<{ agent_id, agent_name, resolved, avg_first_response_hours, sla_met_pct, csat_avg }>, total_agents, meta_text }
  *  isLoading: boolean
  */
 export default function AgentPerformanceTable({ data, isLoading }) {
   const agents = data?.agents ?? [];
-  const metaText = data?.meta_text || '4 of 8 agents · Illustrative data';
+  const totalAgents = data?.total_agents ?? agents.length;
+  const metaText =
+    data?.meta_text ||
+    (totalAgents > 0 ? `${agents.length} of ${totalAgents} agents` : '');
 
   if (isLoading) {
     return (
@@ -25,6 +28,15 @@ export default function AgentPerformanceTable({ data, isLoading }) {
         </div>
         <div className="reports-agent-table-container">
           <table className="reports-agent-table" aria-hidden="true">
+            <thead>
+              <tr>
+                <th scope="col" className="reports-col-agent">Agent</th>
+                <th scope="col" className="reports-col-metric">Resolved</th>
+                <th scope="col" className="reports-col-metric">First response</th>
+                <th scope="col" className="reports-col-metric">SLA met</th>
+                <th scope="col" className="reports-col-metric">CSAT / 5</th>
+              </tr>
+            </thead>
             <tbody>
               {[...Array(4)].map((_, i) => (
                 <tr key={i} className="reports-agent-skeleton-row">
@@ -44,10 +56,10 @@ export default function AgentPerformanceTable({ data, isLoading }) {
     <section className="reports-agent-card" aria-label="Agent Performance">
       <div className="reports-agent-card__header">
         <h2 className="reports-agent-card__title">Agent performance</h2>
-        <span className="reports-agent-card__meta">{metaText}</span>
+        {metaText && <span className="reports-agent-card__meta">{metaText}</span>}
       </div>
 
-      <div className="reports-agent-table-container">
+      <div className="reports-agent-table-container" tabIndex={0} role="region" aria-label="Agent performance table">
         <table className="reports-agent-table">
           <thead>
             <tr>
@@ -61,7 +73,7 @@ export default function AgentPerformanceTable({ data, isLoading }) {
           <tbody>
             {agents.map((agent) => {
               const initials = getInitials(agent.agent_name);
-              const resolvedStr = String(agent.resolved ?? 0);
+              const resolvedStr = agent.resolved != null ? String(agent.resolved) : '–';
               const firstRespStr = formatDuration(agent.avg_first_response_hours);
               const slaMetStr = formatPct(agent.sla_met_pct, 0);
               const csatStr = formatCsat(agent.csat_avg);
@@ -83,7 +95,7 @@ export default function AgentPerformanceTable({ data, isLoading }) {
                     </div>
                   </td>
 
-                  {/* Metrics */}
+                  {/* Right-aligned Metrics */}
                   <td className="reports-cell-metric tabular-nums">
                     {resolvedStr}
                   </td>
@@ -105,4 +117,3 @@ export default function AgentPerformanceTable({ data, isLoading }) {
     </section>
   );
 }
-

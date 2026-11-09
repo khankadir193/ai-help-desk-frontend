@@ -38,7 +38,7 @@
 }
 
 .reports-btn-export {
-  height: 38px;
+  height: 36px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -85,4 +85,3 @@
     width: 100%;
   }
 }
-

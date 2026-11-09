@@ -11,18 +11,19 @@ import './ResolutionSlaCard.css';
  *  isLoading: boolean
  */
 export default function ResolutionSlaCard({ data, isLoading }) {
-  const percentage     = data?.percentage ?? 96;
-  const withinTarget   = data?.within_target ?? 300;
-  const breachedTarget = data?.breached_target ?? 12;
-  const totalResolved  = data?.total_resolved ?? 312;
+  const percentage     = data?.percentage != null ? data.percentage : '–';
+  const numericPct     = typeof percentage === 'number' ? percentage : 0;
+  const withinTarget   = data?.within_target != null ? data.within_target : '–';
+  const breachedTarget = data?.breached_target != null ? data.breached_target : '–';
+  const totalResolved  = data?.total_resolved != null ? data.total_resolved : '–';
   const note           = data?.note || 'Share resolved within the configured SLA. Open tickets are excluded.';
 
-  // Circular ring geometry
-  const size = 112;
+  // Circular ring geometry (~100px)
+  const size = 100;
   const strokeWidth = 10;
   const radius = (size - strokeWidth) / 2;
   const center = size / 2;
-  const { dashArray } = ringDash(percentage, radius);
+  const { dashArray } = ringDash(numericPct, radius);
 
   if (isLoading) {
     return (
@@ -46,7 +47,11 @@ export default function ResolutionSlaCard({ data, isLoading }) {
 
       <div className="reports-sla-card__body">
         {/* Left: Progress Ring */}
-        <div className="reports-sla-ring-container" role="img" aria-label={`Resolution SLA compliance: ${percentage}% within target.`}>
+        <div
+          className="reports-sla-ring-container"
+          role="img"
+          aria-label={`Resolution SLA compliance: ${percentage}% within target.`}
+        >
           <svg
             width={size}
             height={size}
@@ -75,7 +80,9 @@ export default function ResolutionSlaCard({ data, isLoading }) {
 
           {/* Centered Percentage Text */}
           <div className="reports-sla-ring-text">
-            <span className="reports-sla-ring-percent tabular-nums">{percentage}%</span>
+            <span className="reports-sla-ring-percent tabular-nums">
+              {percentage !== '–' ? `${percentage}%` : '–'}
+            </span>
             <span className="reports-sla-ring-label">within</span>
           </div>
         </div>
@@ -99,4 +106,3 @@ export default function ResolutionSlaCard({ data, isLoading }) {
     </section>
   );
 }
-

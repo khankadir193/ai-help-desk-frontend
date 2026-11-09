@@ -8,12 +8,25 @@
   gap: 20px;
 }
 
-/* 2fr 1fr Grid Rows */
-.reports-grid-row {
+/* Row 2: Ticket Volume + Resolution SLA (grid 2fr 1fr, align-items: stretch, equal card heights ~235px) */
+.reports-grid-row--row2 {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+  align-items: stretch;
+}
+
+/* Row 3: Agent Performance + Customer Satisfaction (grid 2fr 1fr, align-items: start) */
+.reports-grid-row--row3 {
   display: grid;
   grid-template-columns: 2fr 1fr;
   gap: 20px;
   align-items: start;
+}
+
+.reports-grid-row--row2 > *,
+.reports-grid-row--row3 > * {
+  min-width: 0;
 }
 
 /* Error State Container */
@@ -55,26 +68,28 @@
    Responsive Breakpoints
    ========================================================================== */
 
-/* 1024px to 1279px */
+/* 1024px to 1279px: KPI 3x2, Rows 2 and 3 stay 2-column */
 @media (max-width: 1279px) {
-  .reports-grid-row {
+  .reports-grid-row--row2,
+  .reports-grid-row--row3 {
     gap: 16px;
   }
 }
 
-/* 768px to 1023px */
+/* 768px to 1023px: Rows stack to 1 column, KPI 3x2 */
 @media (max-width: 1023px) {
-  .reports-grid-row {
+  .reports-grid-row--row2,
+  .reports-grid-row--row3 {
     grid-template-columns: 1fr;
     gap: 20px;
   }
 }
 
-/* Under 768px (Mobile) */
+/* Under 768px (Mobile): Rows stack to 1 column, KPI 2 columns */
 @media (max-width: 767px) {
-  .reports-grid-row {
+  .reports-grid-row--row2,
+  .reports-grid-row--row3 {
     grid-template-columns: 1fr;
     gap: 16px;
   }
 }
-

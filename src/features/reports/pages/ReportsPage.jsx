@@ -50,7 +50,6 @@ function formatDateRangeLabel(from, to) {
   const endStr = formatMediumDate(to);
   if (!startStr || !endStr) return 'Oct 23 – Oct 29, 2026';
 
-  // If same year, we can show "Oct 23 – Oct 29, 2026"
   const startParts = startStr.split(', ');
   const endParts = endStr.split(', ');
   if (startParts[1] === endParts[1]) {
@@ -145,9 +144,7 @@ export default function ReportsPage() {
     }
   }, [analytics, dateFrom, dateTo]);
 
-  // Customers get a dedicated access-restricted screen. The analytics query
-  // above stays disabled for this role, so no Reports API request is made
-  // and no analytics data (real or dummy) is displayed.
+  // Customers get a dedicated access-restricted screen.
   if (isCustomer) {
     return (
       <main
@@ -182,6 +179,7 @@ export default function ReportsPage() {
         onExport={handleExport}
         isExporting={isExporting}
         disabled={isLoading || isFetching}
+        metaText={analytics?.meta_text}
       />
 
       {/* 2. Filters Row */}
@@ -203,8 +201,8 @@ export default function ReportsPage() {
         isLoading={isLoading && !analytics}
       />
 
-      {/* 4. Row 2 (grid 2fr 1fr): Ticket Volume + Resolution SLA */}
-      <div className="reports-grid-row" aria-label="Volume and SLA Performance">
+      {/* 4. Row 2 (grid 2fr 1fr, align-items: stretch): Ticket Volume + Resolution SLA */}
+      <div className="reports-grid-row reports-grid-row--row2" aria-label="Volume and SLA Performance">
         <TicketVolumeCard
           data={analytics?.ticket_volume}
           isLoading={isLoading && !analytics}
@@ -215,8 +213,8 @@ export default function ReportsPage() {
         />
       </div>
 
-      {/* 5. Row 3 (grid 2fr 1fr): Agent Performance + Customer Satisfaction */}
-      <div className="reports-grid-row" aria-label="Agent and Customer Outcomes">
+      {/* 5. Row 3 (grid 2fr 1fr, align-items: start): Agent Performance + Customer Satisfaction */}
+      <div className="reports-grid-row reports-grid-row--row3" aria-label="Agent and Customer Outcomes">
         <AgentPerformanceTable
           data={analytics?.agent_performance}
           isLoading={isLoading && !analytics}
@@ -229,4 +227,3 @@ export default function ReportsPage() {
     </main>
   );
 }
-

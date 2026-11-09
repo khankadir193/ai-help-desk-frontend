@@ -16,6 +16,10 @@
   box-shadow: var(--shadow-card);
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+  min-height: 120px;
+  min-width: 0;
+  overflow: hidden;
   transition: transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 
@@ -29,6 +33,9 @@
   font-weight: 500;
   color: var(--text-muted);
   line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .reports-kpi-card__value {
@@ -38,6 +45,9 @@
   letter-spacing: -0.025em;
   margin: 10px 0 8px 0;
   line-height: 1.15;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .reports-kpi-card__caption {
@@ -45,6 +55,9 @@
   font-weight: 400;
   color: var(--text-muted);
   line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Skeleton Loading */
@@ -104,4 +117,3 @@
     grid-template-columns: 1fr;
   }
 }
-

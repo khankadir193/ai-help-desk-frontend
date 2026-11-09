@@ -1,5 +1,5 @@
 import { formatShortDate } from '../../utils/formatters';
-import { niceMax, buildYSteps, barGeometry } from '../../utils/chartHelpers';
+import { niceMax, buildYSteps } from '../../utils/chartHelpers';
 import './TicketVolumeCard.css';
 
 /**
@@ -13,27 +13,30 @@ import './TicketVolumeCard.css';
  */
 export default function TicketVolumeCard({ data, isLoading }) {
   const days = data?.days ?? [];
-  const totalCreated = data?.total_created ?? 353;
-  const totalResolved = data?.total_resolved ?? 312;
+  const totalCreated = data?.total_created != null ? data.total_created : '–';
+  const totalResolved = data?.total_resolved != null ? data.total_resolved : '–';
 
   // Max value across all created & resolved counts
-  const allCounts = days.flatMap((d) => [d.created, d.resolved]);
+  const allCounts = days.flatMap((d) => [d.created ?? 0, d.resolved ?? 0]);
   const rawMax = Math.max(...allCounts, 0);
   const yMax = niceMax(rawMax > 0 ? rawMax : 80);
   const steps = buildYSteps(yMax, 4);
 
-  // Layout geometry
-  const CHART_H = 190;
+  // Responsive SVG Geometry inside 150px chart area
+  const VIEW_W = 640;
+  const VIEW_H = 150;
   const LEFT_AXIS = 34;
-  const BOTTOM_AXIS = 26;
+  const RIGHT_PAD = 14;
+  const TOP_PAD = 14;
+  const BOTTOM_AXIS = 22;
+  const PLOT_H = VIEW_H - TOP_PAD - BOTTOM_AXIS; // 114px
+  const AVAILABLE_W = VIEW_W - LEFT_AXIS - RIGHT_PAD;
 
-  const { groupW, barW, barGap, groupGap } = barGeometry(days.length);
-  const totalW = Math.max(
-    LEFT_AXIS + days.length * (groupW + groupGap) - groupGap + 12,
-    460
-  );
+  const slotW = days.length > 0 ? AVAILABLE_W / days.length : AVAILABLE_W;
+  const barW = Math.min(18, Math.max(8, (slotW - 14) / 2));
+  const barGap = 5;
 
-  const toBarH = (val) => (yMax > 0 ? (val / yMax) * CHART_H : 0);
+  const toBarH = (val) => (yMax > 0 ? (val / yMax) * PLOT_H : 0);
 
   if (isLoading) {
     return (
@@ -75,20 +78,24 @@ export default function TicketVolumeCard({ data, isLoading }) {
       </div>
 
       {/* SVG Chart */}
-      <div className="reports-tv-chart-scroll" role="img" aria-label={`Ticket volume grouped bar chart: ${totalCreated} created, ${totalResolved} resolved over ${days.length} days.`}>
+      <div
+        className="reports-tv-chart-container"
+        role="img"
+        aria-label={`Ticket volume grouped bar chart: ${totalCreated} created, ${totalResolved} resolved over ${days.length} days.`}
+      >
         <svg
-          viewBox={`0 0 ${totalW} ${CHART_H + BOTTOM_AXIS + 6}`}
+          viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
           className="reports-tv-svg"
           preserveAspectRatio="none"
         >
           {/* Horizontal grid lines & Y-axis labels */}
           {steps.map((step) => {
-            const y = CHART_H - toBarH(step) + 4;
+            const y = TOP_PAD + (PLOT_H - toBarH(step));
             return (
               <g key={step}>
                 <line
                   x1={LEFT_AXIS}
-                  x2={totalW}
+                  x2={VIEW_W - RIGHT_PAD}
                   y1={y}
                   y2={y}
                   className="reports-tv-gridline"
@@ -107,18 +114,18 @@ export default function TicketVolumeCard({ data, isLoading }) {
 
           {/* Grouped Bars */}
           {days.map((day, i) => {
-            const groupX = LEFT_AXIS + i * (groupW + groupGap);
-            const createdH = Math.max(toBarH(day.created), day.created > 0 ? 4 : 0);
-            const resolvedH = Math.max(toBarH(day.resolved), day.resolved > 0 ? 4 : 0);
+            const groupX = LEFT_AXIS + i * slotW + (slotW - (barW * 2 + barGap)) / 2;
+            const createdH = Math.max(toBarH(day.created ?? 0), (day.created ?? 0) > 0 ? 3 : 0);
+            const resolvedH = Math.max(toBarH(day.resolved ?? 0), (day.resolved ?? 0) > 0 ? 3 : 0);
 
-            const createdY = CHART_H - createdH + 4;
-            const resolvedY = CHART_H - resolvedH + 4;
+            const createdY = TOP_PAD + (PLOT_H - createdH);
+            const resolvedY = TOP_PAD + (PLOT_H - resolvedH);
 
             const shortLabel = formatShortDate(day.date);
 
             return (
               <g key={day.date} className="reports-tv-bar-group">
-                <title>{`${shortLabel}: ${day.created} created, ${day.resolved} resolved`}</title>
+                <title>{`${shortLabel}: ${day.created ?? 0} created, ${day.resolved ?? 0} resolved`}</title>
 
                 {/* Created bar (indigo) */}
                 <rect
@@ -131,7 +138,7 @@ export default function TicketVolumeCard({ data, isLoading }) {
                   className="reports-tv-bar reports-tv-bar--created"
                 />
 
-                {/* Resolved bar (green/teal) */}
+                {/* Resolved bar (green/emerald) */}
                 <rect
                   x={groupX + barW + barGap}
                   y={resolvedY}
@@ -145,7 +152,7 @@ export default function TicketVolumeCard({ data, isLoading }) {
                 {/* X-axis date label */}
                 <text
                   x={groupX + barW + barGap / 2}
-                  y={CHART_H + BOTTOM_AXIS}
+                  y={VIEW_H - 4}
                   textAnchor="middle"
                   className="reports-tv-axis-label reports-tv-x-label"
                 >
@@ -159,4 +166,3 @@ export default function TicketVolumeCard({ data, isLoading }) {
     </section>
   );
 }
-

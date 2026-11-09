@@ -11,7 +11,7 @@
  * @returns {string}
  */
 export function formatDuration(hours) {
-  if (hours == null || !Number.isFinite(hours) || hours < 0) return 'N/A';
+  if (hours == null || !Number.isFinite(hours) || hours < 0) return '–';
   if (hours === 0) return '0m';
 
   const totalMinutes = Math.round(hours * 60);
@@ -31,14 +31,14 @@ export function formatDuration(hours) {
 
 /**
  * Format a number as a percentage string with one decimal place.
- * Returns 'N/A' for null/undefined.
+ * Returns '–' for null/undefined.
  *
  * @param {number|null} value  — already a percentage (e.g. 87.3)
  * @param {number} [digits=1]
  * @returns {string}
  */
 export function formatPct(value, digits = 1) {
-  if (value == null || !Number.isFinite(value)) return 'N/A';
+  if (value == null || !Number.isFinite(value)) return '–';
   return `${value.toFixed(digits)}%`;
 }
 
@@ -49,7 +49,7 @@ export function formatPct(value, digits = 1) {
  * @returns {string}
  */
 export function formatCsat(value) {
-  if (value == null || !Number.isFinite(value)) return 'N/A';
+  if (value == null || !Number.isFinite(value)) return '–';
   return value.toFixed(1);
 }
 
@@ -175,4 +175,3 @@ export function downloadCsv(csvString, filename = 'report.csv') {
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 }
-

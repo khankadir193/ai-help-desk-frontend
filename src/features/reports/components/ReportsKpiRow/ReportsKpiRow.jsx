@@ -26,28 +26,30 @@ export default function ReportsKpiRow({ kpis, sla, isLoading }) {
     );
   }
 
-  const openTickets     = kpis?.open_tickets ?? 128;
-  const resolvedTickets = kpis?.resolved_tickets ?? 312;
-  const firstResponse   = formatDuration(kpis?.avg_first_response_hours ?? 0.211);
-  const resolutionTime  = formatDuration(kpis?.avg_resolution_hours ?? 4.083);
-  const slaPct          = formatPct(kpis?.sla_compliance_pct ?? 96, 0);
-  const csatScore       = formatCsat(kpis?.csat_avg ?? 4.8);
-  const csatResponses   = kpis?.csat_responses ?? 200;
+  // Dynamic metrics with null-safe fallbacks
+  const openTickets     = kpis?.open_tickets != null ? String(kpis.open_tickets) : '–';
+  const resolvedTickets = kpis?.resolved_tickets != null ? String(kpis.resolved_tickets) : '–';
+  const firstResponse   = formatDuration(kpis?.avg_first_response_hours);
+  const resolutionTime  = formatDuration(kpis?.avg_resolution_hours);
+  const slaPct          = formatPct(kpis?.sla_compliance_pct, 0);
+  const csatScore       = formatCsat(kpis?.csat_avg);
+  const csatResponses   = kpis?.csat_responses != null ? `${kpis.csat_responses} responses` : '–';
 
-  const slaWithin = sla?.within_target ?? 300;
-  const slaTotal  = sla?.total_resolved ?? resolvedTickets;
+  const slaWithin = sla?.within_target != null ? sla.within_target : (kpis?.resolved_tickets != null ? kpis.resolved_tickets : '–');
+  const slaTotal  = sla?.total_resolved != null ? sla.total_resolved : (kpis?.resolved_tickets != null ? kpis.resolved_tickets : '–');
+  const slaCaption = slaWithin !== '–' && slaTotal !== '–' ? `${slaWithin} of ${slaTotal} tickets` : 'Tickets within SLA';
 
   const cards = [
     {
       id: 'open',
       label: 'Open tickets',
-      value: String(openTickets),
+      value: openTickets,
       caption: 'Current backlog',
     },
     {
       id: 'resolved',
       label: 'Resolved',
-      value: String(resolvedTickets),
+      value: resolvedTickets,
       caption: 'Selected period',
     },
     {
@@ -66,13 +68,13 @@ export default function ReportsKpiRow({ kpis, sla, isLoading }) {
       id: 'sla_compliance',
       label: 'SLA compliance',
       value: slaPct,
-      caption: `${slaWithin} of ${slaTotal} tickets`,
+      caption: slaCaption,
     },
     {
       id: 'csat',
       label: 'CSAT / 5',
       value: csatScore,
-      caption: `${csatResponses} responses`,
+      caption: csatResponses,
     },
   ];
 
@@ -88,4 +90,3 @@ export default function ReportsKpiRow({ kpis, sla, isLoading }) {
     </section>
   );
 }
-

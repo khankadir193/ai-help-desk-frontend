@@ -11,16 +11,17 @@ import './CustomerSatisfactionCard.css';
  *  isLoading: boolean
  */
 export default function CustomerSatisfactionCard({ data, isLoading }) {
-  const average        = formatCsat(data?.average ?? 4.8);
+  const average        = data?.average != null ? formatCsat(data.average) : '–';
   const maxRating      = data?.max_rating ?? 5;
-  const totalResponses = data?.total_responses ?? 200;
-  const note           = data?.note || 'Y: rating · X: responses (0–200). Sample only.';
+  const totalResponses = data?.total_responses != null ? data.total_responses : '–';
+  const numericTotal   = typeof totalResponses === 'number' ? totalResponses : 0;
+  const note           = data?.note || (numericTotal > 0 ? `Y: rating · X: responses (0–${numericTotal})` : 'Customer rating distribution');
 
   const distribution = data?.distribution ?? [
-    { stars: 5, count: 168 },
-    { stars: 4, count: 24 },
-    { stars: 3, count: 6 },
-    { stars: 2, count: 2 },
+    { stars: 5, count: 0 },
+    { stars: 4, count: 0 },
+    { stars: 3, count: 0 },
+    { stars: 2, count: 0 },
     { stars: 1, count: 0 },
   ];
 
@@ -46,20 +47,21 @@ export default function CustomerSatisfactionCard({ data, isLoading }) {
     <section className="reports-csat-card" aria-label="Customer Satisfaction">
       <h2 className="reports-csat-card__title">Customer satisfaction</h2>
 
-      {/* Main Score & Response Count */}
+      {/* Main Score (20px/600) & Response Count (13px muted) */}
       <div className="reports-csat-score-row">
         <span className="reports-csat-score tabular-nums">
           {average} <span className="reports-csat-max">/ {maxRating}</span>
         </span>
         <span className="reports-csat-responses tabular-nums">
-          {totalResponses} survey responses
+          {totalResponses !== '–' ? `${totalResponses} survey responses` : '–'}
         </span>
       </div>
 
       {/* Horizontal Rating Bars */}
       <div className="reports-csat-bars" role="group" aria-label="Rating distribution from 5 stars to 1 star">
         {distribution.map((item) => {
-          const pct = totalResponses > 0 ? (item.count / totalResponses) * 100 : 0;
+          const count = item.count ?? 0;
+          const pct = numericTotal > 0 ? (count / numericTotal) * 100 : 0;
           return (
             <div key={item.stars} className="reports-csat-bar-row">
               <span className="reports-csat-star-label">
@@ -71,22 +73,21 @@ export default function CustomerSatisfactionCard({ data, isLoading }) {
                   className="reports-csat-fill"
                   style={{ width: `${pct}%` }}
                   role="progressbar"
-                  aria-valuenow={item.count}
+                  aria-valuenow={count}
                   aria-valuemin={0}
-                  aria-valuemax={totalResponses}
-                  aria-label={`${item.stars} stars: ${item.count} responses`}
+                  aria-valuemax={numericTotal}
+                  aria-label={`${item.stars} stars: ${count} responses`}
                 />
               </div>
 
-              <span className="reports-csat-count tabular-nums">{item.count}</span>
+              <span className="reports-csat-count tabular-nums">{count}</span>
             </div>
           );
         })}
       </div>
 
-      {/* Footer note */}
+      {/* Footer note (13px muted) */}
       <p className="reports-csat-note">{note}</p>
     </section>
   );
 }
-
