@@ -1,0 +1,52 @@
+.kb-related-card {
+  background-color: var(--bg-card, #FFFFFF);
+  border: 1px solid var(--border-color, #E2E8F0);
+  border-radius: var(--radius-card, 12px);
+  padding: 20px;
+  box-shadow: var(--shadow-card, 0 1px 2px rgba(15, 23, 42, 0.05));
+}
+
+.kb-related-card__title {
+  margin: 0 0 14px 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary, #0F172A);
+  letter-spacing: -0.01em;
+}
+
+.kb-related-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.kb-related-item {
+  padding: 0;
+  margin: 0;
+}
+
+.kb-related-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 13.5px;
+  color: var(--color-primary, #4F46E5);
+  text-decoration: none;
+  line-height: 1.45;
+  transition: color var(--transition-fast, 150ms ease);
+}
+
+.kb-related-link:hover {
+  color: var(--color-primary-hover, #4338CA);
+  text-decoration: underline;
+}
+
+.kb-related-link__icon {
+  flex-shrink: 0;
+  opacity: 0.85;
+}
+

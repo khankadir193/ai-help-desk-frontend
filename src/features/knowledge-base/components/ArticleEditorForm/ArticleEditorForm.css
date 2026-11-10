@@ -1,0 +1,105 @@
+.kb-editor-form-card {
+  background-color: var(--bg-card, #FFFFFF);
+  border: 1px solid var(--border-color, #E2E8F0);
+  border-radius: var(--radius-card, 12px);
+  padding: 24px;
+  box-shadow: var(--shadow-card, 0 1px 2px rgba(15, 23, 42, 0.05));
+  margin-bottom: 24px;
+}
+
+.kb-revision-banner {
+  background-color: #EFF6FF;
+  border-radius: var(--radius-input, 8px);
+  padding: 12px 16px;
+  margin-bottom: 20px;
+}
+
+.kb-revision-banner__text {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.45;
+  color: #1D4ED8;
+  font-weight: 500;
+}
+
+.kb-form-field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.kb-form-field__label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary, #0F172A);
+  margin-bottom: 6px;
+}
+
+.kb-form-field__input {
+  width: 100%;
+  height: 40px;
+  padding: 0 14px;
+  background-color: var(--bg-card, #FFFFFF);
+  border: 1px solid var(--border-color, #E2E8F0);
+  border-radius: var(--radius-input, 8px);
+  font-size: 14px;
+  color: var(--text-primary, #0F172A);
+  font-family: inherit;
+  transition: all var(--transition-fast, 150ms ease);
+}
+
+.kb-form-field__input:focus {
+  outline: none;
+  border-color: var(--color-primary, #4F46E5);
+  box-shadow: 0 0 0 2px var(--color-primary-tint, #EEF0FF);
+}
+
+.kb-form-field__input--error {
+  border-color: var(--color-danger, #DC2626);
+}
+
+.kb-form-field__error {
+  font-size: 12px;
+  color: var(--color-danger, #DC2626);
+  margin-top: 4px;
+}
+
+.kb-editor-subfooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+
+.kb-editor-subfooter__status {
+  font-size: 13px;
+  color: var(--text-muted, #64748B);
+  font-variant-numeric: tabular-nums;
+}
+
+.kb-preview-btn {
+  height: 36px;
+  padding: 0 16px;
+  background-color: var(--bg-card, #FFFFFF);
+  border: 1px solid var(--border-color, #E2E8F0);
+  border-radius: var(--radius-button, 8px);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary, #0F172A);
+  cursor: pointer;
+  transition: all var(--transition-fast, 150ms ease);
+}
+
+.kb-preview-btn:hover {
+  background-color: var(--bg-hover, #F1F5F9);
+  border-color: #CBD5E1;
+}
+
+.kb-preview-btn:focus-visible {
+  outline: none;
+  border-color: var(--color-primary, #4F46E5);
+  box-shadow: 0 0 0 2px var(--color-primary-tint, #EEF0FF);
+}
+

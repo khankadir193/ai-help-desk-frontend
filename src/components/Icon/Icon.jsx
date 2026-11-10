@@ -278,7 +278,7 @@ export default function Icon({
         </svg>
       );
 
-    /* Used by the Knowledge Base feature (src/features/knowledgeBase).
+    /* Used by the Knowledge Base feature (src/features/knowledge-base).
        Purely additive cases — no other module behavior is affected. */
     case 'clock':
       return (
@@ -321,6 +321,163 @@ export default function Icon({
         <svg {...iconProps}>
           <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
           <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+        </svg>
+      );
+
+    case 'credit-card':
+      return (
+        <svg {...iconProps}>
+          <rect width="20" height="14" x="2" y="5" rx="2" />
+          <line x1="2" x2="22" y1="10" y2="10" />
+        </svg>
+      );
+
+    case 'user':
+      return (
+        <svg {...iconProps}>
+          <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+          <circle cx="12" cy="7" r="4" />
+        </svg>
+      );
+
+    case 'rocket':
+      return (
+        <svg {...iconProps}>
+          <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" />
+          <path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z" />
+          <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0" />
+          <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5" />
+        </svg>
+      );
+
+    case 'plug':
+      return (
+        <svg {...iconProps}>
+          <path d="M12 22v-5" />
+          <path d="M9 8V2" />
+          <path d="M15 8V2" />
+          <path d="M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8Z" />
+        </svg>
+      );
+
+    case 'grip-vertical':
+      return (
+        <svg {...iconProps}>
+          <circle cx="9" cy="12" r="1" fill="currentColor" />
+          <circle cx="9" cy="5" r="1" fill="currentColor" />
+          <circle cx="9" cy="19" r="1" fill="currentColor" />
+          <circle cx="15" cy="12" r="1" fill="currentColor" />
+          <circle cx="15" cy="5" r="1" fill="currentColor" />
+          <circle cx="15" cy="19" r="1" fill="currentColor" />
+        </svg>
+      );
+
+    case 'arrow-up-right':
+    case 'external-link':
+      return (
+        <svg {...iconProps}>
+          <line x1="7" x2="17" y1="17" y2="7" />
+          <polyline points="7 7 17 7 17 17" />
+        </svg>
+      );
+
+    case 'square':
+      return (
+        <svg {...iconProps}>
+          <rect width="18" height="18" x="3" y="3" rx="2" />
+        </svg>
+      );
+
+    case 'download':
+      return (
+        <svg {...iconProps}>
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+          <polyline points="7 10 12 15 17 10" />
+          <line x1="12" x2="12" y1="15" y2="3" />
+        </svg>
+      );
+
+    case 'bold':
+      return (
+        <svg {...iconProps}>
+          <path d="M6 12h9a4 4 0 0 1 0 8H6v-8Z" />
+          <path d="M6 4h8a4 4 0 0 1 0 8H6V4Z" />
+        </svg>
+      );
+
+    case 'italic':
+      return (
+        <svg {...iconProps}>
+          <line x1="19" x2="10" y1="4" y2="4" />
+          <line x1="14" x2="5" y1="20" y2="20" />
+          <line x1="15" x2="9" y1="4" y2="20" />
+        </svg>
+      );
+
+    case 'underline':
+      return (
+        <svg {...iconProps}>
+          <path d="M6 4v6a6 6 0 0 0 12 0V4" />
+          <line x1="4" x2="20" y1="20" y2="20" />
+        </svg>
+      );
+
+    case 'heading':
+    case 'h2':
+      return (
+        <svg {...iconProps}>
+          <path d="M4 12h8" />
+          <path d="M4 18V6" />
+          <path d="M12 18V6" />
+          <path d="M21 18h-4c0-4 4-3 4-6 0-1.5-2-2.5-4-1" />
+        </svg>
+      );
+
+    case 'list':
+      return (
+        <svg {...iconProps}>
+          <line x1="8" x2="21" y1="6" y2="6" />
+          <line x1="8" x2="21" y1="12" y2="12" />
+          <line x1="8" x2="21" y1="18" y2="18" />
+          <line x1="3" x2="3.01" y1="6" y2="6" strokeWidth={strokeWidth * 1.5} />
+          <line x1="3" x2="3.01" y1="12" y2="12" strokeWidth={strokeWidth * 1.5} />
+          <line x1="3" x2="3.01" y1="18" y2="18" strokeWidth={strokeWidth * 1.5} />
+        </svg>
+      );
+
+    case 'list-ordered':
+      return (
+        <svg {...iconProps}>
+          <line x1="10" x2="21" y1="6" y2="6" />
+          <line x1="10" x2="21" y1="12" y2="12" />
+          <line x1="10" x2="21" y1="18" y2="18" />
+          <path d="M4 6h1v4" />
+          <path d="M4 10h2" />
+          <path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1" />
+        </svg>
+      );
+
+    case 'link':
+      return (
+        <svg {...iconProps}>
+          <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+          <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+        </svg>
+      );
+
+    case 'undo':
+      return (
+        <svg {...iconProps}>
+          <path d="M3 7v6h6" />
+          <path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13" />
+        </svg>
+      );
+
+    case 'redo':
+      return (
+        <svg {...iconProps}>
+          <path d="M21 7v6h-6" />
+          <path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3l3 2.7" />
         </svg>
       );
 

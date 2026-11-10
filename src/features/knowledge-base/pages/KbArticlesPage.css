@@ -1,0 +1,11 @@
+.kb-articles-page {
+  display: flex;
+  flex-direction: column;
+}
+
+.kb-table-card {
+  display: flex;
+  flex-direction: column;
+  margin-top: 4px;
+}
+

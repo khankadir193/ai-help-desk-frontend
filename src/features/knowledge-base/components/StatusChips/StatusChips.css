@@ -1,0 +1,47 @@
+.kb-status-chips {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 2px 0 16px 0;
+}
+
+.kb-status-chips::-webkit-scrollbar {
+  display: none;
+}
+
+.kb-status-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 14px;
+  background-color: var(--bg-card, #FFFFFF);
+  border: 1px solid var(--border-color, #E2E8F0);
+  border-radius: var(--radius-pill, 999px);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary, #475569);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--transition-fast, 150ms ease);
+}
+
+.kb-status-chip:hover {
+  border-color: #CBD5E1;
+  color: var(--text-primary, #0F172A);
+}
+
+.kb-status-chip--active {
+  background-color: var(--color-primary-tint, #EEF0FF);
+  border-color: var(--color-primary, #4F46E5);
+  color: var(--color-primary, #4F46E5);
+  font-weight: 600;
+}
+
+.kb-status-chip__count {
+  font-variant-numeric: tabular-nums;
+  opacity: 0.9;
+}
+

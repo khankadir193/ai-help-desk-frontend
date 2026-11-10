@@ -1,0 +1,100 @@
+.kb-editor-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background-color: var(--bg-page, #F8FAFC);
+  border-bottom: 1px solid var(--border-color, #E2E8F0);
+  border-top-left-radius: var(--radius-input, 8px);
+  border-top-right-radius: var(--radius-input, 8px);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.kb-editor-toolbar::-webkit-scrollbar {
+  display: none;
+}
+
+.kb-editor-toolbar__dropdown {
+  position: relative;
+}
+
+.kb-toolbar-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  padding: 0 8px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm, 4px);
+  font-size: 13px;
+  color: var(--text-secondary, #475569);
+  cursor: pointer;
+  transition: all var(--transition-fast, 150ms ease);
+}
+
+.kb-toolbar-btn:hover {
+  background-color: #E2E8F0;
+  color: var(--text-primary, #0F172A);
+}
+
+.kb-toolbar-btn--active {
+  background-color: #E2E8F0;
+  color: var(--color-primary, #4F46E5);
+  font-weight: 600;
+}
+
+.kb-toolbar-btn--dropdown {
+  gap: 4px;
+  padding: 0 10px;
+  border: 1px solid var(--border-color, #E2E8F0);
+  background-color: var(--bg-card, #FFFFFF);
+}
+
+.kb-toolbar-text-btn {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.kb-toolbar-divider {
+  width: 1px;
+  height: 18px;
+  background-color: var(--border-color, #E2E8F0);
+  margin: 0 2px;
+}
+
+.kb-toolbar-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  background-color: var(--bg-card, #FFFFFF);
+  border: 1px solid var(--border-color, #E2E8F0);
+  border-radius: var(--radius-input, 8px);
+  box-shadow: var(--shadow-dropdown, 0 10px 30px rgba(15, 23, 42, 0.12));
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  min-width: 140px;
+  z-index: 50;
+}
+
+.kb-toolbar-menu__item {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  font-size: 13px;
+  color: var(--text-primary, #0F172A);
+  background: none;
+  border: none;
+  border-radius: var(--radius-sm, 4px);
+  text-align: left;
+  cursor: pointer;
+  transition: background-color var(--transition-fast, 150ms ease);
+}
+
+.kb-toolbar-menu__item:hover {
+  background-color: var(--bg-hover, #F1F5F9);
+  color: var(--color-primary, #4F46E5);
+}
+

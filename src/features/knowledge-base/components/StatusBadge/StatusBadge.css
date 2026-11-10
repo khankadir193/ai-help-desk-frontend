@@ -1,0 +1,49 @@
+.kb-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 24px;
+  padding: 0 10px;
+  border-radius: var(--radius-pill, 999px);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.kb-status-badge__icon {
+  flex-shrink: 0;
+}
+
+.kb-status-badge__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: currentColor;
+  flex-shrink: 0;
+}
+
+/* Published - Light green tint with checkmark */
+.kb-status-badge--published {
+  background-color: #ECFDF5;
+  color: #047857;
+}
+
+/* Draft - Neutral slate tint with dot */
+.kb-status-badge--draft {
+  background-color: #F1F5F9;
+  color: #475569;
+}
+
+/* In Review - Neutral slate tint with dot */
+.kb-status-badge--in-review {
+  background-color: #F1F5F9;
+  color: #475569;
+}
+
+/* Archived - Neutral slate tint with square icon */
+.kb-status-badge--archived {
+  background-color: #F1F5F9;
+  color: #475569;
+}
+

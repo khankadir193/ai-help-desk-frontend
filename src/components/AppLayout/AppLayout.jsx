@@ -9,7 +9,6 @@ import './AppLayout.css';
 // Route to title map
 const ROUTE_TITLES = {
   '/': 'Dashboard',
-  '/categories': 'Categories',
   '/tickets': 'Tickets',
   '/ai-assistant': 'AI Assistant',
   '/knowledge-base': 'Knowledge Base',
@@ -87,10 +86,12 @@ export default function AppLayout() {
   };
 
   const pageTitle =
-    ROUTE_TITLES[location.pathname] ||
-    (location.pathname.startsWith('/tickets/')
-      ? 'Ticket Details'
-      : 'Dashboard');
+    location.pathname.startsWith('/knowledge-base')
+      ? 'Knowledge Base'
+      : (ROUTE_TITLES[location.pathname] ||
+         (location.pathname.startsWith('/tickets/')
+           ? 'Ticket Details'
+           : 'Dashboard'));
 
   return (
     <div className="app-layout">

@@ -1,0 +1,204 @@
+.kb-cat-details-card {
+  background-color: var(--bg-card, #FFFFFF);
+  border: 1px solid var(--border-color, #E2E8F0);
+  border-radius: var(--radius-card, 12px);
+  padding: 20px;
+  box-shadow: var(--shadow-card, 0 1px 2px rgba(15, 23, 42, 0.05));
+}
+
+.kb-cat-details-card__title {
+  margin: 0 0 16px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary, #0F172A);
+  letter-spacing: -0.01em;
+}
+
+.kb-cat-details-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.kb-cat-field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+}
+
+.kb-cat-field__label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary, #0F172A);
+  margin-bottom: 6px;
+}
+
+.kb-cat-field__input {
+  width: 100%;
+  height: 40px;
+  padding: 0 12px;
+  background-color: var(--bg-card, #FFFFFF);
+  border: 1px solid var(--border-color, #E2E8F0);
+  border-radius: var(--radius-input, 8px);
+  font-size: 13.5px;
+  color: var(--text-primary, #0F172A);
+  font-family: inherit;
+  transition: all var(--transition-fast, 150ms ease);
+}
+
+.kb-cat-field__input:focus {
+  outline: none;
+  border-color: var(--color-primary, #4F46E5);
+  box-shadow: 0 0 0 2px var(--color-primary-tint, #EEF0FF);
+}
+
+.kb-cat-field__input--error {
+  border-color: var(--color-danger, #DC2626);
+}
+
+.kb-cat-field__error {
+  font-size: 12px;
+  color: var(--color-danger, #DC2626);
+  margin-top: 4px;
+}
+
+.kb-cat-field__helper {
+  font-size: 12px;
+  color: var(--text-muted, #64748B);
+  margin-top: 4px;
+}
+
+.kb-cat-select-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.kb-cat-field__select {
+  width: 100%;
+  height: 40px;
+  padding: 0 34px 0 12px;
+  background-color: var(--bg-card, #FFFFFF);
+  border: 1px solid var(--border-color, #E2E8F0);
+  border-radius: var(--radius-input, 8px);
+  font-size: 13.5px;
+  color: var(--text-primary, #0F172A);
+  font-family: inherit;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  transition: all var(--transition-fast, 150ms ease);
+}
+
+.kb-cat-field__select:focus {
+  outline: none;
+  border-color: var(--color-primary, #4F46E5);
+  box-shadow: 0 0 0 2px var(--color-primary-tint, #EEF0FF);
+}
+
+.kb-cat-chevron {
+  position: absolute;
+  right: 12px;
+  color: var(--text-muted, #64748B);
+  pointer-events: none;
+}
+
+.kb-cat-info-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 14px;
+}
+
+.kb-cat-info-group__label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted, #64748B);
+  margin-bottom: 4px;
+}
+
+.kb-cat-info-group__value {
+  font-size: 13.5px;
+  color: var(--text-primary, #0F172A);
+  font-variant-numeric: tabular-nums;
+}
+
+.kb-cat-reorder-row {
+  display: flex;
+  gap: 10px;
+  margin: 6px 0 16px 0;
+}
+
+.kb-cat-reorder-btn {
+  flex: 1;
+  height: 36px;
+  background-color: var(--bg-card, #FFFFFF);
+  border: 1px solid var(--border-color, #E2E8F0);
+  border-radius: var(--radius-button, 8px);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary, #0F172A);
+  cursor: pointer;
+  transition: all var(--transition-fast, 150ms ease);
+}
+
+.kb-cat-reorder-btn:hover:not(:disabled) {
+  background-color: var(--bg-hover, #F1F5F9);
+  border-color: #CBD5E1;
+}
+
+.kb-cat-reorder-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.kb-cat-delete-note {
+  margin: 0 0 20px 0;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--text-muted, #64748B);
+}
+
+.kb-cat-actions-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.kb-cat-btn {
+  height: 38px;
+  padding: 0 16px;
+  border-radius: var(--radius-button, 8px);
+  font-size: 13.5px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all var(--transition-fast, 150ms ease);
+}
+
+.kb-cat-btn--secondary {
+  background-color: var(--bg-card, #FFFFFF);
+  border: 1px solid var(--border-color, #E2E8F0);
+  color: var(--text-primary, #0F172A);
+}
+
+.kb-cat-btn--secondary:hover {
+  background-color: var(--bg-hover, #F1F5F9);
+  border-color: #CBD5E1;
+}
+
+.kb-cat-btn--primary {
+  background-color: var(--color-primary, #4F46E5);
+  border: 1px solid var(--color-primary, #4F46E5);
+  color: #FFFFFF;
+}
+
+.kb-cat-btn--primary:hover:not(:disabled) {
+  background-color: var(--color-primary-hover, #4338CA);
+  border-color: var(--color-primary-hover, #4338CA);
+}
+
+.kb-cat-btn--primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+

@@ -1,0 +1,95 @@
+.kb-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 20px;
+  border-top: 1px solid var(--border-color, #E2E8F0);
+  background-color: var(--bg-card, #FFFFFF);
+  border-bottom-left-radius: var(--radius-card, 12px);
+  border-bottom-right-radius: var(--radius-card, 12px);
+  flex-wrap: wrap;
+}
+
+.kb-pagination__info {
+  font-size: 13px;
+  color: var(--text-muted, #64748B);
+  font-variant-numeric: tabular-nums;
+}
+
+.kb-pagination__controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.kb-pagination__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  padding: 0 12px;
+  background-color: var(--bg-card, #FFFFFF);
+  border: 1px solid var(--border-color, #E2E8F0);
+  border-radius: var(--radius-button, 8px);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary, #0F172A);
+  cursor: pointer;
+  font-family: inherit;
+  transition: all var(--transition-fast, 150ms ease);
+}
+
+.kb-pagination__btn:hover:not(:disabled) {
+  border-color: #CBD5E1;
+  background-color: var(--bg-hover, #F1F5F9);
+}
+
+.kb-pagination__btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.kb-pagination__btn:focus-visible {
+  outline: none;
+  border-color: var(--color-primary, #4F46E5);
+  box-shadow: 0 0 0 2px var(--color-primary-tint, #EEF0FF);
+}
+
+.kb-pagination__btn--page {
+  min-width: 36px;
+  padding: 0 6px;
+}
+
+.kb-pagination__btn--active {
+  background-color: var(--color-primary, #4F46E5);
+  border-color: var(--color-primary, #4F46E5);
+  color: #FFFFFF;
+  font-weight: 600;
+}
+
+.kb-pagination__btn--active:hover:not(:disabled) {
+  background-color: var(--color-primary-hover, #4338CA);
+  border-color: var(--color-primary-hover, #4338CA);
+  color: #FFFFFF;
+}
+
+.kb-pagination__ellipsis {
+  padding: 0 4px;
+  color: var(--text-muted, #64748B);
+  font-size: 13px;
+  user-select: none;
+}
+
+@media (max-width: 640px) {
+  .kb-pagination {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .kb-pagination__info {
+    text-align: center;
+  }
+}
+

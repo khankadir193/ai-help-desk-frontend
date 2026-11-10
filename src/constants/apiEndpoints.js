@@ -38,4 +38,18 @@ export const API_ENDPOINTS = {
   REPORTS: {
     ANALYTICS: '/reports/analytics',
   },
+  KB: {
+    OVERVIEW: '/kb/overview',
+    ARTICLES: '/kb/articles',
+    ARTICLE_BY_ID: (id) => `/kb/articles/${id}`,
+    PUBLISH_ARTICLE: (id) => `/kb/articles/${id}/publish`,
+    FEEDBACK: (id) => `/kb/articles/${id}/feedback`,
+    RELATED: (id) => `/kb/articles/${id}/related`,
+    CATEGORIES: '/kb/categories',
+    CATEGORY_BY_ID: (id) => `/kb/categories/${id}`,
+    REORDER_CATEGORIES: '/kb/categories/reorder',
+    AUTHORS: '/kb/authors',
+    AI_SUGGEST: '/kb/ai/suggest',
+    EXPORT: '/kb/articles/export',
+  },
 };

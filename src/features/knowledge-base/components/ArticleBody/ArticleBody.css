@@ -1,0 +1,118 @@
+.kb-article-body-card {
+  background-color: var(--bg-card, #FFFFFF);
+  border: 1px solid var(--border-color, #E2E8F0);
+  border-radius: var(--radius-card, 12px);
+  padding: 24px;
+  box-shadow: var(--shadow-card, 0 1px 2px rgba(15, 23, 42, 0.05));
+  margin-bottom: 24px;
+}
+
+.kb-article-author-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border-light, #F1F5F9);
+}
+
+.kb-article-author-row__left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.kb-article-author-row__info {
+  display: flex;
+  flex-direction: column;
+}
+
+.kb-article-author-row__name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary, #0F172A);
+}
+
+.kb-article-author-row__meta {
+  font-size: 13px;
+  color: var(--text-muted, #64748B);
+  margin-top: 2px;
+}
+
+.kb-article-author-row__badge {
+  flex-shrink: 0;
+}
+
+/* Rendered Body Typography */
+.kb-article-content {
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--text-primary, #0F172A);
+}
+
+.kb-article-content p {
+  margin: 0 0 16px 0;
+}
+
+.kb-article-content h2 {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary, #0F172A);
+  margin: 28px 0 12px 0;
+  letter-spacing: -0.01em;
+  scroll-margin-top: 80px;
+}
+
+.kb-article-content h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary, #0F172A);
+  margin: 20px 0 8px 0;
+}
+
+.kb-article-content ul,
+.kb-article-content ol {
+  margin: 0 0 16px 0;
+  padding-left: 24px;
+}
+
+.kb-article-content li {
+  margin-bottom: 6px;
+}
+
+.kb-article-content a {
+  color: var(--color-primary, #4F46E5);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.kb-article-content a:hover {
+  text-decoration: underline;
+}
+
+/* Callout Box (e.g. Keep payment information secure) */
+.kb-info-callout,
+.kb-article-content .kb-info-callout {
+  background-color: var(--color-blue-tint, #EFF6FF);
+  border-radius: var(--radius-input, 8px);
+  padding: 16px;
+  margin: 20px 0;
+}
+
+.kb-info-callout__title,
+.kb-article-content .kb-info-callout__title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1D4ED8;
+  margin-bottom: 4px;
+}
+
+.kb-info-callout p,
+.kb-article-content .kb-info-callout p {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: #1E40AF;
+}
+

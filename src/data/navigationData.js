@@ -13,6 +13,7 @@ export const navigationSections = [
         label: 'Tickets',
         icon: 'ticket',
         path: '/tickets',
+        badge: 24,
       },
       {
         id: 'ai-assistant',
@@ -31,12 +32,6 @@ export const navigationSections = [
   {
     title: 'MANAGE',
     items: [
-      {
-        id: 'categories',
-        label: 'Categories',
-        icon: 'tag',
-        path: '/categories',
-      },
       {
         id: 'reports',
         label: 'Reports',
