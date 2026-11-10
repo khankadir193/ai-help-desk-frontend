@@ -29,8 +29,8 @@ export default function ReportsKpiRow({ kpis, sla, isLoading }) {
   // Dynamic metrics with null-safe fallbacks
   const openTickets     = kpis?.open_tickets != null ? String(kpis.open_tickets) : '–';
   const resolvedTickets = kpis?.resolved_tickets != null ? String(kpis.resolved_tickets) : '–';
-  const firstResponse   = formatDuration(kpis?.avg_first_response_hours);
-  const resolutionTime  = formatDuration(kpis?.avg_resolution_hours);
+  const firstResponse   = formatDuration(kpis?.avg_first_response_hours, { includeSeconds: true });
+  const resolutionTime  = formatDuration(kpis?.avg_resolution_hours, { padMinutes: true });
   const slaPct          = formatPct(kpis?.sla_compliance_pct, 0);
   const csatScore       = formatCsat(kpis?.csat_avg);
   const csatResponses   = kpis?.csat_responses != null ? `${kpis.csat_responses} responses` : '–';

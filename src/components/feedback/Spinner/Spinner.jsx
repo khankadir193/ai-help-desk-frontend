@@ -1,7 +1,12 @@
+import AppLoader from '../AppLoader/AppLoader';
 import styles from './Spinner.module.css';
 
 export default function Spinner({ size = 'md', fullPage = false, label = 'Loading...' }) {
-  const spinnerElement = (
+  if (fullPage) {
+    return <AppLoader message={label} />;
+  }
+
+  return (
     <div
       className={styles.spinnerContainer}
       role="status"
@@ -23,16 +28,5 @@ export default function Spinner({ size = 'md', fullPage = false, label = 'Loadin
       </svg>
     </div>
   );
-
-  if (fullPage) {
-    return (
-      <div className={styles.fullPage}>
-        {spinnerElement}
-        {label && <p className={styles.label}>{label}</p>}
-      </div>
-    );
-  }
-
-  return spinnerElement;
 }
 

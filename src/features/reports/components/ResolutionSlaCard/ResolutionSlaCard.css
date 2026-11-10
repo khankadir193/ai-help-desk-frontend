@@ -1,6 +1,6 @@
 /* ==========================================================================
    ResolutionSlaCard — Circular ring & SLA stats card
-   Equal height with TicketVolumeCard in Row 2 (~235px)
+   Equal height with TicketVolumeCard in Row 2 (~260px)
    ========================================================================== */
 
 .reports-sla-card {
@@ -12,7 +12,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 235px;
+  height: 260px;
   min-width: 0;
 }
 

@@ -8,7 +8,7 @@
   gap: 20px;
 }
 
-/* Row 2: Ticket Volume + Resolution SLA (grid 2fr 1fr, align-items: stretch, equal card heights ~235px) */
+/* Row 2: Ticket Volume + Resolution SLA (grid 2fr 1fr, align-items: stretch, equal card heights ~260px) */
 .reports-grid-row--row2 {
   display: grid;
   grid-template-columns: 2fr 1fr;

@@ -179,7 +179,12 @@ export default function ReportsPage() {
         onExport={handleExport}
         isExporting={isExporting}
         disabled={isLoading || isFetching}
-        metaText={analytics?.meta_text}
+        metaText={
+          analytics?.meta_text ||
+          (analytics?.agent_performance?.meta_text?.includes('Illustrative data')
+            ? 'Illustrative data'
+            : undefined)
+        }
       />
 
       {/* 2. Filters Row */}

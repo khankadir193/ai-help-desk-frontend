@@ -22,14 +22,14 @@ export default function TicketVolumeCard({ data, isLoading }) {
   const yMax = niceMax(rawMax > 0 ? rawMax : 80);
   const steps = buildYSteps(yMax, 4);
 
-  // Responsive SVG Geometry inside 150px chart area
+  // Responsive SVG Geometry inside 170px chart area
   const VIEW_W = 640;
-  const VIEW_H = 150;
-  const LEFT_AXIS = 34;
+  const VIEW_H = 170;
+  const LEFT_AXIS = 36;
   const RIGHT_PAD = 14;
   const TOP_PAD = 14;
-  const BOTTOM_AXIS = 22;
-  const PLOT_H = VIEW_H - TOP_PAD - BOTTOM_AXIS; // 114px
+  const BOTTOM_AXIS = 26;
+  const PLOT_H = VIEW_H - TOP_PAD - BOTTOM_AXIS; // 130px
   const AVAILABLE_W = VIEW_W - LEFT_AXIS - RIGHT_PAD;
 
   const slotW = days.length > 0 ? AVAILABLE_W / days.length : AVAILABLE_W;
@@ -152,7 +152,7 @@ export default function TicketVolumeCard({ data, isLoading }) {
                 {/* X-axis date label */}
                 <text
                   x={groupX + barW + barGap / 2}
-                  y={VIEW_H - 4}
+                  y={VIEW_H - 6}
                   textAnchor="middle"
                   className="reports-tv-axis-label reports-tv-x-label"
                 >

@@ -8,23 +8,33 @@
  * Examples: 0.5 → "30m", 1.5 → "1h 30m", 25 → "1d 1h"
  *
  * @param {number|null} hours
+ * @param {Object} [options]
+ * @param {boolean} [options.includeSeconds=false]
+ * @param {boolean} [options.padMinutes=false]
  * @returns {string}
  */
-export function formatDuration(hours) {
+export function formatDuration(hours, { includeSeconds = false, padMinutes = false } = {}) {
   if (hours == null || !Number.isFinite(hours) || hours < 0) return '–';
   if (hours === 0) return '0m';
 
-  const totalMinutes = Math.round(hours * 60);
-  const days    = Math.floor(totalMinutes / 1440);
-  const remMins = totalMinutes % 1440;
-  const hrs     = Math.floor(remMins / 60);
-  const mins    = remMins % 60;
+  const totalSeconds = Math.round(hours * 3600);
+  const days = Math.floor(totalSeconds / 86400);
+  const remSecAfterDays = totalSeconds % 86400;
+  const hrs = Math.floor(remSecAfterDays / 3600);
+  const remSecAfterHrs = remSecAfterDays % 3600;
+  const mins = Math.floor(remSecAfterHrs / 60);
+  const secs = remSecAfterHrs % 60;
 
   if (days > 0) {
     return hrs > 0 ? `${days}d ${hrs}h` : `${days}d`;
   }
   if (hrs > 0) {
-    return mins > 0 ? `${hrs}h ${mins}m` : `${hrs}h`;
+    const formattedMins = padMinutes ? String(mins).padStart(2, '0') : String(mins);
+    return mins > 0 ? `${hrs}h ${formattedMins}m` : `${hrs}h`;
+  }
+  if (includeSeconds && secs > 0) {
+    const formattedSecs = String(secs).padStart(2, '0');
+    return `${mins}m ${formattedSecs}s`;
   }
   return `${mins}m`;
 }

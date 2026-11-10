@@ -13,11 +13,17 @@ import PlaceholderPage from './pages/PlaceholderPage';
 import AuthLayout from './layouts/AuthLayout/AuthLayout';
 import LoginPage from './features/auth/pages/LoginPage';
 import RegisterPage from './features/auth/pages/RegisterPage';
+import AppLoader from './components/feedback/AppLoader/AppLoader';
 import { useAuth } from './features/auth/hooks/useAuth';
 import './App.css';
 
 export default function App() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
+
+  // Polished global app loader while restoring auth session on initial load or refresh
+  if (isLoading) {
+    return <AppLoader message="Restoring session..." />;
+  }
 
   return (
     <Routes>
