@@ -14,7 +14,7 @@ export const KB_KEYS = {
 export function useKbOverview() {
   return useQuery({
     queryKey: KB_KEYS.overview(),
-    queryFn: () => kbService.getOverview(),
+    queryFn: ({ signal }) => kbService.getOverview({ signal }),
     staleTime: 60 * 1000,
   });
 }

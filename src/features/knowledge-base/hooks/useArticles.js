@@ -1,6 +1,6 @@
 import { useMemo, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import kbService from '../services/kbService';
 import { useDebouncedValue } from './useDebouncedValue';
 import { KB_KEYS } from './useKbOverview';
@@ -43,7 +43,8 @@ export function useArticles() {
     isFetching,
   } = useQuery({
     queryKey: KB_KEYS.articles(queryParams),
-    queryFn: ({ signal }) => kbService.listArticles({ ...queryParams, signal }),
+    queryFn: ({ signal }) => kbService.listArticles(queryParams, { signal }),
+    placeholderData: keepPreviousData,
     staleTime: 30 * 1000,
   });
 

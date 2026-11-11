@@ -1,22 +1,28 @@
 import { Link } from 'react-router-dom';
 import './UncategorizedCard.css';
 
-export default function UncategorizedCard({ count = 0, totalArticles = 60 }) {
+export default function UncategorizedCard({ count = 0, totalArticles = 60, isLoading = false }) {
   const hasUncategorized = count > 0;
 
   return (
     <div className="kb-uncat-card">
       <div className="kb-uncat-card__text">
         <h3 className="kb-uncat-card__title">Uncategorized articles</h3>
-        <p className="kb-uncat-card__subtitle">
-          {hasUncategorized
-            ? `${count} articles have no category and need organizing.`
-            : `All ${totalArticles} articles have a category. Nothing needs organizing.`}
-        </p>
+        {isLoading ? (
+          <span className="kb-skel" style={{ width: '82%', height: 13, maxWidth: 300 }} aria-hidden="true" />
+        ) : (
+          <p className="kb-uncat-card__subtitle">
+            {hasUncategorized
+              ? `${count} articles have no category and need organizing.`
+              : `All ${totalArticles} articles have a category. Nothing needs organizing.`}
+          </p>
+        )}
       </div>
 
       <div className="kb-uncat-card__count">
-        {hasUncategorized ? (
+        {isLoading ? (
+          <span className="kb-skel" style={{ width: 92, height: 14 }} aria-hidden="true" />
+        ) : hasUncategorized ? (
           <Link
             to="/knowledge-base/articles?category=uncategorized"
             className="kb-uncat-card__link"
@@ -30,4 +36,3 @@ export default function UncategorizedCard({ count = 0, totalArticles = 60 }) {
     </div>
   );
 }
-

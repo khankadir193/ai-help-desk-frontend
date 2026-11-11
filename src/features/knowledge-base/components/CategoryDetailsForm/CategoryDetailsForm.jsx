@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import Icon from '../../../../components/Icon/Icon';
+import ButtonSpinner from '../skeletons/ButtonSpinner';
 import './CategoryDetailsForm.css';
 
 export default function CategoryDetailsForm({
   mode = 'edit',
   category,
   authors = [],
+  isLoading = false,
   onSave,
   onCancel,
   onMoveUp,
@@ -13,6 +15,7 @@ export default function CategoryDetailsForm({
   isFirst = false,
   isLast = false,
   isSaving = false,
+  isReordering = false,
   serverError = '',
 }) {
   const isCreate = mode === 'create';
@@ -45,6 +48,38 @@ export default function CategoryDetailsForm({
   const draftCount = category?.draft_count ?? 0;
   const inReviewCount = category?.in_review_count ?? 0;
   const archivedCount = category?.archived_count ?? 0;
+
+  if (isLoading) {
+    return (
+      <div className="kb-cat-details-card">
+        <span className="kb-skel" style={{ width: '50%', height: 16, marginBottom: 16 }} aria-hidden="true" />
+        <div className="kb-cat-field">
+          <span className="kb-skel" style={{ width: 100, height: 13, marginBottom: 6 }} aria-hidden="true" />
+          <span className="kb-skel" style={{ height: 40, borderRadius: 8 }} aria-hidden="true" />
+        </div>
+        <div className="kb-cat-field">
+          <span className="kb-skel" style={{ width: 84, height: 13, marginBottom: 6 }} aria-hidden="true" />
+          <span className="kb-skel" style={{ height: 40, borderRadius: 8 }} aria-hidden="true" />
+        </div>
+        <div className="kb-cat-field">
+          <span className="kb-skel" style={{ width: 106, height: 13, marginBottom: 6 }} aria-hidden="true" />
+          <span className="kb-skel" style={{ height: 40, borderRadius: 8 }} aria-hidden="true" />
+        </div>
+        <div className="kb-cat-info-group">
+          <span className="kb-skel" style={{ width: 140, height: 12, marginBottom: 4 }} aria-hidden="true" />
+          <span className="kb-skel" style={{ width: '64%', height: 14 }} aria-hidden="true" />
+        </div>
+        <div className="kb-cat-info-group">
+          <span className="kb-skel" style={{ width: 96, height: 12, marginBottom: 4 }} aria-hidden="true" />
+          <span className="kb-skel" style={{ width: '58%', height: 14 }} aria-hidden="true" />
+        </div>
+        <div className="kb-cat-actions-row">
+          <span className="kb-skel" style={{ width: 84, height: 38, borderRadius: 8 }} aria-hidden="true" />
+          <span className="kb-skel" style={{ width: 118, height: 38, borderRadius: 8 }} aria-hidden="true" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="kb-cat-details-card">
@@ -138,18 +173,20 @@ export default function CategoryDetailsForm({
                 type="button"
                 className="kb-cat-reorder-btn"
                 onClick={onMoveUp}
-                disabled={isFirst}
+                disabled={isFirst || isReordering}
                 aria-label="Move category up"
               >
+                {isReordering && <ButtonSpinner label="Saving order" />}
                 Move up
               </button>
               <button
                 type="button"
                 className="kb-cat-reorder-btn"
                 onClick={onMoveDown}
-                disabled={isLast}
+                disabled={isLast || isReordering}
                 aria-label="Move category down"
               >
+                {isReordering && <ButtonSpinner label="Saving order" />}
                 Move down
               </button>
             </div>
@@ -175,7 +212,8 @@ export default function CategoryDetailsForm({
             className="kb-cat-btn kb-cat-btn--primary"
             disabled={isSaving}
           >
-            {isSaving ? 'Saving...' : isCreate ? 'Create category' : 'Save changes'}
+            {isSaving && <ButtonSpinner label="Saving category" />}
+            {isCreate ? 'Create category' : 'Save changes'}
           </button>
         </div>
       </form>

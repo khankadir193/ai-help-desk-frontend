@@ -7,14 +7,14 @@ export function useArticle(idOrSlug) {
 
   const articleQuery = useQuery({
     queryKey: KB_KEYS.article(idOrSlug),
-    queryFn: () => kbService.getArticle(idOrSlug),
+    queryFn: ({ signal }) => kbService.getArticle(idOrSlug, { signal }),
     enabled: Boolean(idOrSlug),
     staleTime: 60 * 1000,
   });
 
   const relatedQuery = useQuery({
     queryKey: KB_KEYS.related(idOrSlug),
-    queryFn: () => kbService.getRelatedArticles(idOrSlug),
+    queryFn: ({ signal }) => kbService.getRelatedArticles(idOrSlug, { signal }),
     enabled: Boolean(idOrSlug),
     staleTime: 60 * 1000,
   });

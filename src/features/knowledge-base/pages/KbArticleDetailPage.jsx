@@ -7,7 +7,10 @@ import HelpfulFeedback from '../components/HelpfulFeedback/HelpfulFeedback';
 import ArticleInfoCard from '../components/ArticleInfoCard/ArticleInfoCard';
 import TableOfContents from '../components/TableOfContents/TableOfContents';
 import RelatedArticles from '../components/RelatedArticles/RelatedArticles';
+import ButtonSpinner from '../components/skeletons/ButtonSpinner';
+import KbArticleDetailSkeleton from '../components/skeletons/KbArticleDetailSkeleton';
 import { useArticle } from '../hooks/useArticle';
+import { useDelayedSkeleton } from '../hooks/useDelayedSkeleton';
 import './KbArticleDetailPage.css';
 
 export default function KbArticleDetailPage() {
@@ -21,9 +24,12 @@ export default function KbArticleDetailPage() {
     isError,
     error,
     relatedArticles,
+    isLoadingRelated,
     voteHelpful,
     isVoting,
   } = useArticle(id);
+
+  const showSkeleton = useDelayedSkeleton(isLoading);
 
   const handleCopyLink = async () => {
     try {
@@ -41,10 +47,10 @@ export default function KbArticleDetailPage() {
     { label: article?.article_id || id || 'Article' },
   ];
 
-  if (isLoading) {
+  if (isLoading || showSkeleton) {
     return (
       <main className="kb-page kb-detail-page" aria-label="Article Details">
-        <div className="kb-detail-loading">Loading article...</div>
+        <KbArticleDetailSkeleton />
       </main>
     );
   }
@@ -119,10 +125,9 @@ export default function KbArticleDetailPage() {
         <div className="kb-detail-grid__right">
           <ArticleInfoCard article={article} />
           <TableOfContents content={article.content} />
-          <RelatedArticles articles={relatedArticles} />
+          <RelatedArticles articles={relatedArticles} isLoading={isLoadingRelated} />
         </div>
       </div>
     </main>
   );
 }
-

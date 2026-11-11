@@ -2,7 +2,24 @@ import { Link } from 'react-router-dom';
 import Icon from '../../../../components/Icon/Icon';
 import './RelatedArticles.css';
 
-export default function RelatedArticles({ articles = [] }) {
+const RELATED_ROW_SKELETONS = [88, 66, 78];
+
+export default function RelatedArticles({ articles = [], isLoading = false }) {
+  if (isLoading) {
+    return (
+      <div className="kb-related-card">
+        <h3 className="kb-related-card__title">Related articles</h3>
+        <ul className="kb-related-list" aria-hidden="true">
+          {RELATED_ROW_SKELETONS.map((width) => (
+            <li key={width} className="kb-related-item">
+              <span className="kb-skel" style={{ width: `${width}%`, height: 14 }} />
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  }
+
   if (!articles || articles.length === 0) return null;
 
   return (
@@ -24,4 +41,3 @@ export default function RelatedArticles({ articles = [] }) {
     </div>
   );
 }
-

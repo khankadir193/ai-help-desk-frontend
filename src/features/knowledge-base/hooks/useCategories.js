@@ -7,13 +7,13 @@ export function useKbCategories() {
 
   const categoriesQuery = useQuery({
     queryKey: KB_KEYS.categories(),
-    queryFn: () => kbService.listCategories(),
+    queryFn: ({ signal }) => kbService.listCategories({ signal }),
     staleTime: 60 * 1000,
   });
 
   const authorsQuery = useQuery({
     queryKey: KB_KEYS.authors(),
-    queryFn: () => kbService.listAuthors(),
+    queryFn: ({ signal }) => kbService.listAuthors({ signal }),
     staleTime: 5 * 60 * 1000,
   });
 

@@ -13,6 +13,7 @@ export default function ArticleFilters({
   sort = 'article_id',
   order = 'asc',
   onToggleSort,
+  isOptionsLoading = false,
 }) {
   const sortLabel = sort === 'article_id'
     ? `Article ID: ${order === 'asc' ? 'ascending' : 'descending'}`
@@ -48,40 +49,48 @@ export default function ArticleFilters({
       </div>
 
       {/* Categories Dropdown */}
-      <div className="kb-article-filters__select-wrapper">
-        <select
-          className="kb-article-filters__select"
-          value={selectedCategory}
-          onChange={(e) => onCategoryChange(e.target.value)}
-          aria-label="Filter by category"
-        >
-          <option value="">All categories</option>
-          {categories.map((c) => (
-            <option key={c.id} value={c.slug || c.id}>
-              {c.name}
-            </option>
-          ))}
-        </select>
-        <Icon name="chevron-down" size={14} className="kb-article-filters__chevron" />
-      </div>
+      {isOptionsLoading ? (
+        <span className="kb-skel" style={{ width: 168, height: 40, borderRadius: 8 }} aria-hidden="true" />
+      ) : (
+        <div className="kb-article-filters__select-wrapper">
+          <select
+            className="kb-article-filters__select"
+            value={selectedCategory}
+            onChange={(e) => onCategoryChange(e.target.value)}
+            aria-label="Filter by category"
+          >
+            <option value="">All categories</option>
+            {categories.map((c) => (
+              <option key={c.id} value={c.slug || c.id}>
+                {c.name}
+              </option>
+            ))}
+          </select>
+          <Icon name="chevron-down" size={14} className="kb-article-filters__chevron" />
+        </div>
+      )}
 
       {/* Authors Dropdown */}
-      <div className="kb-article-filters__select-wrapper">
-        <select
-          className="kb-article-filters__select"
-          value={selectedAuthor}
-          onChange={(e) => onAuthorChange(e.target.value)}
-          aria-label="Filter by author"
-        >
-          <option value="">All authors</option>
-          {authors.map((a) => (
-            <option key={a.id} value={a.id}>
-              {a.name}
-            </option>
-          ))}
-        </select>
-        <Icon name="chevron-down" size={14} className="kb-article-filters__chevron" />
-      </div>
+      {isOptionsLoading ? (
+        <span className="kb-skel" style={{ width: 148, height: 40, borderRadius: 8 }} aria-hidden="true" />
+      ) : (
+        <div className="kb-article-filters__select-wrapper">
+          <select
+            className="kb-article-filters__select"
+            value={selectedAuthor}
+            onChange={(e) => onAuthorChange(e.target.value)}
+            aria-label="Filter by author"
+          >
+            <option value="">All authors</option>
+            {authors.map((a) => (
+              <option key={a.id} value={a.id}>
+                {a.name}
+              </option>
+            ))}
+          </select>
+          <Icon name="chevron-down" size={14} className="kb-article-filters__chevron" />
+        </div>
+      )}
 
       {/* Sort Toggle Button on the Right */}
       <button
@@ -96,4 +105,3 @@ export default function ArticleFilters({
     </div>
   );
 }
-

@@ -1,6 +1,23 @@
 import { Link } from 'react-router-dom';
 import './PopularArticles.css';
 
+const POPULAR_ROW_SKELETONS = [
+  { title: '88%', meta: '34%' },
+  { title: '96%', meta: '40%' },
+  { title: '78%', meta: '30%' },
+  { title: '90%', meta: '36%' },
+  { title: '70%', meta: '32%' },
+];
+
+function PopularRowSkeleton({ title, meta }) {
+  return (
+    <li className="kb-popular-item" aria-hidden="true">
+      <span className="kb-skel" style={{ width: title, height: 20 }} />
+      <span className="kb-skel" style={{ width: meta, height: 18 }} />
+    </li>
+  );
+}
+
 export default function PopularArticles({ articles = [], isLoading }) {
   return (
     <div className="kb-popular-card">
@@ -10,7 +27,11 @@ export default function PopularArticles({ articles = [], isLoading }) {
       </div>
 
       {isLoading ? (
-        <div className="kb-popular-card__loading">Loading popular articles...</div>
+        <ul className="kb-popular-list" aria-hidden="true">
+          {POPULAR_ROW_SKELETONS.map((row) => (
+            <PopularRowSkeleton key={row.title} {...row} />
+          ))}
+        </ul>
       ) : articles.length === 0 ? (
         <div className="kb-popular-card__empty">No popular articles recorded yet.</div>
       ) : (
@@ -36,4 +57,3 @@ export default function PopularArticles({ articles = [], isLoading }) {
     </div>
   );
 }
-

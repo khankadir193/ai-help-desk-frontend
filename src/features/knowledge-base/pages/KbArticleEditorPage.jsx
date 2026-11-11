@@ -6,9 +6,12 @@ import ArticleEditorForm from '../components/ArticleEditorForm/ArticleEditorForm
 import PublishingPanel from '../components/PublishingPanel/PublishingPanel';
 import AiWritingHelp from '../components/AiWritingHelp/AiWritingHelp';
 import Modal from '../../../components/ui/Modal/Modal';
+import ButtonSpinner from '../components/skeletons/ButtonSpinner';
+import KbEditorSkeleton from '../components/skeletons/KbEditorSkeleton';
 import { useArticle } from '../hooks/useArticle';
 import { useArticleEditor } from '../hooks/useArticleEditor';
 import { useKbCategories } from '../hooks/useCategories';
+import { useDelayedSkeleton } from '../hooks/useDelayedSkeleton';
 import kbService from '../services/kbService';
 import './KbArticleEditorPage.css';
 
@@ -26,6 +29,10 @@ export default function KbArticleEditorPage({ mode: propMode }) {
   const [isLoadingAi, setIsLoadingAi] = useState(false);
   const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
 
+  const isEdit = mode === 'edit';
+  const showSkeleton = useDelayedSkeleton(isEdit ? isLoadingArticle : false);
+  const isDataLoading = Boolean(isEdit && (isLoadingArticle || showSkeleton));
+
   const {
     formData,
     errors,
@@ -38,7 +45,7 @@ export default function KbArticleEditorPage({ mode: propMode }) {
     handleCancel,
   } = useArticleEditor({
     mode,
-    initialArticle: mode === 'edit' ? initialArticle : null,
+    initialArticle: isDataLoading ? null : (mode === 'edit' ? initialArticle : null),
     defaultAuthorId: authors[0]?.id,
   });
 
@@ -76,7 +83,6 @@ export default function KbArticleEditorPage({ mode: propMode }) {
     handleChange('content', (formData.content || '') + tipHtml);
   };
 
-  const isEdit = mode === 'edit';
   const articleIdDisplay = initialArticle?.article_id || 'KB-104';
 
   const breadcrumbItems = isEdit
@@ -96,10 +102,11 @@ export default function KbArticleEditorPage({ mode: propMode }) {
     ? `${initialArticle?.title || 'Article'} · Draft revision of a published article.`
     : `${articleIdDisplay} · New draft · Your changes are not public.`;
 
-  if (isEdit && isLoadingArticle) {
+  if (isDataLoading) {
     return (
       <main className="kb-page kb-editor-page" aria-label="Loading Editor">
-        <div className="kb-detail-loading">Loading article editor...</div>
+        <Breadcrumbs items={breadcrumbItems} />
+        <KbEditorSkeleton />
       </main>
     );
   }
@@ -119,6 +126,7 @@ export default function KbArticleEditorPage({ mode: propMode }) {
               type="button"
               className="kb-secondary-btn"
               onClick={handleCancel}
+              disabled={isDataLoading}
             >
               Cancel
             </button>
@@ -126,21 +134,18 @@ export default function KbArticleEditorPage({ mode: propMode }) {
               type="button"
               className="kb-secondary-btn"
               onClick={() => saveDraft(true)}
-              disabled={isSaving}
+              disabled={isSaving || isDataLoading}
             >
-              {isSaving ? 'Saving...' : 'Save draft'}
+              {isSaving && <ButtonSpinner label="Saving draft" />} Save draft
             </button>
             <button
               type="button"
               className="kb-primary-btn"
               onClick={publishArticle}
-              disabled={isPublishing}
+              disabled={isPublishing || isDataLoading}
             >
-              {isPublishing
-                ? 'Publishing...'
-                : isEdit
-                ? 'Publish changes'
-                : 'Publish article'}
+              {isPublishing && <ButtonSpinner label="Publishing article" />}{' '}
+              {isEdit ? 'Publish changes' : 'Publish article'}
             </button>
           </>
         }
@@ -157,6 +162,7 @@ export default function KbArticleEditorPage({ mode: propMode }) {
             errors={errors}
             onChange={handleChange}
             lastSavedAt={lastSavedAt}
+            isSaving={isSaving}
             onOpenPreview={() => setIsPreviewModalOpen(true)}
           />
         </div>

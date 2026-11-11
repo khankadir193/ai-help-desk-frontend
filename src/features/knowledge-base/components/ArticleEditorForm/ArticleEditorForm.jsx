@@ -8,6 +8,7 @@ export default function ArticleEditorForm({
   errors = {},
   onChange,
   lastSavedAt,
+  isSaving = false,
   onOpenPreview,
 }) {
   const isEdit = mode === 'edit';
@@ -76,7 +77,7 @@ export default function ArticleEditorForm({
       {/* Editor Sub-Footer */}
       <div className="kb-editor-subfooter">
         <div className="kb-editor-subfooter__status" aria-live="polite">
-          {lastSavedAt ? `Draft saved at ${lastSavedAt} · Not published` : 'Not published'}
+          {isSaving ? 'Saving...' : lastSavedAt ? `Draft saved at ${lastSavedAt} · Not published` : 'Not published'}
         </div>
         <button
           type="button"

@@ -5,18 +5,18 @@ import { API_ENDPOINTS } from '../../../constants/apiEndpoints';
  * Knowledge Base API service communicating with /api/v1/kb
  */
 export const kbService = {
-  getOverview: async () => {
-    const res = await apiClient.get(API_ENDPOINTS.KB.OVERVIEW);
+  getOverview: async (config = {}) => {
+    const res = await apiClient.get(API_ENDPOINTS.KB.OVERVIEW, config);
     return res?.data ?? res;
   },
 
-  listArticles: async (params = {}) => {
-    const res = await apiClient.get(API_ENDPOINTS.KB.ARTICLES, { params });
+  listArticles: async (params = {}, config = {}) => {
+    const res = await apiClient.get(API_ENDPOINTS.KB.ARTICLES, { params, ...config });
     return res?.data ?? res;
   },
 
-  getArticle: async (id) => {
-    const res = await apiClient.get(API_ENDPOINTS.KB.ARTICLE_BY_ID(id));
+  getArticle: async (id, config = {}) => {
+    const res = await apiClient.get(API_ENDPOINTS.KB.ARTICLE_BY_ID(id), config);
     return res?.data ?? res;
   },
 
@@ -45,13 +45,13 @@ export const kbService = {
     return res?.data ?? res;
   },
 
-  getRelatedArticles: async (id) => {
-    const res = await apiClient.get(API_ENDPOINTS.KB.RELATED(id));
+  getRelatedArticles: async (id, config = {}) => {
+    const res = await apiClient.get(API_ENDPOINTS.KB.RELATED(id), config);
     return res?.data ?? res;
   },
 
-  listCategories: async () => {
-    const res = await apiClient.get(API_ENDPOINTS.KB.CATEGORIES);
+  listCategories: async (config = {}) => {
+    const res = await apiClient.get(API_ENDPOINTS.KB.CATEGORIES, config);
     return res?.data ?? res;
   },
 
@@ -75,8 +75,8 @@ export const kbService = {
     return res?.data ?? res;
   },
 
-  listAuthors: async () => {
-    const res = await apiClient.get(API_ENDPOINTS.KB.AUTHORS);
+  listAuthors: async (config = {}) => {
+    const res = await apiClient.get(API_ENDPOINTS.KB.AUTHORS, config);
     return res?.data ?? res;
   },
 

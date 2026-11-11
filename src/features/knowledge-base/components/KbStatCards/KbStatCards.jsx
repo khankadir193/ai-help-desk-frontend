@@ -1,3 +1,4 @@
+import SkeletonBlock from '../skeletons/SkeletonBlock';
 import './KbStatCards.css';
 
 export default function KbStatCards({ stats, isLoading }) {
@@ -11,25 +12,25 @@ export default function KbStatCards({ stats, isLoading }) {
     {
       id: 'published',
       label: 'Published articles',
-      value: isLoading ? '–' : publishedCount,
+      value: publishedCount,
       caption: `— ${stats?.publishedThisMonth || '+4 this month'}`,
     },
     {
       id: 'draft',
       label: 'Draft articles',
-      value: isLoading ? '–' : draftCount,
+      value: draftCount,
       caption: '— Not visible to customers',
     },
     {
       id: 'review',
       label: 'Awaiting review',
-      value: isLoading ? '–' : reviewCount,
+      value: reviewCount,
       caption: '— Human approval required',
     },
     {
       id: 'helpfulness',
       label: 'Article helpfulness',
-      value: isLoading ? '–' : `${helpfulnessRate}%`,
+      value: `${helpfulnessRate}%`,
       caption: `— Based on ${ratingsCount} ratings`,
     },
   ];
@@ -39,11 +40,14 @@ export default function KbStatCards({ stats, isLoading }) {
       {cards.map((card) => (
         <div key={card.id} className="kb-stat-card">
           <span className="kb-stat-card__label">{card.label}</span>
-          <span className="kb-stat-card__value">{card.value}</span>
+          {isLoading ? (
+            <span className="kb-stat-card__value kb-skel" style={{ width: 64, height: 30 }} aria-hidden="true" />
+          ) : (
+            <span className="kb-stat-card__value">{card.value}</span>
+          )}
           <span className="kb-stat-card__caption">{card.caption}</span>
         </div>
       ))}
     </div>
   );
 }
-
