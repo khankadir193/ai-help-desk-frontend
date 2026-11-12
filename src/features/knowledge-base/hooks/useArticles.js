@@ -8,23 +8,23 @@ import { KB_KEYS } from './useKbOverview';
 export function useArticles() {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // Extract params from URL
+  // Extract params from URL (accept both ?category= and ?categoryId=)
   const search = searchParams.get('q') || '';
   const status = (searchParams.get('status') || 'ALL').toUpperCase();
-  const categoryId = searchParams.get('category') || '';
+  const categoryId = searchParams.get('category') || searchParams.get('categoryId') || '';
   const authorId = searchParams.get('author') || '';
   const sort = searchParams.get('sort') || 'article_id';
   const order = searchParams.get('order') || 'asc';
-  const page = parseInt(searchParams.get('page') || '1', 10);
-  const pageSize = parseInt(searchParams.get('pageSize') || '8', 10);
+  const page = Math.max(1, parseInt(searchParams.get('page') || '1', 10) || 1);
+  const pageSize = Math.max(1, Math.min(100, parseInt(searchParams.get('pageSize') || '8', 10) || 8));
 
   // Debounce search query so typing does not trigger instant fetches
   const debouncedSearch = useDebouncedValue(search, 300);
 
-  // Memoized query params object
+  // Memoized query params object (omit empty q and status=ALL)
   const queryParams = useMemo(() => ({
-    q: debouncedSearch,
-    status,
+    q: debouncedSearch.trim() || undefined,
+    status: status && status !== 'ALL' ? status : undefined,
     categoryId: categoryId || undefined,
     authorId: authorId || undefined,
     sort,
@@ -72,7 +72,7 @@ export function useArticles() {
   }, [updateParams]);
 
   const setCategory = useCallback((val) => {
-    updateParams({ category: val, page: 1 });
+    updateParams({ category: val, categoryId: undefined, page: 1 });
   }, [updateParams]);
 
   const setAuthor = useCallback((val) => {
@@ -101,8 +101,8 @@ export function useArticles() {
 
   const handleExport = useCallback(() => {
     kbService.exportArticlesCsv({
-      q: debouncedSearch,
-      status,
+      q: debouncedSearch.trim() || undefined,
+      status: status && status !== 'ALL' ? status : undefined,
       categoryId: categoryId || undefined,
       authorId: authorId || undefined,
     });

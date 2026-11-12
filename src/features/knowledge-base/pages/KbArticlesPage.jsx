@@ -27,6 +27,7 @@ export default function KbArticlesPage() {
     isLoading,
     isError,
     error,
+    refetch,
     isFetching,
     search,
     status,
@@ -132,8 +133,15 @@ export default function KbArticlesPage() {
           <div className="kb-error-box" role="alert">
             <Icon name="alert-circle" size={20} className="kb-error-icon" />
             <div className="kb-error-text">
-              <strong>Failed to load articles:</strong> {error?.message || 'Server error'}
+              <strong>Failed to load articles:</strong> {error?.userMessage || error?.message || 'Server error'}
             </div>
+            <button
+              type="button"
+              className="kb-retry-btn"
+              onClick={() => refetch()}
+            >
+              Retry
+            </button>
             <button
               type="button"
               className="kb-retry-btn"

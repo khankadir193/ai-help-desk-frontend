@@ -23,6 +23,17 @@ export default function ArticleFilters({
     ? `Updated: ${order === 'asc' ? 'oldest' : 'newest'}`
     : `${sort}: ${order}`;
 
+  // Match selectedCategory whether it was passed as a slug or numeric id
+  const matchedCategory = categories.find(
+    (c) => String(c.slug) === String(selectedCategory) || String(c.id) === String(selectedCategory)
+  );
+  const resolvedCategoryValue =
+    selectedCategory === 'uncategorized'
+      ? 'uncategorized'
+      : matchedCategory
+      ? String(matchedCategory.slug || matchedCategory.id)
+      : selectedCategory;
+
   return (
     <div className="kb-article-filters">
       {/* Search Input */}
@@ -55,7 +66,7 @@ export default function ArticleFilters({
         <div className="kb-article-filters__select-wrapper">
           <select
             className="kb-article-filters__select"
-            value={selectedCategory}
+            value={resolvedCategoryValue}
             onChange={(e) => onCategoryChange(e.target.value)}
             aria-label="Filter by category"
           >
@@ -65,6 +76,9 @@ export default function ArticleFilters({
                 {c.name}
               </option>
             ))}
+            {selectedCategory === 'uncategorized' && (
+              <option value="uncategorized">Uncategorized</option>
+            )}
           </select>
           <Icon name="chevron-down" size={14} className="kb-article-filters__chevron" />
         </div>
