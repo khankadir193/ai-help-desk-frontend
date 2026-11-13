@@ -1,0 +1,26 @@
+.channels-card__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+}
+
+.channels-card__info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.channels-card__title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.channels-card__desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+

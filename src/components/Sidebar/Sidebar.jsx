@@ -147,12 +147,12 @@ export default function Sidebar({
               className="sidebar__collapsed-avatar"
               title={`${displayName} • ${displayRole}`}
             >
-              <Avatar initials={displayInitials} size="md" />
+              <Avatar src={user?.avatar_url} initials={displayInitials} size="md" />
             </div>
           ) : (
             <div className="sidebar__user-card-wrapper">
               <div className="sidebar__user-card">
-                <Avatar initials={displayInitials} size="md" />
+                <Avatar src={user?.avatar_url} initials={displayInitials} size="md" />
                 <div className="sidebar__user-info">
                   <span className="sidebar__user-name">{displayName}</span>
                   <span className="sidebar__user-role">{displayRole}</span>

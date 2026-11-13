@@ -1,0 +1,71 @@
+.active-session__info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.active-session__browser {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.active-session__location {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.active-session__status {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-success-text);
+  margin-top: 2px;
+}
+
+.active-session__btn {
+  width: 100%;
+}
+
+.active-session__success {
+  font-size: 12px;
+  color: var(--color-success-text);
+  font-weight: 500;
+}
+
+.active-session__modal-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  width: 100%;
+}
+
+.active-session__btn-confirm {
+  height: 36px;
+  padding: 0 14px;
+  background-color: var(--color-danger);
+  border: 1px solid var(--color-danger);
+  border-radius: var(--radius-button);
+  font-size: 13px;
+  font-weight: 500;
+  color: #FFFFFF;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.active-session__btn-confirm:hover:not(:disabled) {
+  background-color: #B91C1C;
+}
+
+.active-session__btn-confirm:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.active-session__modal-desc {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 0;
+}
+

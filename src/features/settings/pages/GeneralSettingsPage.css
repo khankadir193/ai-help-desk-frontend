@@ -1,0 +1,20 @@
+.general-settings__url-avail {
+  color: var(--color-success-text);
+  font-weight: 500;
+}
+
+.general-settings__url-taken {
+  color: var(--color-danger);
+  font-weight: 500;
+}
+
+.settings-badge-readonly {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+  background-color: var(--bg-hover);
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+}
+

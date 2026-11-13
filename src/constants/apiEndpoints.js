@@ -52,4 +52,18 @@ export const API_ENDPOINTS = {
     AI_SUGGEST: '/kb/ai/suggest',
     EXPORT: '/kb/articles/export',
   },
+  SETTINGS: {
+    WORKSPACE: '/settings/workspace',
+    WORKSPACE_CHECK_URL: '/settings/workspace/check-url',
+    PROFILE: '/settings/profile',
+    PROFILE_AVATAR: '/settings/profile/avatar',
+    PROFILE_PASSWORD: '/settings/profile/password',
+    PROFILE_2FA: '/settings/profile/2fa',
+    SESSIONS: '/settings/sessions',
+    SESSIONS_REVOKE_OTHERS: '/settings/sessions/revoke-others',
+    TEAM: '/settings/team',
+    NOTIFICATIONS: '/settings/notifications',
+    AI: '/settings/ai',
+    AI_PREVIEW: '/settings/ai/preview',
+  },
 };

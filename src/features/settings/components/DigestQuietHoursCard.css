@@ -1,0 +1,27 @@
+.digest-quiet__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  padding-top: 4px;
+}
+
+.digest-quiet__info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.digest-quiet__title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.digest-quiet__desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+

@@ -1,0 +1,49 @@
+.profile-settings__verified-note {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.profile-settings__check {
+  color: var(--color-success-text);
+  font-weight: 600;
+}
+
+.profile-settings__sec-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+}
+
+.profile-settings__sec-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.profile-settings__sec-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.profile-settings__sec-subtext {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.profile-settings__sec-status {
+  font-size: 13px;
+}
+
+.profile-settings__2fa-active {
+  color: var(--color-success-text);
+  font-weight: 500;
+}
+
+.profile-settings__2fa-inactive {
+  color: var(--text-muted);
+}
+

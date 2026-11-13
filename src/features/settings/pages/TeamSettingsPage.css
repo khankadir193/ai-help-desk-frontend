@@ -1,0 +1,64 @@
+.team-settings__toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+}
+
+.team-settings__toggle-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.team-settings__toggle-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.team-settings__toggle-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.team-settings__role-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+}
+
+.team-settings__role-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.team-settings__role-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.team-settings__role-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.team-settings__admin-managed {
+  font-size: 13px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.team-settings__link-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+}
+

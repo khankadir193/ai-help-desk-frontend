@@ -1,0 +1,40 @@
+.knowledge-sources__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+}
+
+.knowledge-sources__info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.knowledge-sources__title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.knowledge-sources__subtext {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.knowledge-sources__status {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-success-text);
+  flex-shrink: 0;
+}
+
+.knowledge-sources__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+}
+

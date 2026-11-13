@@ -1,0 +1,25 @@
+.about-workspace__rows {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.about-workspace__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: 13px;
+}
+
+.about-workspace__label {
+  color: var(--text-muted);
+}
+
+.about-workspace__value {
+  color: var(--text-primary);
+  font-weight: 500;
+  text-align: right;
+  word-break: break-all;
+}
+

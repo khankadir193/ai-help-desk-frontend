@@ -1,0 +1,121 @@
+.manage-2fa__content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.manage-2fa__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 0;
+}
+
+.manage-2fa__info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.manage-2fa__label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.manage-2fa__subtext {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+
+.manage-2fa__box {
+  background-color: #F8FAFC;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.manage-2fa__badge {
+  font-size: 13px;
+  font-weight: 600;
+  color: #047857;
+}
+
+.manage-2fa__box-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: 0;
+  line-height: 1.45;
+}
+
+.manage-2fa__warning {
+  background-color: #FEF3C7;
+  border: 1px solid #FDE68A;
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  font-size: 13px;
+  color: #B45309;
+  line-height: 1.45;
+}
+
+.manage-2fa__error {
+  background-color: #FEF2F2;
+  border: 1px solid #FEE2E2;
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #DC2626;
+}
+
+.manage-2fa__actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  width: 100%;
+}
+
+.manage-2fa__btn-cancel {
+  height: 38px;
+  padding: 0 16px;
+  background-color: #FFFFFF;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-button);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.manage-2fa__btn-cancel:hover {
+  background-color: var(--bg-hover);
+}
+
+.manage-2fa__btn-submit {
+  height: 38px;
+  padding: 0 16px;
+  background-color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-button);
+  font-size: 14px;
+  font-weight: 500;
+  color: #FFFFFF;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.manage-2fa__btn-submit:hover:not(:disabled) {
+  background-color: var(--color-primary-hover);
+}
+
+.manage-2fa__btn-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+

@@ -12,6 +12,12 @@ import KbCategoriesPage from './features/knowledge-base/pages/KbCategoriesPage';
 import KbArticleDetailPage from './features/knowledge-base/pages/KbArticleDetailPage';
 import KbArticleEditorPage from './features/knowledge-base/pages/KbArticleEditorPage';
 import ReportsPage from './features/reports/pages/ReportsPage';
+import SettingsLayout from './features/settings/pages/SettingsLayout';
+import GeneralSettingsPage from './features/settings/pages/GeneralSettingsPage';
+import ProfileSettingsPage from './features/settings/pages/ProfileSettingsPage';
+import TeamSettingsPage from './features/settings/pages/TeamSettingsPage';
+import NotificationsSettingsPage from './features/settings/pages/NotificationsSettingsPage';
+import AiSettingsPage from './features/settings/pages/AiSettingsPage';
 import PlaceholderPage from './pages/PlaceholderPage';
 import AuthLayout from './layouts/AuthLayout/AuthLayout';
 import LoginPage from './features/auth/pages/LoginPage';
@@ -54,7 +60,15 @@ export default function App() {
           <Route path="/knowledge-base/articles/:id" element={<KbArticleDetailPage />} />
           <Route path="/reports" element={<ReportsPage />} />
           <Route path="/team" element={<PlaceholderPage title="Team" />} />
-          <Route path="/settings" element={<PlaceholderPage title="Settings" />} />
+          <Route path="/settings" element={<SettingsLayout />}>
+            <Route index element={<Navigate to="/settings/general" replace />} />
+            <Route path="general" element={<GeneralSettingsPage />} />
+            <Route path="profile" element={<ProfileSettingsPage />} />
+            <Route path="team" element={<TeamSettingsPage />} />
+            <Route path="notifications" element={<NotificationsSettingsPage />} />
+            <Route path="ai" element={<AiSettingsPage />} />
+            <Route path="*" element={<Navigate to="/settings/general" replace />} />
+          </Route>
         </Route>
       </Route>
 

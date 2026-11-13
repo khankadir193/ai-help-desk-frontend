@@ -1,0 +1,69 @@
+.notif-matrix {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.notif-matrix__header {
+  display: grid;
+  grid-template-columns: 1fr 80px 80px;
+  align-items: center;
+  background-color: #F8FAFC;
+  padding: 10px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.notif-matrix__col--event {
+  text-align: left;
+}
+
+.notif-matrix__col--center {
+  text-align: center;
+}
+
+.notif-matrix__body {
+  display: flex;
+  flex-direction: column;
+}
+
+.notif-matrix__row {
+  display: grid;
+  grid-template-columns: 1fr 80px 80px;
+  align-items: center;
+  min-height: 56px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.notif-matrix__row:last-child {
+  border-bottom: none;
+}
+
+.notif-matrix__event-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-right: 12px;
+}
+
+.notif-matrix__event-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.notif-matrix__event-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.notif-matrix__cell--center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+

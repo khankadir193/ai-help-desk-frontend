@@ -149,7 +149,7 @@ export default function Topbar({
               }
             }}
           >
-            <Avatar initials={displayInitials} size="sm" />
+            <Avatar src={user?.avatar_url} initials={displayInitials} size="sm" />
             <Icon name="chevron-down" size={14} className="topbar__chevron" />
           </div>
 

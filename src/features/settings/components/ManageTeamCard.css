@@ -1,0 +1,35 @@
+.manage-team__stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  padding: 8px 0;
+}
+
+.manage-team__stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.manage-team__stat-number {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.manage-team__stat-label {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.manage-team__actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.manage-team__btn {
+  width: 100%;
+}
+
