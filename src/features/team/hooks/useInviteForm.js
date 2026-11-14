@@ -12,10 +12,18 @@ export function useInviteForm({ initialRole = 'AGENT', initialTeam = 'General su
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
 
-  // Dirty state: user entered an email or altered selections
+  // Capture initial selections once so isDirty stays stable even if the
+  // teams list (initialTeam) resolves after mount.
+  const [initial] = useState({ role: initialRole, team: initialTeam });
+
+  // Dirty state: user entered an email or altered role/team selections
   const isDirty = useMemo(() => {
-    return email.trim().length > 0;
-  }, [email]);
+    return (
+      email.trim().length > 0 ||
+      role !== initial.role ||
+      team !== initial.team
+    );
+  }, [email, role, team, initial]);
 
   // Validate email on blur
   const handleEmailBlur = useCallback(() => {

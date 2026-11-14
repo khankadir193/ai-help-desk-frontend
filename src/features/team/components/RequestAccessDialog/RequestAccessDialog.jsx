@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Modal from '../../../../components/ui/Modal/Modal';
 import './RequestAccessDialog.css';
 
@@ -12,6 +12,15 @@ export default function RequestAccessDialog({
   const [requestedRole, setRequestedRole] = useState('ADMIN');
   const [error, setError] = useState(null);
   const [isSent, setIsSent] = useState(false);
+  const successTimer = useRef(null);
+
+  // Clear the auto-close timer if the dialog unmounts mid-countdown
+  useEffect(
+    () => () => {
+      if (successTimer.current) clearTimeout(successTimer.current);
+    },
+    []
+  );
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,7 +33,7 @@ export default function RequestAccessDialog({
       setError(null);
       await onSubmit(reason.trim(), requestedRole);
       setIsSent(true);
-      setTimeout(() => {
+      successTimer.current = setTimeout(() => {
         setIsSent(false);
         setReason('');
         onClose();

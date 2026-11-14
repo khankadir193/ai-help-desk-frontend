@@ -78,10 +78,17 @@ export const teamService = {
   },
 
   /**
-   * Fetch member directory and pending invitations.
+   * Fetch member directory (paginated + searchable) and pending invitations.
+   * Params: { page, pageSize, q }. Accepts an axios config object as the
+   * second argument (e.g. { signal }) — the same convention as
+   * kbService.listArticles — so React Query's AbortSignal cancels stale
+   * page requests.
    */
-  listMembers: async () => {
-    const response = await apiClient.get(API_ENDPOINTS.TEAM.MEMBERS);
+  listMembers: async (params = {}, { signal } = {}) => {
+    const response = await apiClient.get(API_ENDPOINTS.TEAM.MEMBERS, {
+      params,
+      signal,
+    });
     return response?.data ?? response ?? {};
   },
 

@@ -71,11 +71,14 @@ export function formatDateRangeCompact(fromStr, toStr) {
   const d2 = new Date(toStr);
   if (isNaN(d1.getTime()) || isNaN(d2.getTime())) return '';
 
-  const m1 = MONTH_NAMES[d1.getUTCMonth()];
-  const day1 = d1.getUTCDate();
-  const m2 = MONTH_NAMES[d2.getUTCMonth()];
-  const day2 = d2.getUTCDate();
-  const year2 = d2.getUTCFullYear();
+  // Local components: range bounds are built from local Date objects, so UTC
+  // getters shift the label ±1 day on non-UTC timezones (e.g. "to" at local
+  // 23:59 parses back past UTC midnight).
+  const m1 = MONTH_NAMES[d1.getMonth()];
+  const day1 = d1.getDate();
+  const m2 = MONTH_NAMES[d2.getMonth()];
+  const day2 = d2.getDate();
+  const year2 = d2.getFullYear();
 
   if (m1 === m2) {
     return `${m1} ${day1}–${day2}, ${year2}`;
@@ -92,11 +95,12 @@ export function formatDateRange(fromStr, toStr) {
   const d2 = new Date(toStr);
   if (isNaN(d1.getTime()) || isNaN(d2.getTime())) return '';
 
-  const m1 = MONTH_NAMES[d1.getUTCMonth()];
-  const day1 = d1.getUTCDate();
-  const m2 = MONTH_NAMES[d2.getUTCMonth()];
-  const day2 = d2.getUTCDate();
-  const year2 = d2.getUTCFullYear();
+  // Local components — see formatDateRangeCompact above.
+  const m1 = MONTH_NAMES[d1.getMonth()];
+  const day1 = d1.getDate();
+  const m2 = MONTH_NAMES[d2.getMonth()];
+  const day2 = d2.getDate();
+  const year2 = d2.getFullYear();
 
   return `${m1} ${day1} – ${m2} ${day2}, ${year2}`;
 }

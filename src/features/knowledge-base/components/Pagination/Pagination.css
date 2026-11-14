@@ -81,6 +81,27 @@
   user-select: none;
 }
 
+/* Compact mode (opt-in): on small screens the numbered buttons collapse to
+   "Previous / Page X of Y / Next" so pages never scroll horizontally. */
+.kb-pagination__compact-info {
+  display: none;
+  padding: 0 4px;
+  color: var(--text-muted, #64748B);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 640px) {
+  .kb-pagination--compact .kb-pagination__btn--page,
+  .kb-pagination--compact .kb-pagination__ellipsis {
+    display: none;
+  }
+
+  .kb-pagination--compact .kb-pagination__compact-info {
+    display: inline;
+  }
+}
+
 @media (max-width: 640px) {
   .kb-pagination {
     flex-direction: column;

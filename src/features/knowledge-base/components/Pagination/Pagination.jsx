@@ -6,6 +6,9 @@ export default function Pagination({
   totalItems = 0,
   pageSize = 8,
   onPageChange,
+  // Optional, backward-compatible extensions:
+  itemLabel = 'articles',
+  compact = false,
 }) {
   const startItem = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
   const endItem = Math.min(currentPage * pageSize, totalItems);
@@ -28,9 +31,12 @@ export default function Pagination({
   };
 
   return (
-    <div className="kb-pagination" aria-label="Pagination">
+    <div
+      className={`kb-pagination${compact ? ' kb-pagination--compact' : ''}`}
+      aria-label="Pagination"
+    >
       <div className="kb-pagination__info">
-        Showing {startItem}-{endItem} of {totalItems} articles · {pageSize} per page
+        Showing {startItem}-{endItem} of {totalItems} {itemLabel} · {pageSize} per page
       </div>
 
       <nav className="kb-pagination__controls" aria-label="Page navigation">
@@ -78,6 +84,12 @@ export default function Pagination({
         >
           Next
         </button>
+
+        {compact && (
+          <span className="kb-pagination__compact-info">
+            Page {currentPage} of {totalPages}
+          </span>
+        )}
       </nav>
     </div>
   );

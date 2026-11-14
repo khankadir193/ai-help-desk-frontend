@@ -16,21 +16,24 @@ export function useTeamPerformance() {
   const [datePreset, setDatePreset] = useState('7d');
   const [isExporting, setIsExporting] = useState(false);
 
-  // Compute date range from preset
+  // Compute date range from preset.
+  // Uses UTC day boundaries so the header label (formatted with UTC date
+  // parts), the backend's UTC-bucketed daily series, and every query in
+  // the range describe exactly the same set of days, in any timezone.
   const dateRange = useMemo(() => {
     const now = new Date();
+    let from;
     const to = new Date(now);
-    let from = new Date(now);
 
     if (datePreset === 'this_month') {
-      from = new Date(now.getFullYear(), now.getMonth(), 1);
+      from = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1));
     } else {
       const preset = DATE_PRESETS.find((p) => p.id === datePreset) || DATE_PRESETS[0];
-      from.setDate(from.getDate() - (preset.days - 1));
+      from = new Date(now.getTime() - (preset.days - 1) * 24 * 60 * 60 * 1000);
     }
 
-    from.setHours(0, 0, 0, 0);
-    to.setHours(23, 59, 59, 999);
+    from.setUTCHours(0, 0, 0, 0);
+    to.setUTCHours(23, 59, 59, 999);
 
     return {
       from: from.toISOString(),

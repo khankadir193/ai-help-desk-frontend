@@ -21,8 +21,13 @@ export default function ThroughputCard({ throughput = [], isLoading }) {
   const AVAILABLE_W = VIEW_W - LEFT_AXIS - RIGHT_PAD;
 
   const slotW = days.length > 0 ? AVAILABLE_W / days.length : AVAILABLE_W;
-  const barW = Math.min(18, Math.max(8, (slotW - 14) / 2));
+  // Fit both bars + gap inside a slot so adjacent groups never overlap
+  const barW = Math.min(18, Math.max(6, (slotW - 12) / 2));
   const barGap = 4;
+
+  // Thin out X-axis labels when slots are narrower than a "Nov 12" label;
+  // every bar keeps its <title> tooltip regardless.
+  const labelStep = days.length > 20 ? 5 : days.length > 12 ? 2 : 1;
 
   const toBarH = (val) => (yMax > 0 ? (val / yMax) * PLOT_H : 0);
 
@@ -137,15 +142,17 @@ export default function ThroughputCard({ throughput = [], isLoading }) {
                   className="throughput-bar throughput-bar--resolved"
                 />
 
-                {/* X-axis date label */}
-                <text
-                  x={groupX + barW + barGap / 2}
-                  y={VIEW_H - 6}
-                  textAnchor="middle"
-                  className="throughput-axis-label throughput-x-label"
-                >
-                  {shortLabel}
-                </text>
+                {/* X-axis date label (thinned on crowded ranges) */}
+                {i % labelStep === 0 && (
+                  <text
+                    x={groupX + barW + barGap / 2}
+                    y={VIEW_H - 6}
+                    textAnchor="middle"
+                    className="throughput-axis-label throughput-x-label"
+                  >
+                    {shortLabel}
+                  </text>
+                )}
               </g>
             );
           })}

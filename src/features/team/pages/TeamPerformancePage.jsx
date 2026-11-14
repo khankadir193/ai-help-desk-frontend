@@ -119,7 +119,7 @@ export default function TeamPerformancePage() {
     return (
       <div className="team-error-state" role="alert">
         <p className="team-error-message">
-          Failed to load team performance: {error?.message || 'Server error'}
+          Failed to load team performance: {error?.userMessage || error?.message || 'Server error'}
         </p>
         <button
           type="button"

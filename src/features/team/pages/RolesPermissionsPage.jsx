@@ -92,7 +92,7 @@ export default function RolesPermissionsPage() {
     return (
       <div className="team-error-state" role="alert">
         <p className="team-error-message">
-          Failed to load roles and permissions: {error?.message || 'Server error'}
+          Failed to load roles and permissions: {error?.userMessage || error?.message || 'Server error'}
         </p>
         <button
           type="button"

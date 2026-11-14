@@ -156,6 +156,12 @@
   scrollbar-color: #CBD5E1 transparent;
 }
 
+/* Keep the previous rows visible but dimmed while a new page loads */
+.members-table-wrapper--refreshing {
+  opacity: 0.55;
+  transition: opacity 150ms ease;
+}
+
 .members-table {
   width: 100%;
   border-collapse: collapse;
@@ -341,4 +347,60 @@
     width: 100%;
     padding-bottom: 4px;
   }
+}
+
+/* Error variant of the shared team toast */
+.team-toast--error .team-toast__icon {
+  color: #F87171;
+}
+
+/* Revoke confirmation dialog actions */
+.members-revoke-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 4px;
+}
+
+.members-revoke-btn-cancel {
+  height: 36px;
+  padding: 0 14px;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: var(--font-family);
+  color: var(--text-secondary);
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-button);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.members-revoke-btn-cancel:hover:not(:disabled) {
+  background-color: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.members-revoke-btn-confirm {
+  height: 36px;
+  padding: 0 14px;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: var(--font-family);
+  color: #FFFFFF;
+  background-color: var(--color-danger, #DC2626);
+  border: 1px solid transparent;
+  border-radius: var(--radius-button);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.members-revoke-btn-confirm:hover:not(:disabled) {
+  background-color: #B91C1C;
+}
+
+.members-revoke-btn-cancel:disabled,
+.members-revoke-btn-confirm:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
 }

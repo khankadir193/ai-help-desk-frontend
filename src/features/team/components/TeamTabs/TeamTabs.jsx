@@ -1,4 +1,5 @@
-import { NavLink, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import { confirmTeamNav } from '../../utils/teamNavGuard';
 import './TeamTabs.css';
 
 const TABS = [
@@ -32,14 +33,21 @@ export default function TeamTabs() {
         {TABS.map((tab) => {
           const active = tab.isActive(location.pathname);
           return (
-            <NavLink
+            <Link
               key={tab.id}
               to={tab.path}
               className={`team-tabs__link ${active ? 'team-tabs__link--active' : ''}`}
               aria-current={active ? 'page' : undefined}
+              onClick={(e) => {
+                // Let the active page (e.g. Invite's unsaved-changes guard)
+                // veto in-app navigation.
+                if (!confirmTeamNav()) {
+                  e.preventDefault();
+                }
+              }}
             >
               {tab.label}
-            </NavLink>
+            </Link>
           );
         })}
       </div>

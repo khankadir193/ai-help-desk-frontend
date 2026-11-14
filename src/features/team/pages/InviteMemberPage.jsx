@@ -7,6 +7,7 @@ import useInviteSubmit from '../hooks/useInviteSubmit';
 import { useTeams } from '../hooks/useTeams';
 import { useAuth } from '../../auth/hooks/useAuth';
 import { canInvite } from '../utils/teamPermissions';
+import { setTeamNavGuard } from '../utils/teamNavGuard';
 import InviteForm from '../components/InviteForm/InviteForm';
 import InvitationReviewCard from '../components/InvitationReviewCard/InvitationReviewCard';
 import WhatHappensNextCard from '../components/WhatHappensNextCard/WhatHappensNextCard';
@@ -95,6 +96,18 @@ export default function InviteMemberPage() {
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, [isDirty]);
 
+  // Intercept in-app tab navigation (TeamTabs) while the form has unsaved
+  // changes, so leaving via Members/Performance/Roles shows the discard dialog.
+  useEffect(() => {
+    return setTeamNavGuard(() => {
+      if (isDirty) {
+        setIsDiscardDialogOpen(true);
+        return false;
+      }
+      return true;
+    });
+  }, [isDirty]);
+
   // Set shared header
   const handleBackToMembers = useCallback(() => {
     if (isDirty) {
@@ -133,18 +146,24 @@ export default function InviteMemberPage() {
   const handleConfirmSend = async () => {
     try {
       setServerError(null);
-      await submitInvitation({
+      const invitation = await submitInvitation({
         email: values.email.trim().toLowerCase(),
         role: values.role,
         team: values.team,
       });
 
-      setStatusLabel('Sent');
+      // Report the REAL delivery outcome — never claim "Sent" for an
+      // unsent email. The Members tab shows a matching toast.
+      const deliveryFailed = invitation?.email_delivery?.sent === false;
+      setStatusLabel(deliveryFailed ? 'Created · email not sent' : 'Sent');
       setIsConfirmOpen(false);
 
       // Redirect to /team (Members tab) where pending invite appears
       navigate('/team', {
-        state: { invitedEmail: values.email.trim().toLowerCase() },
+        state: {
+          invitedEmail: values.email.trim().toLowerCase(),
+          deliveryFailed,
+        },
       });
     } catch (err) {
       const msg =

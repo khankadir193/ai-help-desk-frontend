@@ -3,6 +3,9 @@ import { createPortal } from 'react-dom';
 import Icon from '../../Icon/Icon';
 import styles from './Modal.module.css';
 
+const FOCUSABLE_SELECTOR =
+  'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
 export default function Modal({
   isOpen,
   onClose,
@@ -13,14 +16,38 @@ export default function Modal({
   size = 'md',
 }) {
   const modalRef = useRef(null);
+  const previouslyFocused = useRef(null);
 
-  // Close on Escape & Lock body scroll
+  // Close on Escape, trap Tab focus & lock body scroll
   useEffect(() => {
     if (!isOpen) return;
+
+    // Move focus into the dialog and remember the trigger to restore it
+    previouslyFocused.current = document.activeElement;
+    const modal = modalRef.current;
+    if (modal) {
+      const focusable = modal.querySelectorAll(FOCUSABLE_SELECTOR);
+      (focusable[0] || modal).focus();
+    }
 
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') {
         onClose();
+        return;
+      }
+      // Keep Tab focus inside the dialog
+      if (e.key === 'Tab' && modalRef.current) {
+        const items = modalRef.current.querySelectorAll(FOCUSABLE_SELECTOR);
+        if (items.length === 0) return;
+        const first = items[0];
+        const last = items[items.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
       }
     };
 
@@ -31,6 +58,11 @@ export default function Modal({
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
       document.body.style.overflow = previousOverflow;
+      // Restore focus to the element that opened the dialog
+      const trigger = previouslyFocused.current;
+      if (trigger && typeof trigger.focus === 'function') {
+        trigger.focus();
+      }
     };
   }, [isOpen, onClose]);
 
@@ -54,6 +86,7 @@ export default function Modal({
         aria-modal="true"
         aria-labelledby={title ? 'modal-title' : undefined}
         ref={modalRef}
+        tabIndex={-1}
       >
         <div className={styles.header}>
           <div className={styles.titleGroup}>
