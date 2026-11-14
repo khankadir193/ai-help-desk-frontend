@@ -1,0 +1,59 @@
+/* ==========================================================================
+   ReadOnlyBanner — Alert / Info notification banner
+   ========================================================================== */
+
+.team-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 18px;
+  border-radius: var(--radius-button);
+  font-size: 14px;
+  line-height: 1.45;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.team-banner--readonly {
+  background-color: var(--color-blue-tint);
+  border: 1px solid #DBEAFE;
+  color: #1E40AF;
+}
+
+.team-banner--admin {
+  background-color: #EEF0FF;
+  border: 1px solid #E0E7FF;
+  color: #3730A3;
+}
+
+.team-banner__text {
+  font-weight: 500;
+}
+
+.team-banner__contact-link,
+.team-banner__contact-btn {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-primary);
+  text-decoration: none;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color var(--transition-fast);
+}
+
+.team-banner__contact-link:hover,
+.team-banner__contact-btn:hover {
+  color: var(--color-primary-hover);
+  text-decoration: underline;
+}
+
+.team-banner__contact-link:focus-visible,
+.team-banner__contact-btn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}

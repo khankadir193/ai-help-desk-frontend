@@ -212,7 +212,7 @@ export default function TeamSettingsPage() {
             <span className="settings-muted-note">
               Review role access in member administration.
             </span>
-            <Link to="/team" className="settings-link">
+            <Link to="/team/roles" className="settings-link">
               Roles & permissions
             </Link>
           </div>

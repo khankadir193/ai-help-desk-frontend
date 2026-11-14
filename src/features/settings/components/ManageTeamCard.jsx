@@ -37,7 +37,7 @@ export default function ManageTeamCard({ team }) {
         <button
           type="button"
           className="settings-btn-outline manage-team__btn"
-          onClick={() => navigate('/team')}
+          onClick={() => navigate('/team/members/invite')}
         >
           Invite member
         </button>

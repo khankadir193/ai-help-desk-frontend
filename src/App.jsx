@@ -18,7 +18,11 @@ import ProfileSettingsPage from './features/settings/pages/ProfileSettingsPage';
 import TeamSettingsPage from './features/settings/pages/TeamSettingsPage';
 import NotificationsSettingsPage from './features/settings/pages/NotificationsSettingsPage';
 import AiSettingsPage from './features/settings/pages/AiSettingsPage';
-import PlaceholderPage from './pages/PlaceholderPage';
+import TeamLayout from './features/team/pages/TeamLayout';
+import TeamMembersPage from './features/team/pages/TeamMembersPage';
+import TeamPerformancePage from './features/team/pages/TeamPerformancePage';
+import RolesPermissionsPage from './features/team/pages/RolesPermissionsPage';
+import InviteMemberPage from './features/team/pages/InviteMemberPage';
 import AuthLayout from './layouts/AuthLayout/AuthLayout';
 import LoginPage from './features/auth/pages/LoginPage';
 import RegisterPage from './features/auth/pages/RegisterPage';
@@ -59,7 +63,13 @@ export default function App() {
           <Route path="/knowledge-base/articles/:id/edit" element={<KbArticleEditorPage mode="edit" />} />
           <Route path="/knowledge-base/articles/:id" element={<KbArticleDetailPage />} />
           <Route path="/reports" element={<ReportsPage />} />
-          <Route path="/team" element={<PlaceholderPage title="Team" />} />
+          <Route path="/team" element={<TeamLayout />}>
+            <Route index element={<TeamMembersPage />} />
+            <Route path="performance" element={<TeamPerformancePage />} />
+            <Route path="roles" element={<RolesPermissionsPage />} />
+            <Route path="members/invite" element={<InviteMemberPage />} />
+            <Route path="*" element={<Navigate to="/team" replace />} />
+          </Route>
           <Route path="/settings" element={<SettingsLayout />}>
             <Route index element={<Navigate to="/settings/general" replace />} />
             <Route path="general" element={<GeneralSettingsPage />} />

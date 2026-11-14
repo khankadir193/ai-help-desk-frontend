@@ -1,0 +1,109 @@
+/* ==========================================================================
+   RolesMatrix — Matrix table with sticky permission column
+   ========================================================================== */
+
+.roles-matrix-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.roles-matrix-table-wrapper {
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #CBD5E1 transparent;
+}
+
+.roles-matrix-table-wrapper::-webkit-scrollbar {
+  height: 6px;
+}
+
+.roles-matrix-table-wrapper::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 4px;
+}
+
+.roles-matrix-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-family: var(--font-family);
+  min-width: 680px;
+}
+
+.roles-matrix-table thead tr {
+  background-color: var(--bg-card);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.roles-col-perm {
+  width: 260px;
+  padding: 16px 20px;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.roles-col-role {
+  padding: 16px 20px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.roles-tr {
+  height: 44px;
+  border-bottom: 1px solid var(--border-light);
+  transition: background-color var(--transition-fast);
+}
+
+.roles-tr:last-child {
+  border-bottom: none;
+}
+
+.roles-tr:hover {
+  background-color: #FAFAFC;
+}
+
+.roles-td {
+  padding: 0 20px;
+  font-size: 14px;
+  color: var(--text-primary);
+  text-align: left;
+}
+
+.roles-td--perm {
+  font-weight: 400;
+  color: var(--text-primary);
+}
+
+.roles-td--role {
+  color: var(--text-secondary);
+}
+
+/* Skeleton Loading */
+.roles-tr--skeleton {
+  height: 44px;
+}
+
+.roles-skeleton-row {
+  height: 18px;
+  background-color: #F8FAFC;
+  border-radius: 4px;
+  margin: 0 20px;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@media (max-width: 768px) {
+  .roles-col-perm,
+  .roles-td--perm {
+    position: sticky;
+    left: 0;
+    background-color: var(--bg-card);
+    z-index: 1;
+    box-shadow: 2px 0 4px rgba(0, 0, 0, 0.04);
+  }
+}

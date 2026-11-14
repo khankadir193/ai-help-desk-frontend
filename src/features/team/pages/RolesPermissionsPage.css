@@ -1,0 +1,166 @@
+/* ==========================================================================
+   RolesPermissionsPage
+   ========================================================================== */
+
+.roles-page-content {
+  position: relative;
+}
+
+.roles-btn-back {
+  height: 36px;
+  padding: 0 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-button);
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 500;
+  font-family: var(--font-family);
+  cursor: pointer;
+  box-shadow: var(--shadow-card);
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.roles-btn-back:hover {
+  background-color: var(--bg-hover);
+  border-color: #CBD5E1;
+}
+
+.roles-btn-back:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.roles-confirm-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 8px;
+}
+
+.roles-confirm-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.roles-confirm-item {
+  background-color: #F8FAFC;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-button);
+  padding: 12px 14px;
+}
+
+.roles-confirm-item-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: block;
+  margin-bottom: 6px;
+}
+
+.roles-confirm-item-changes {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.roles-confirm-diff {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.roles-confirm-error {
+  padding: 10px 14px;
+  background-color: var(--color-danger-tint);
+  border: 1px solid #FECACA;
+  border-radius: var(--radius-button);
+  color: var(--color-danger);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.roles-confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-light);
+}
+
+.roles-confirm-btn-cancel {
+  height: 38px;
+  padding: 0 16px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-button);
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.roles-confirm-btn-cancel:hover:not(:disabled) {
+  background-color: var(--bg-hover);
+}
+
+.roles-confirm-btn-confirm {
+  height: 38px;
+  padding: 0 18px;
+  background-color: var(--color-primary);
+  border: 1px solid transparent;
+  border-radius: var(--radius-button);
+  color: var(--text-inverse);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.roles-confirm-btn-confirm:hover:not(:disabled) {
+  background-color: var(--color-primary-hover);
+}
+
+.team-toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background-color: #0F172A;
+  color: #FFFFFF;
+  padding: 12px 18px;
+  border-radius: var(--radius-button);
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  animation: toast-slide-up 0.2s ease-out;
+}
+
+.team-toast__icon {
+  color: #10B981;
+  font-weight: 700;
+}
+
+@keyframes toast-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

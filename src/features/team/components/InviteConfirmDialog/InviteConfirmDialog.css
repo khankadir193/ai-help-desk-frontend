@@ -1,0 +1,125 @@
+/* ==========================================================================
+   InviteConfirmDialog
+   ========================================================================== */
+
+.invite-confirm-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 8px;
+}
+
+.invite-confirm-summary {
+  background-color: #F8FAFC;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-button);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.invite-confirm-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: 14px;
+}
+
+.invite-confirm-label {
+  color: var(--text-muted);
+}
+
+.invite-confirm-val {
+  font-weight: 500;
+  color: var(--text-primary);
+  text-align: right;
+}
+
+.invite-confirm-val--email {
+  word-break: break-all;
+  font-weight: 600;
+}
+
+.invite-confirm-error {
+  padding: 10px 14px;
+  background-color: var(--color-danger-tint);
+  border: 1px solid #FECACA;
+  border-radius: var(--radius-button);
+  color: var(--color-danger);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.invite-confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 8px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-light);
+}
+
+.invite-confirm-btn-back {
+  height: 38px;
+  padding: 0 16px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-button);
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.invite-confirm-btn-back:hover:not(:disabled) {
+  background-color: var(--bg-hover);
+}
+
+.invite-confirm-btn-send {
+  height: 38px;
+  padding: 0 20px;
+  background-color: var(--color-primary);
+  border: 1px solid transparent;
+  border-radius: var(--radius-button);
+  color: var(--text-inverse);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  min-width: 130px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.invite-confirm-btn-send:hover:not(:disabled) {
+  background-color: var(--color-primary-hover);
+}
+
+.invite-confirm-btn-send:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.invite-btn-spinner-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.invite-btn-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #FFFFFF;
+  border-radius: 50%;
+  animation: invite-spin 0.6s linear infinite;
+  display: inline-block;
+}
+
+@keyframes invite-spin {
+  to { transform: rotate(360deg); }
+}

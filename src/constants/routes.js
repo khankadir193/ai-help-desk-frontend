@@ -10,6 +10,10 @@ export const ROUTES = {
   KNOWLEDGE_BASE: '/knowledge-base',
   REPORTS: '/reports',
   TEAM: '/team',
+  TEAM_MEMBERS: '/team',
+  TEAM_PERFORMANCE: '/team/performance',
+  TEAM_ROLES: '/team/roles',
+  TEAM_INVITE: '/team/members/invite',
   SETTINGS: '/settings',
   NOT_FOUND: '*',
 };

@@ -1,0 +1,134 @@
+/* ==========================================================================
+   ProtectWorkspaceCard — Admin protection card & footer controls
+   ========================================================================== */
+
+.protect-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-card);
+  padding: 20px;
+  box-shadow: var(--shadow-card);
+}
+
+.protect-card__title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 8px 0;
+  line-height: 1.3;
+}
+
+.protect-card__body {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin: 0 0 20px 0;
+}
+
+.protect-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-light);
+}
+
+.protect-card__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.protect-card__dirty-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--color-amber);
+  display: inline-block;
+}
+
+.protect-card__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.protect-btn-request {
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-button);
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 500;
+  font-family: var(--font-family);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.protect-btn-request:hover {
+  background-color: var(--bg-hover);
+}
+
+.protect-btn-request:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.protect-btn-save {
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 18px;
+  border-radius: var(--radius-button);
+  font-size: 13px;
+  font-weight: 500;
+  font-family: var(--font-family);
+  white-space: nowrap;
+  transition: all var(--transition-fast);
+  border: 1px solid transparent;
+}
+
+.protect-btn-save--active {
+  background-color: var(--color-primary);
+  color: var(--text-inverse);
+  cursor: pointer;
+}
+
+.protect-btn-save--active:hover {
+  background-color: var(--color-primary-hover);
+}
+
+.protect-btn-save--disabled {
+  background-color: #F1F5F9;
+  color: #94A3B8;
+  cursor: not-allowed;
+  border-color: #E2E8F0;
+}
+
+@media (max-width: 640px) {
+  .protect-card__footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .protect-card__actions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .protect-btn-request,
+  .protect-btn-save {
+    width: 100%;
+  }
+}

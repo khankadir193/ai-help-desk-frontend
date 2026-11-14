@@ -1,0 +1,50 @@
+.perm-cell {
+  display: inline-flex;
+  align-items: center;
+  font-size: 14px;
+}
+
+.perm-cell__text {
+  color: var(--text-primary);
+  font-weight: 400;
+}
+
+.perm-cell__badge {
+  font-size: 14px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.perm-cell__badge--allowed {
+  color: var(--color-success-text);
+}
+
+.perm-cell__badge--not-allowed {
+  color: var(--text-muted);
+}
+
+.perm-cell__select {
+  height: 32px;
+  padding: 0 10px;
+  font-size: 13px;
+  font-family: var(--font-family);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-button);
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: border-color var(--transition-fast);
+}
+
+.perm-cell__select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.15);
+}
+
+.perm-cell__select--allowed {
+  color: var(--color-success-text);
+  font-weight: 500;
+}

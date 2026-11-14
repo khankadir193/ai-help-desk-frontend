@@ -52,6 +52,18 @@ export const API_ENDPOINTS = {
     AI_SUGGEST: '/kb/ai/suggest',
     EXPORT: '/kb/articles/export',
   },
+  TEAM: {
+    PERFORMANCE: '/team/performance',
+    PERFORMANCE_EXPORT: '/team/performance/export',
+    ROLES: '/team/roles',
+    ROLES_REQUEST_CHANGE: '/team/roles/request-change',
+    TEAMS: '/team/teams',
+    INVITE_OPTIONS: '/team/invite-options',
+    INVITATIONS: '/team/invitations',
+    RESEND_INVITATION: (id) => `/team/invitations/${id}/resend`,
+    REVOKE_INVITATION: (id) => `/team/invitations/${id}`,
+    MEMBERS: '/team/members',
+  },
   SETTINGS: {
     WORKSPACE: '/settings/workspace',
     WORKSPACE_CHECK_URL: '/settings/workspace/check-url',

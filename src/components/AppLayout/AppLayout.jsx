@@ -86,14 +86,16 @@ export default function AppLayout() {
   };
 
   const pageTitle =
-    location.pathname.startsWith('/knowledge-base')
-      ? 'Knowledge Base'
-      : location.pathname.startsWith('/settings')
-        ? 'Settings'
-        : (ROUTE_TITLES[location.pathname] ||
-           (location.pathname.startsWith('/tickets/')
-             ? 'Ticket Details'
-             : 'Dashboard'));
+    location.pathname.startsWith('/team')
+      ? 'Team'
+      : location.pathname.startsWith('/knowledge-base')
+        ? 'Knowledge Base'
+        : location.pathname.startsWith('/settings')
+          ? 'Settings'
+          : (ROUTE_TITLES[location.pathname] ||
+             (location.pathname.startsWith('/tickets/')
+               ? 'Ticket Details'
+               : 'Dashboard'));
 
   return (
     <div className="app-layout">

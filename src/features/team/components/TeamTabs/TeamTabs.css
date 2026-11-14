@@ -1,0 +1,70 @@
+/* ==========================================================================
+   TeamTabs — Sub-navigation for Team views
+   ========================================================================== */
+
+.team-tabs {
+  position: relative;
+  width: 100%;
+  border-bottom: 1px solid var(--border-color);
+  margin-top: 20px;
+  margin-bottom: 24px;
+}
+
+.team-tabs__list {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  margin-bottom: -1px; /* Align active indicator with 1px bottom border */
+}
+
+.team-tabs__list::-webkit-scrollbar {
+  display: none;
+}
+
+.team-tabs__link {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 0 12px 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  transition: color var(--transition-fast), border-color var(--transition-fast);
+  white-space: nowrap;
+}
+
+.team-tabs__link:hover {
+  color: var(--text-primary);
+}
+
+.team-tabs__link--active {
+  color: var(--color-primary);
+  font-weight: 600;
+  border-bottom: 2px solid var(--color-primary);
+}
+
+.team-tabs__link:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 4px;
+  border-radius: var(--radius-sm);
+}
+
+@media (max-width: 767px) {
+  .team-tabs {
+    margin-top: 16px;
+    margin-bottom: 20px;
+  }
+
+  .team-tabs__list {
+    gap: 20px;
+  }
+
+  .team-tabs__link {
+    font-size: 13.5px;
+    padding: 8px 0 10px 0;
+  }
+}

@@ -1,0 +1,189 @@
+/* ==========================================================================
+   TeamPerformancePage
+   ========================================================================== */
+
+.perf-content {
+  position: relative;
+  transition: opacity var(--transition-fast);
+}
+
+.perf-content--fetching {
+  opacity: 0.85;
+}
+
+.perf-progress-bar {
+  position: absolute;
+  top: -24px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: var(--color-primary);
+  animation: perf-loading-bar 1.2s infinite ease-in-out;
+}
+
+@keyframes perf-loading-bar {
+  0% { transform: translateX(-100%); width: 30%; }
+  50% { width: 60%; }
+  100% { transform: translateX(350%); width: 30%; }
+}
+
+.perf-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.perf-date-dropdown-wrap {
+  position: relative;
+}
+
+.perf-btn-date {
+  height: 36px;
+  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-button);
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 500;
+  font-family: var(--font-family);
+  cursor: pointer;
+  box-shadow: var(--shadow-card);
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.perf-btn-date:hover {
+  background-color: var(--bg-hover);
+  border-color: #CBD5E1;
+}
+
+.perf-btn-date:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.perf-chevron {
+  transition: transform var(--transition-fast);
+  color: var(--text-muted);
+}
+
+.perf-chevron--open {
+  transform: rotate(180deg);
+}
+
+.perf-date-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-button);
+  box-shadow: var(--shadow-dropdown);
+  min-width: 160px;
+  z-index: 100;
+  overflow: hidden;
+  padding: 4px;
+}
+
+.perf-date-dropdown-item {
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-family: var(--font-family);
+  color: var(--text-primary);
+  background: none;
+  border: none;
+  border-radius: var(--radius-sm);
+  text-align: left;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.perf-date-dropdown-item:hover {
+  background-color: var(--bg-hover);
+}
+
+.perf-date-dropdown-item--active {
+  background-color: #EEF0FF;
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.perf-btn-export {
+  height: 36px;
+  padding: 0 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-button);
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 500;
+  font-family: var(--font-family);
+  cursor: pointer;
+  box-shadow: var(--shadow-card);
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.perf-btn-export:hover:not(:disabled) {
+  background-color: var(--bg-hover);
+  border-color: #CBD5E1;
+}
+
+.perf-btn-export:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.perf-grid-row2 {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 16px;
+  align-items: stretch;
+  margin-bottom: 20px;
+}
+
+.team-error-state {
+  background-color: #FEF2F2;
+  border: 1px solid #FEE2E2;
+  border-radius: var(--radius-card);
+  padding: 24px;
+  text-align: center;
+  margin: 20px 0;
+}
+
+.team-error-message {
+  font-size: 14px;
+  color: var(--color-danger);
+  margin: 0 0 12px 0;
+}
+
+.team-retry-btn {
+  height: 34px;
+  padding: 0 14px;
+  background-color: var(--color-primary);
+  color: var(--text-inverse);
+  border: none;
+  border-radius: var(--radius-button);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.team-retry-btn:hover {
+  background-color: var(--color-primary-hover);
+}
+
+@media (max-width: 1023px) {
+  .perf-grid-row2 {
+    grid-template-columns: 1fr;
+  }
+}

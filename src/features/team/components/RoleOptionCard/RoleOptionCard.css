@@ -1,0 +1,117 @@
+/* ==========================================================================
+   RoleOptionCard — Radio selection card
+   ========================================================================== */
+
+.role-opt-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-input);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  user-select: none;
+  gap: 16px;
+}
+
+.role-opt-card:hover:not(.role-opt-card--disabled):not(.role-opt-card--selected) {
+  border-color: #CBD5E1;
+  background-color: #F8FAFC;
+}
+
+.role-opt-card:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.role-opt-card--selected {
+  border-color: var(--color-primary);
+  background-color: #F8FAFF;
+  box-shadow: 0 0 0 1px var(--color-primary);
+}
+
+.role-opt-card--disabled {
+  background-color: #F8FAFC;
+  border-color: #E2E8F0;
+  cursor: not-allowed;
+  opacity: 0.85;
+}
+
+.role-opt-card__left {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.role-opt-radio {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2px;
+  flex-shrink: 0;
+  transition: all var(--transition-fast);
+  background-color: var(--bg-card);
+}
+
+.role-opt-radio--checked {
+  border-color: var(--color-primary);
+}
+
+.role-opt-radio__inner {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--color-primary);
+}
+
+.role-opt-radio--disabled {
+  border-color: #CBD5E1;
+  background-color: #F1F5F9;
+}
+
+.role-opt-card__info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.role-opt-card__title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.25;
+}
+
+.role-opt-card--disabled .role-opt-card__title {
+  color: var(--text-secondary);
+}
+
+.role-opt-card__desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.role-opt-badge {
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  white-space: nowrap;
+}
+
+.role-opt-badge--selected {
+  background-color: #EEF0FF;
+  color: var(--color-primary);
+}
+
+.role-opt-badge--admin-only {
+  background-color: #F1F5F9;
+  color: var(--text-muted);
+}

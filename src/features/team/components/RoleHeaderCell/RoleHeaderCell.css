@@ -1,0 +1,19 @@
+.role-header-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.role-header-cell__title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.25;
+}
+
+.role-header-cell__subtitle {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text-muted);
+  line-height: 1.2;
+}

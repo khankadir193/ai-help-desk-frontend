@@ -1,0 +1,81 @@
+/* ==========================================================================
+   WorkloadCard — Summary card
+   ========================================================================== */
+
+.workload-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-card);
+  padding: 20px;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 250px;
+}
+
+.workload-card__title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 16px 0;
+  line-height: 1.3;
+}
+
+.workload-card__rows {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.workload-card__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.workload-card__label {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text-secondary);
+}
+
+.workload-card__value {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-align: right;
+}
+
+.workload-card__note {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.45;
+  margin: 16px 0 0 0;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-light);
+}
+
+/* Skeleton Loading */
+.workload-card__skeleton-title {
+  width: 140px;
+  height: 20px;
+  background-color: #F1F5F9;
+  border-radius: 4px;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.workload-card__skeleton-row {
+  height: 20px;
+  background-color: #F1F5F9;
+  border-radius: 4px;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.workload-card__skeleton-note {
+  height: 32px;
+  background-color: #F8FAFC;
+  border-radius: 4px;
+  margin-top: 16px;
+  animation: pulse 1.5s ease-in-out infinite;
+}

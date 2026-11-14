@@ -1,0 +1,214 @@
+/* ==========================================================================
+   InviteForm — Main invitation details form
+   ========================================================================== */
+
+.inv-details-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-card);
+  padding: 24px;
+  box-shadow: var(--shadow-card);
+}
+
+.inv-details-card__header {
+  margin-bottom: 22px;
+}
+
+.inv-details-card__title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 6px 0;
+  line-height: 1.3;
+}
+
+.inv-details-card__subtext {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin: 0;
+  line-height: 1.45;
+}
+
+.inv-details-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.inv-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.inv-field__label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.inv-field__required {
+  color: var(--color-danger);
+}
+
+.inv-field__input {
+  height: 40px;
+  padding: 0 14px;
+  font-size: 14px;
+  font-family: var(--font-family);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-input);
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+  outline: none;
+  transition: all var(--transition-fast);
+}
+
+.inv-field__input::placeholder {
+  color: #94A3B8;
+}
+
+.inv-field__input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+}
+
+.inv-field__input--error {
+  border-color: var(--color-danger);
+}
+
+.inv-field__input--error:focus {
+  box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.2);
+}
+
+.inv-field__helper {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.inv-field__error {
+  font-size: 13px;
+  color: var(--color-danger);
+  line-height: 1.4;
+}
+
+.inv-role-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.inv-select-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 240px;
+}
+
+.inv-field__select {
+  width: 100%;
+  height: 40px;
+  padding: 0 14px;
+  font-size: 14px;
+  font-family: var(--font-family);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-input);
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+  outline: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.inv-field__select:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+}
+
+.inv-details-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-light);
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.inv-footer-status {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.inv-footer-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.inv-btn-cancel {
+  height: 38px;
+  padding: 0 18px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-button);
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 500;
+  font-family: var(--font-family);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.inv-btn-cancel:hover {
+  background-color: var(--bg-hover);
+}
+
+.inv-btn-cancel:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.inv-btn-review {
+  height: 38px;
+  padding: 0 20px;
+  background-color: var(--color-primary);
+  border: 1px solid transparent;
+  border-radius: var(--radius-button);
+  color: var(--text-inverse);
+  font-size: 13px;
+  font-weight: 500;
+  font-family: var(--font-family);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.inv-btn-review:hover {
+  background-color: var(--color-primary-hover);
+}
+
+.inv-btn-review:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+@media (max-width: 640px) {
+  .inv-select-wrapper {
+    max-width: 100%;
+  }
+
+  .inv-details-card__footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .inv-footer-actions {
+    width: 100%;
+  }
+
+  .inv-btn-cancel,
+  .inv-btn-review {
+    flex: 1;
+  }
+}

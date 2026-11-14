@@ -1,0 +1,159 @@
+/* ==========================================================================
+   InviteMemberPage — 2fr / 1fr layout & responsive styling
+   ========================================================================== */
+
+.invite-page-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.invite-grid-left {
+  min-width: 0;
+}
+
+.invite-grid-right {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.invite-btn-back {
+  height: 36px;
+  padding: 0 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-button);
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 500;
+  font-family: var(--font-family);
+  cursor: pointer;
+  box-shadow: var(--shadow-card);
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.invite-btn-back:hover {
+  background-color: var(--bg-hover);
+  border-color: #CBD5E1;
+}
+
+.invite-btn-back:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.invite-discard-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 16px;
+}
+
+.invite-discard-btn-stay {
+  height: 38px;
+  padding: 0 16px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-button);
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.invite-discard-btn-stay:hover {
+  background-color: var(--bg-hover);
+}
+
+.invite-discard-btn-discard {
+  height: 38px;
+  padding: 0 16px;
+  background-color: var(--color-danger);
+  border: 1px solid transparent;
+  border-radius: var(--radius-button);
+  color: var(--text-inverse);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.invite-discard-btn-discard:hover {
+  background-color: #B91C1C;
+}
+
+.invite-unauthorized-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-card);
+  padding: 32px 24px;
+  text-align: center;
+  max-width: 540px;
+  margin: 40px auto;
+  box-shadow: var(--shadow-card);
+}
+
+.invite-unauthorized-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 8px 0;
+}
+
+.invite-unauthorized-desc {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin: 0 0 20px 0;
+}
+
+.invite-unauthorized-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.invite-unauthorized-link {
+  height: 38px;
+  padding: 0 18px;
+  background-color: var(--color-primary);
+  color: var(--text-inverse);
+  border-radius: var(--radius-button);
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color var(--transition-fast);
+}
+
+.invite-unauthorized-link:hover {
+  background-color: var(--color-primary-hover);
+}
+
+.invite-unauthorized-link-roles {
+  font-size: 13px;
+  color: var(--color-primary);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.invite-unauthorized-link-roles:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 1023px) {
+  .invite-page-grid {
+    grid-template-columns: 1fr;
+  }
+}
