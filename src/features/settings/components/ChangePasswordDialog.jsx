@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Modal from '../../../components/ui/Modal/Modal';
 import FormField from './FormField';
 import { validatePassword } from '../utils/settingsValidators';
@@ -16,6 +16,17 @@ export default function ChangePasswordDialog({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [serverError, setServerError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
+  // Auto-close timer after success; cleared on unmount to avoid leaks
+  const closeTimerRef = useRef(null);
+
+  useEffect(
+    () => () => {
+      if (closeTimerRef.current) {
+        clearTimeout(closeTimerRef.current);
+      }
+    },
+    []
+  );
 
   const resetForm = () => {
     setCurrentPassword('');
@@ -64,7 +75,7 @@ export default function ChangePasswordDialog({
         confirmPassword,
       });
       setSuccessMessage('Password changed successfully.');
-      setTimeout(() => {
+      closeTimerRef.current = setTimeout(() => {
         handleClose();
       }, 1200);
     } catch (err) {

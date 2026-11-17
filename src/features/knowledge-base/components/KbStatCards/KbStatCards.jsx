@@ -1,4 +1,3 @@
-import SkeletonBlock from '../skeletons/SkeletonBlock';
 import './KbStatCards.css';
 
 export default function KbStatCards({ stats, isLoading }) {

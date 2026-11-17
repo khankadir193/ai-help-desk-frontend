@@ -6,7 +6,7 @@ import AiNoteCard from '../components/AiNoteCard';
 import KnowledgeSourcesCard from '../components/KnowledgeSourcesCard';
 import DraftBehaviorCard from '../components/DraftBehaviorCard';
 import AgentPreviewCard from '../components/AgentPreviewCard';
-import useAiSettings from '../hooks/useAiSettings';
+import useAiSettings, { useAiPreview } from '../hooks/useAiSettings';
 import useSettingsForm from '../hooks/useSettingsForm';
 import { useAuth } from '../../auth/hooks/useAuth';
 import './AiSettingsPage.css';
@@ -28,13 +28,10 @@ export default function AiSettingsPage() {
 
   const {
     aiData,
-    previewData,
     isLoading,
-    isPreviewLoading,
     isError,
     error,
     refetchAi,
-    refetchPreview,
     updateAi,
   } = useAiSettings();
 
@@ -55,6 +52,14 @@ export default function AiSettingsPage() {
     initialValues: aiData || initialValues,
     onSave: handleSave,
   });
+
+  // Preview follows the tone selected in the form (not only the saved one) and
+  // is suspended while AI assistance is toggled off or settings are loading.
+  const isAiEnabled = Boolean(form.values.ai_enabled) && Boolean(aiData);
+  const { previewData, isPreviewLoading, refetchPreview } = useAiPreview(
+    form.values.default_tone,
+    isAiEnabled
+  );
 
   // Sync save bar with layout
   useEffect(() => {
@@ -111,7 +116,7 @@ export default function AiSettingsPage() {
     );
   }
 
-  const isAiDisabled = !form.values.ai_enabled;
+  const isAiDisabled = !isAiEnabled;
 
   return (
     <div className="settings-grid">

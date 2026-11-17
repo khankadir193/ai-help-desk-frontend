@@ -4,6 +4,7 @@ import Icon from '../Icon/Icon';
 import Avatar from '../Avatar/Avatar';
 import { navigationSections } from '../../data/navigationData';
 import { useAuth } from '../../features/auth/hooks/useAuth';
+import { canAccess } from '../../lib/accessControl';
 import { useClickOutside } from '../../hooks/useClickOutside';
 import './Sidebar.css';
 
@@ -92,49 +93,87 @@ export default function Sidebar({
               )}
 
               <ul className="sidebar__list">
-                {section.items.map((item) => (
-                  <li key={item.id} className="sidebar__item">
-                    <NavLink
-                      to={item.path}
-                      end={item.path === '/'}
-                      aria-label={item.label}
-                      className={({ isActive }) =>
-                        `sidebar__link ${isActive ? 'sidebar__link--active' : ''}`
-                      }
-                      onClick={() => {
-                        if (isMobileOpen && onCloseMobile) onCloseMobile();
-                      }}
-                    >
-                      {({ isActive }) => (
-                        <>
+                {section.items.map((item) => {
+                  // Role-restricted features render muted with a lock and a
+                  // tooltip instead of a navigable link. The access rules come
+                  // from the shared matrix (src/lib/accessControl.js), which
+                  // mirrors the backend's authorize() rules; a direct URL
+                  // visit is still blocked by RoleGuard and shows AccessDenied.
+                  const isAccessible = canAccess(user?.role, item.feature);
+
+                  return (
+                    <li key={item.id} className="sidebar__item">
+                      {isAccessible ? (
+                        <NavLink
+                          to={item.path}
+                          end={item.path === '/'}
+                          aria-label={item.label}
+                          className={({ isActive }) =>
+                            `sidebar__link ${isActive ? 'sidebar__link--active' : ''}`
+                          }
+                          onClick={() => {
+                            if (isMobileOpen && onCloseMobile) onCloseMobile();
+                          }}
+                        >
+                          {({ isActive }) => (
+                            <>
+                              <div className="sidebar__link-icon">
+                                <Icon
+                                  name={item.icon}
+                                  size={18}
+                                  strokeWidth={isActive ? 2 : 1.75}
+                                />
+                              </div>
+
+                              {!collapsed && (
+                                <span className="sidebar__link-label">{item.label}</span>
+                              )}
+
+                              {!collapsed && item.badge && (
+                                <span className="sidebar__badge">{item.badge}</span>
+                              )}
+
+                              {/* Collapsed Tooltip */}
+                              {collapsed && (
+                                <span className="sidebar__tooltip" role="tooltip">
+                                  {item.label}
+                                  {item.badge && ` (${item.badge})`}
+                                </span>
+                              )}
+                            </>
+                          )}
+                        </NavLink>
+                      ) : (
+                        <div
+                          className="sidebar__link sidebar__link--locked"
+                          aria-disabled="true"
+                          title="Not available for your role"
+                        >
                           <div className="sidebar__link-icon">
-                            <Icon
-                              name={item.icon}
-                              size={18}
-                              strokeWidth={isActive ? 2 : 1.75}
-                            />
+                            <Icon name={item.icon} size={18} strokeWidth={1.75} />
                           </div>
 
                           {!collapsed && (
                             <span className="sidebar__link-label">{item.label}</span>
                           )}
 
-                          {!collapsed && item.badge && (
-                            <span className="sidebar__badge">{item.badge}</span>
-                          )}
-
-                          {/* Collapsed Tooltip */}
-                          {collapsed && (
-                            <span className="sidebar__tooltip" role="tooltip">
-                              {item.label}
-                              {item.badge && ` (${item.badge})`}
+                          {!collapsed && (
+                            <span className="sidebar__lock-badge" aria-hidden="true">
+                              <Icon name="lock" size={12} strokeWidth={2} />
                             </span>
                           )}
-                        </>
+
+                          {/* Collapsed Tooltip (same mechanism as regular items) */}
+                          {collapsed && (
+                            <span className="sidebar__tooltip" role="tooltip">
+                              {item.label} — not available for your role
+                            </span>
+                          )}
+                        </div>
                       )}
-                    </NavLink>
-                  </li>
-                ))}
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           ))}

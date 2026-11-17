@@ -1,6 +1,9 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useOutletContext, useNavigate } from 'react-router-dom';
 import useRolesMatrix from '../hooks/useRolesMatrix';
+import { useAuth } from '../../auth/hooks/useAuth';
+import { isForbiddenError } from '../../../utils/errorHandler';
+import AccessDenied from '../../../components/AccessDenied/AccessDenied';
 import ReadOnlyBanner from '../components/ReadOnlyBanner/ReadOnlyBanner';
 import RolesMatrix from '../components/RolesMatrix/RolesMatrix';
 import ProtectWorkspaceCard from '../components/ProtectWorkspaceCard/ProtectWorkspaceCard';
@@ -11,6 +14,7 @@ import './RolesPermissionsPage.css';
 export default function RolesPermissionsPage() {
   const { setHeaderProps } = useOutletContext();
   const navigate = useNavigate();
+  const { role: userRole } = useAuth();
 
   const {
     roles,
@@ -73,8 +77,12 @@ export default function RolesPermissionsPage() {
       setIsConfirmSaveOpen(false);
       setToastMessage('Permissions saved successfully.');
     } catch (err) {
+      // 403 (role lost admin rights mid-session): generic permission
+      // message instead of the raw server text — retrying cannot help.
       setSaveErrorMessage(
-        err?.response?.data?.message || err?.message || 'Failed to update permissions.'
+        isForbiddenError(err)
+          ? "You don't have permission to do that."
+          : err?.response?.data?.message || err?.message || 'Failed to update permissions.'
       );
     }
   };
@@ -89,6 +97,13 @@ export default function RolesPermissionsPage() {
   );
 
   if (isError) {
+    // No permission (403): shared "No access" screen — no Retry. Header and
+    // tabs stay visible.
+    if (isForbiddenError(error)) {
+      return <AccessDenied featureName="roles & permissions" role={userRole} />;
+    }
+
+    // Real failure (network / 5xx): normal error state with Retry.
     return (
       <div className="team-error-state" role="alert">
         <p className="team-error-message">

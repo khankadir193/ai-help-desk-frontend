@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom';
 import StatusBadge from '../StatusBadge/StatusBadge';
-import SkeletonBlock from '../skeletons/SkeletonBlock';
 import { formatDate } from '../../utils/kbUtils';
 import './RecentlyUpdatedList.css';
 

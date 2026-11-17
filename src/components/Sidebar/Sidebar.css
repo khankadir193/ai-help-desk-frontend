@@ -277,6 +277,38 @@
 }
 
 /* ==========================================================================
+   Locked items — role lacks access (rules from src/lib/accessControl.js).
+   Rendered non-interactive, muted, with a small lock badge and a native
+   tooltip. Not clickable: direct URL visits are caught by RoleGuard.
+   ========================================================================== */
+
+.sidebar__link--locked {
+  color: var(--text-subtle);
+  cursor: not-allowed;
+  user-select: none;
+}
+
+.sidebar__link--locked:hover,
+.sidebar__link--locked:active {
+  background-color: transparent;
+  color: var(--text-subtle);
+}
+
+.sidebar__link--locked .sidebar__link-icon {
+  color: var(--text-subtle);
+}
+
+.sidebar__lock-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: var(--text-subtle);
+}
+
+/* ==========================================================================
    Tooltip (collapsed mode)
    ========================================================================== */
 

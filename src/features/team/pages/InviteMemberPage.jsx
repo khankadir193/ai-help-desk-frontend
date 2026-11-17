@@ -1,12 +1,14 @@
 import { useEffect, useState, useCallback } from 'react';
-import { useOutletContext, useNavigate, Link } from 'react-router-dom';
+import { useOutletContext, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import teamService from '../services/teamService';
 import useInviteForm from '../hooks/useInviteForm';
 import useInviteSubmit from '../hooks/useInviteSubmit';
 import { useTeams } from '../hooks/useTeams';
 import { useAuth } from '../../auth/hooks/useAuth';
+import { canAccess } from '../../../lib/accessControl';
 import { canInvite } from '../utils/teamPermissions';
+import AccessDenied from '../../../components/AccessDenied/AccessDenied';
 import { setTeamNavGuard } from '../utils/teamNavGuard';
 import InviteForm from '../components/InviteForm/InviteForm';
 import InvitationReviewCard from '../components/InvitationReviewCard/InvitationReviewCard';
@@ -29,7 +31,7 @@ export default function InviteMemberPage() {
     staleTime: 1000 * 60 * 10,
   });
 
-  const { teams: teamsList } = useTeams();
+  const { teams: teamsList } = useTeams({ enabled: isAuthorized });
 
   const rolesConfig = inviteOptionsData?.roles || [
     {
@@ -187,23 +189,21 @@ export default function InviteMemberPage() {
     navigate('/team');
   };
 
-  // If Support Agent or Customer attempts to access Invite directly
+  // If Support Agent or Customer attempts to access Invite directly:
+  // shared "No access" screen (no API calls were made — both data queries
+  // above are gated on isAuthorized). Managers/Admins keep the full form.
   if (!isAuthorized) {
+    const canViewTeam = canAccess(userRole, 'team');
     return (
-      <div className="invite-unauthorized-card" role="alert">
-        <h2 className="invite-unauthorized-title">Access restricted</h2>
-        <p className="invite-unauthorized-desc">
-          You don't have permission to invite workspace members. Only Managers and Admins can send invitations.
-        </p>
-        <div className="invite-unauthorized-actions">
-          <Link to="/team" className="invite-unauthorized-link">
-            Return to Members
-          </Link>
-          <Link to="/team/roles" className="invite-unauthorized-link-roles">
-            View roles &amp; permissions
-          </Link>
-        </div>
-      </div>
+      <AccessDenied
+        featureName="member invitations"
+        role={userRole}
+        // Team members stay viewable for AGENT; CUSTOMER gets the default
+        // primary action (allowed home route) instead.
+        primaryAction={
+          canViewTeam ? { label: 'Back to Members', to: '/team' } : undefined
+        }
+      />
     );
   }
 

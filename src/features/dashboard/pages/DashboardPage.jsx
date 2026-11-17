@@ -10,7 +10,8 @@ import Spinner from '../../../components/feedback/Spinner/Spinner';
 import { useAuth } from '../../auth/hooks/useAuth';
 import { useDashboard } from '../hooks/useDashboard';
 import timeAgo from '../../../utils/relativeTime';
-import { getErrorMessage } from '../../../utils/errorHandler';
+import { getErrorMessage, isForbiddenError } from '../../../utils/errorHandler';
+import AccessDenied from '../../../components/AccessDenied/AccessDenied';
 import getInitials from '../utils/initials';
 import STATUS_LABELS from '../constants/dashboardDisplay';
 import styles from './DashboardPage.module.css';
@@ -134,6 +135,17 @@ export default function DashboardPage() {
 
   // ── Error state ───────────────────────────────────────────────────────────
   if (isError || !dashboard) {
+    // No permission (403 — e.g. a role the backend dashboard route rejects):
+    // shared "No access" screen, no Retry (retrying a forbidden request
+    // cannot succeed). All other failures keep the normal error state.
+    if (isError && isForbiddenError(error)) {
+      return (
+        <main className="dashboard-content" aria-label="Dashboard">
+          <AccessDenied featureName="the dashboard" role={role} />
+        </main>
+      );
+    }
+
     return (
       <main className="dashboard-content" aria-label="Dashboard">
         <div className={styles.stateBox}>

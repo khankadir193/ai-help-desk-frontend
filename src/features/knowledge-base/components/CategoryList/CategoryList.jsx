@@ -33,6 +33,10 @@ export default function CategoryList({
   onSelectCategory,
   onReorder,
   isReordering = false,
+  // readOnly: the signed-in role lacks category-management permission —
+  // drag-to-reorder is disabled (it would 403 on the backend); selection
+  // and keyboard navigation keep working.
+  readOnly = false,
 }) {
   const [draggedIndex, setDraggedIndex] = useState(null);
   const [dragOverIndex, setDragOverIndex] = useState(null);
@@ -110,14 +114,14 @@ export default function CategoryList({
                   <div className="kb-category-row__order">
                     <div
                       className="kb-category-row__handle"
-                      draggable
-                      onDragStart={(e) => handleDragStart(e, index)}
+                      draggable={!readOnly}
+                      onDragStart={readOnly ? undefined : (e) => handleDragStart(e, index)}
                       onDragEnd={() => {
                         setDraggedIndex(null);
                         setDragOverIndex(null);
                       }}
-                      title="Drag to reorder category"
-                      aria-label={`Drag handle for ${cat.name}`}
+                      title={readOnly ? 'Not available for your role' : 'Drag to reorder category'}
+                      aria-label={readOnly ? `Reordering disabled for ${cat.name}` : `Drag handle for ${cat.name}`}
                     >
                       <Icon name="grip-vertical" size={16} />
                     </div>
@@ -151,7 +155,11 @@ export default function CategoryList({
 
       {/* Footer Hint */}
       <div className="kb-category-list__hint" aria-live="polite">
-        {isReordering ? 'Saving order...' : 'Drag handles to reorder categories, or use Move up / Move down.'}
+        {isReordering
+          ? 'Saving order...'
+          : readOnly
+            ? 'Reordering is available to Support Agents and Admins.'
+            : 'Drag handles to reorder categories, or use Move up / Move down.'}
       </div>
     </div>
   );

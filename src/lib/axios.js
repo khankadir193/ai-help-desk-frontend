@@ -15,6 +15,11 @@ const apiClient = axios.create({
 apiClient.interceptors.response.use(
   (response) => response.data,
   (error) => {
+    // Expose the HTTP status at the top level so callers can branch on it
+    // (e.g. 403 = no access) without digging into error.response. Purely
+    // additive — error.response and error.response.status are unchanged.
+    error.status = error.response?.status;
+
     // Attach clean user-facing error message
     error.userMessage = getErrorMessage(error);
 

@@ -3,6 +3,8 @@ import { useOutletContext, useNavigate, useLocation } from 'react-router-dom';
 import useTeamMembers from '../hooks/useTeamMembers';
 import { useAuth } from '../../auth/hooks/useAuth';
 import { canInvite, getRoleLabel } from '../utils/teamPermissions';
+import { isForbiddenError } from '../../../utils/errorHandler';
+import AccessDenied from '../../../components/AccessDenied/AccessDenied';
 import Avatar from '../../../components/Avatar/Avatar';
 import StatusPill from '../../../components/StatusPill/StatusPill';
 import Modal from '../../../components/ui/Modal/Modal';
@@ -118,8 +120,15 @@ export default function TeamMembersPage() {
   const tableDimmedClass =
     isFetching && !isLoading ? ' members-table-wrapper--refreshing' : '';
 
-  const getErrMessage = (err, fallback) =>
-    err?.response?.data?.message || err?.userMessage || fallback;
+  const getErrMessage = (err, fallback) => {
+    // A 403 on an action means the role lost permission mid-session — retrying
+    // cannot help, so show the generic permission toast instead of the raw
+    // server text.
+    if (isForbiddenError(err)) {
+      return "You don't have permission to do that.";
+    }
+    return err?.response?.data?.message || err?.userMessage || fallback;
+  };
 
   const handleResend = async (inv) => {
     setBusyAction({ id: inv.id, type: 'resend' });
@@ -171,6 +180,13 @@ export default function TeamMembersPage() {
   };
 
   if (isError) {
+    // No permission (403): shared "No access" screen — no Retry, retrying
+    // a forbidden request cannot succeed. Header and tabs stay visible.
+    if (isForbiddenError(error)) {
+      return <AccessDenied featureName="team members" role={userRole} />;
+    }
+
+    // Real failure (network / 5xx): normal error state with Retry.
     return (
       <div className="team-error-state" role="alert">
         <p className="team-error-message">

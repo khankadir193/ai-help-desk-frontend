@@ -24,10 +24,10 @@ export function formatSettingsDate(dateVal) {
  * @returns {string}
  */
 export function formatSyncTime(dateVal) {
-  if (!dateVal) return 'today at 9:42 AM';
+  if (!dateVal) return '–';
   try {
     const d = new Date(dateVal);
-    if (isNaN(d.getTime())) return 'today at 9:42 AM';
+    if (isNaN(d.getTime())) return '–';
     const now = new Date();
     const isToday =
       d.getDate() === now.getDate() &&
@@ -45,7 +45,7 @@ export function formatSyncTime(dateVal) {
     }
     return `${d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} at ${timeStr}`;
   } catch {
-    return 'today at 9:42 AM';
+    return '–';
   }
 }
 

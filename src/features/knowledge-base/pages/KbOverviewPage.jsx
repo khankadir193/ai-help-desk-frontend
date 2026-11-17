@@ -10,10 +10,16 @@ import PopularArticles from '../components/PopularArticles/PopularArticles';
 import KbCategoryCardsSkeleton from '../components/skeletons/KbCategoryCardsSkeleton';
 import { useKbOverview } from '../hooks/useKbOverview';
 import { useDelayedSkeleton } from '../hooks/useDelayedSkeleton';
+import { useAuth } from '../../auth/hooks/useAuth';
+import { canAccess } from '../../../lib/accessControl';
 import './KbOverviewPage.css';
 
 export default function KbOverviewPage() {
   const navigate = useNavigate();
+  const { role } = useAuth();
+  // Article authoring is AGENT/ADMIN only (backend authorize("ADMIN", "AGENT"));
+  // other roles get a disabled control with a tooltip instead of a 403.
+  const canAuthor = canAccess(role, 'kb-editor');
   const [keywordSearch, setKeywordSearch] = useState('');
   const { data, isLoading, isError, error, refetch, isFetching } = useKbOverview();
   const showSkeleton = useDelayedSkeleton(isLoading);
@@ -48,6 +54,9 @@ export default function KbOverviewPage() {
               type="button"
               className="kb-primary-btn"
               onClick={() => navigate('/knowledge-base/articles/new')}
+              disabled={!canAuthor}
+              title={canAuthor ? undefined : 'Not available for your role'}
+              aria-disabled={!canAuthor}
             >
               Create article
             </button>

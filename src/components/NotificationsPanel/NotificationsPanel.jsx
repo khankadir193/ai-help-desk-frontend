@@ -47,6 +47,11 @@ export default function NotificationsPanel({
       </div>
 
       <div className="notifications-panel__list">
+        {notifications.length === 0 && (
+          <p className="notifications-panel__empty">
+            No notifications right now.
+          </p>
+        )}
         {notifications.map((item) => (
           <div
             key={item.id}

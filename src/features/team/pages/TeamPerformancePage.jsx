@@ -6,11 +6,15 @@ import ThroughputCard from '../components/ThroughputCard/ThroughputCard';
 import WorkloadCard from '../components/WorkloadCard/WorkloadCard';
 import AgentPerformanceTable from '../components/AgentPerformanceTable/AgentPerformanceTable';
 import { formatDateRange, formatDateRangeCompact } from '../utils/teamFormatters';
+import { useAuth } from '../../auth/hooks/useAuth';
+import { isForbiddenError } from '../../../utils/errorHandler';
+import AccessDenied from '../../../components/AccessDenied/AccessDenied';
 import { useClickOutside } from '../../../hooks/useClickOutside';
 import './TeamPerformancePage.css';
 
 export default function TeamPerformancePage() {
   const { setHeaderProps } = useOutletContext();
+  const { role: userRole } = useAuth();
   const {
     data,
     isLoading,
@@ -116,6 +120,14 @@ export default function TeamPerformancePage() {
   }, [setHeaderProps, dynamicSubtext, dateRangeLabel, activePresetLabel, isDropdownOpen, datePreset, isExporting, isLoading, exportCsv, setDatePreset]);
 
   if (isError) {
+    // No permission (403): shared "No access" screen — no Retry. Header and
+    // tabs stay visible; the date/export header actions belong to the page
+    // body and are not rendered for a denied user.
+    if (isForbiddenError(error)) {
+      return <AccessDenied featureName="team performance" role={userRole} />;
+    }
+
+    // Real failure (network / 5xx): normal error state with Retry.
     return (
       <div className="team-error-state" role="alert">
         <p className="team-error-message">

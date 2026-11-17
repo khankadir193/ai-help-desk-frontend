@@ -6,15 +6,21 @@ import CategoryList from '../components/CategoryList/CategoryList';
 import CategoryDetailsForm from '../components/CategoryDetailsForm/CategoryDetailsForm';
 import UncategorizedCard from '../components/UncategorizedCard/UncategorizedCard';
 import { useKbCategories } from '../hooks/useCategories';
+import { useAuth } from '../../auth/hooks/useAuth';
+import { canAccess } from '../../../lib/accessControl';
 import './KbCategoriesPage.css';
 
 export default function KbCategoriesPage() {
+  const { role } = useAuth();
+  // Category management (create/update/reorder) is AGENT/ADMIN only
+  // (backend authorize("ADMIN", "AGENT")). Other roles can still browse and
+  // select categories; the mutating controls are disabled with a tooltip.
+  const canManageCategories = canAccess(role, 'kb-editor');
   const {
     categories = [],
     uncategorizedCount = 0,
     authors = [],
     isLoading,
-    isLoadingAuthors,
     isError,
     error,
     refetch,
@@ -101,6 +107,9 @@ export default function KbCategoriesPage() {
               type="button"
               className="kb-primary-btn"
               onClick={handleStartCreate}
+              disabled={!canManageCategories}
+              title={canManageCategories ? undefined : 'Not available for your role'}
+              aria-disabled={!canManageCategories}
             >
               Create category
             </button>
@@ -141,6 +150,7 @@ export default function KbCategoriesPage() {
               onSelectCategory={handleSelectCategory}
               onReorder={reorderCategories}
               isReordering={isReordering}
+              readOnly={!canManageCategories}
             />
             <UncategorizedCard
               count={uncategorizedCount}
@@ -166,6 +176,7 @@ export default function KbCategoriesPage() {
               isSaving={isCreating || isUpdating}
               isReordering={isReordering}
               serverError={createError?.message || updateError?.message}
+              readOnly={!canManageCategories}
             />
           </div>
         </div>

@@ -157,6 +157,14 @@
   color: var(--text-muted, #64748B);
 }
 
+/* Read-only note shown when the role cannot manage categories */
+.kb-cat-readonly-note {
+  margin: 12px 0 0 0;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--text-muted, #64748B);
+}
+
 .kb-cat-actions-row {
   display: flex;
   align-items: center;

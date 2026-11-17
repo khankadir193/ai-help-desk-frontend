@@ -244,6 +244,17 @@ export default function Icon({
         </svg>
       );
 
+    /* Used by AccessDenied (src/components/AccessDenied) and the Sidebar's
+       role-locked nav items. Purely additive case — no other module behavior
+       is affected. */
+    case 'lock':
+      return (
+        <svg {...iconProps}>
+          <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+        </svg>
+      );
+
     case 'rotate-cw':
     case 'refresh':
       return (

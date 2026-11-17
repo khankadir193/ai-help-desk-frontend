@@ -66,3 +66,15 @@ export const getErrorMessage = (error) => {
   return error.message || 'An unexpected error occurred.';
 };
 
+/**
+ * True when the server rejected the request for lack of permission (HTTP 403).
+ *
+ * Lets the UI tell "no access" apart from a real failure: 403 renders the
+ * shared AccessDenied state (no Retry — retrying cannot help), while network
+ * errors and 5xx keep the normal error state. Response shapes are unchanged.
+ * @param {Error|Object} error - The caught error object (axios or normalized)
+ * @returns {boolean}
+ */
+export const isForbiddenError = (error) =>
+  error?.status === 403 || error?.response?.status === 403;
+

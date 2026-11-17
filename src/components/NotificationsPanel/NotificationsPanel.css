@@ -136,3 +136,12 @@
   }
 }
 
+
+.notifications-panel__empty {
+  padding: 28px 16px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: 0;
+}
+

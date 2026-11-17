@@ -7,15 +7,21 @@ import HelpfulFeedback from '../components/HelpfulFeedback/HelpfulFeedback';
 import ArticleInfoCard from '../components/ArticleInfoCard/ArticleInfoCard';
 import TableOfContents from '../components/TableOfContents/TableOfContents';
 import RelatedArticles from '../components/RelatedArticles/RelatedArticles';
-import ButtonSpinner from '../components/skeletons/ButtonSpinner';
 import KbArticleDetailSkeleton from '../components/skeletons/KbArticleDetailSkeleton';
 import { useArticle } from '../hooks/useArticle';
 import { useDelayedSkeleton } from '../hooks/useDelayedSkeleton';
+import { useAuth } from '../../auth/hooks/useAuth';
+import { canAccess } from '../../../lib/accessControl';
 import './KbArticleDetailPage.css';
 
 export default function KbArticleDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { role } = useAuth();
+  // Editing is AGENT/ADMIN only (backend authorize("ADMIN", "AGENT")) — the
+  // route itself is guarded; the button is disabled with a tooltip so the
+  // control is never a surprise.
+  const canEditArticle = canAccess(role, 'kb-editor');
   const [copySuccess, setCopySuccess] = useState(false);
 
   const {
@@ -98,6 +104,9 @@ export default function KbArticleDetailPage() {
               type="button"
               className="kb-primary-btn"
               onClick={() => navigate(`/knowledge-base/articles/${article.article_id || article.id}/edit`)}
+              disabled={!canEditArticle}
+              title={canEditArticle ? undefined : 'Not available for your role'}
+              aria-disabled={!canEditArticle}
             >
               Edit article
             </button>

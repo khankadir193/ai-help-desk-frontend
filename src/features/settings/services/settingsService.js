@@ -13,9 +13,10 @@ export const settingsService = {
     return res?.data?.workspace ?? res?.workspace ?? res;
   },
 
-  checkWorkspaceUrl: async (url) => {
+  checkWorkspaceUrl: async (url, signal) => {
     const res = await apiClient.get(API_ENDPOINTS.SETTINGS.WORKSPACE_CHECK_URL, {
       params: { url },
+      signal,
     });
     return res?.data ?? res;
   },
@@ -101,9 +102,10 @@ export const settingsService = {
     return res?.data?.ai ?? res?.ai ?? res;
   },
 
-  getAiPreview: async (tone) => {
+  getAiPreview: async (tone, signal) => {
     const res = await apiClient.get(API_ENDPOINTS.SETTINGS.AI_PREVIEW, {
       params: { tone },
+      signal,
     });
     return res?.data?.preview ?? res?.preview ?? res;
   },

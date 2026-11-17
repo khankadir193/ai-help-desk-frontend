@@ -12,10 +12,16 @@ import KbPaginationSkeleton from '../components/skeletons/KbPaginationSkeleton';
 import ButtonSpinner from '../components/skeletons/ButtonSpinner';
 import { useArticles } from '../hooks/useArticles';
 import { useKbCategories } from '../hooks/useCategories';
+import { useAuth } from '../../auth/hooks/useAuth';
+import { canAccess } from '../../../lib/accessControl';
 import './KbArticlesPage.css';
 
 export default function KbArticlesPage() {
   const navigate = useNavigate();
+  const { role } = useAuth();
+  // Article authoring is AGENT/ADMIN only (backend authorize("ADMIN", "AGENT"));
+  // other roles get a disabled control with a tooltip instead of a 403.
+  const canAuthor = canAccess(role, 'kb-editor');
   const [isExporting, setIsExporting] = useState(false);
   const {
     articles,
@@ -91,6 +97,9 @@ export default function KbArticlesPage() {
                 type="button"
                 className="kb-primary-btn"
                 onClick={() => navigate('/knowledge-base/articles/new')}
+                disabled={!canAuthor}
+                title={canAuthor ? undefined : 'Not available for your role'}
+                aria-disabled={!canAuthor}
               >
                 Create article
               </button>

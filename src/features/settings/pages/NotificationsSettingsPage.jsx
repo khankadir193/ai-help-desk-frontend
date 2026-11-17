@@ -153,7 +153,7 @@ export default function NotificationsSettingsPage() {
     );
   }
 
-  const userEmail = user?.email || 'maya.chen@acme.com';
+  const userEmail = user?.email || 'your account email';
 
   return (
     <div className="settings-grid">

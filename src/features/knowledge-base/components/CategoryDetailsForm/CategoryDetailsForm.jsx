@@ -17,6 +17,10 @@ export default function CategoryDetailsForm({
   isSaving = false,
   isReordering = false,
   serverError = '',
+  // readOnly: the signed-in role lacks category-management permission —
+  // inputs and mutating controls are disabled with a tooltip so the form can
+  // never produce a surprise 403. Browsing/selection still works.
+  readOnly = false,
 }) {
   const isCreate = mode === 'create';
 
@@ -103,6 +107,8 @@ export default function CategoryDetailsForm({
               setFormData((prev) => ({ ...prev, name: e.target.value }));
               if (error) setError('');
             }}
+            disabled={readOnly}
+            title={readOnly ? 'Not available for your role' : undefined}
             aria-required="true"
             aria-invalid={Boolean(error)}
           />
@@ -122,6 +128,8 @@ export default function CategoryDetailsForm({
             placeholder="e.g. Payments, invoices and refunds"
             value={formData.description}
             onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
+            disabled={readOnly}
+            title={readOnly ? 'Not available for your role' : undefined}
           />
           <span className="kb-cat-field__helper">Shown in the help center category card.</span>
         </div>
@@ -137,6 +145,8 @@ export default function CategoryDetailsForm({
               className="kb-cat-field__select"
               value={formData.owner_id}
               onChange={(e) => setFormData((prev) => ({ ...prev, owner_id: e.target.value }))}
+              disabled={readOnly}
+              title={readOnly ? 'Not available for your role' : undefined}
             >
               <option value="">Select owner...</option>
               {authors.map((a) => (
@@ -173,7 +183,8 @@ export default function CategoryDetailsForm({
                 type="button"
                 className="kb-cat-reorder-btn"
                 onClick={onMoveUp}
-                disabled={isFirst || isReordering}
+                disabled={isFirst || isReordering || readOnly}
+                title={readOnly ? 'Not available for your role' : undefined}
                 aria-label="Move category up"
               >
                 {isReordering && <ButtonSpinner label="Saving order" />}
@@ -183,7 +194,8 @@ export default function CategoryDetailsForm({
                 type="button"
                 className="kb-cat-reorder-btn"
                 onClick={onMoveDown}
-                disabled={isLast || isReordering}
+                disabled={isLast || isReordering || readOnly}
+                title={readOnly ? 'Not available for your role' : undefined}
                 aria-label="Move category down"
               >
                 {isReordering && <ButtonSpinner label="Saving order" />}
@@ -210,12 +222,19 @@ export default function CategoryDetailsForm({
           <button
             type="submit"
             className="kb-cat-btn kb-cat-btn--primary"
-            disabled={isSaving}
+            disabled={isSaving || readOnly}
+            title={readOnly ? 'Not available for your role' : undefined}
           >
             {isSaving && <ButtonSpinner label="Saving category" />}
             {isCreate ? 'Create category' : 'Save changes'}
           </button>
         </div>
+
+        {readOnly && (
+          <p className="kb-cat-readonly-note" role="status">
+            Category management is available to Support Agents and Admins.
+          </p>
+        )}
       </form>
     </div>
   );

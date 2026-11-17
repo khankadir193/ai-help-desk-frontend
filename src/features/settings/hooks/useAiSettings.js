@@ -3,7 +3,7 @@ import settingsService from '../services/settingsService';
 
 export const AI_SETTINGS_KEY = ['settings', 'ai'];
 
-export function useAiSettings(currentTone) {
+export function useAiSettings() {
   const queryClient = useQueryClient();
 
   const {
@@ -18,19 +18,6 @@ export function useAiSettings(currentTone) {
     staleTime: 1000 * 60 * 5,
   });
 
-  const selectedTone = currentTone || aiData?.default_tone || 'FRIENDLY_PROFESSIONAL';
-
-  const {
-    data: previewData,
-    isLoading: isPreviewLoading,
-    refetch: refetchPreview,
-  } = useQuery({
-    queryKey: ['settings', 'ai', 'preview', selectedTone],
-    queryFn: () => settingsService.getAiPreview(selectedTone),
-    staleTime: 1000 * 60 * 10,
-    enabled: Boolean(aiData?.ai_enabled !== false),
-  });
-
   const updateMutation = useMutation({
     mutationFn: settingsService.updateAi,
     onSuccess: (updated) => {
@@ -40,17 +27,40 @@ export function useAiSettings(currentTone) {
 
   return {
     aiData,
-    previewData,
     isLoading: isAiLoading,
-    isPreviewLoading,
     isError: isAiError,
     error: aiError,
     refetchAi,
-    refetchPreview,
     updateAi: updateMutation.mutateAsync,
     isUpdating: updateMutation.isPending,
   };
 }
 
-export default useAiSettings;
+/**
+ * Preview of the suggested reply for a given tone. Runs only while AI is
+ * enabled and re-queries whenever the selected tone changes (e.g. editing the
+ * form before saving). The request is aborted by React Query via the signal
+ * when the tone changes again or the page unmounts.
+ */
+export function useAiPreview(tone, enabled = true) {
+  const selectedTone = tone || 'FRIENDLY_PROFESSIONAL';
 
+  const {
+    data: previewData,
+    isLoading: isPreviewLoading,
+    refetch: refetchPreview,
+  } = useQuery({
+    queryKey: ['settings', 'ai', 'preview', selectedTone],
+    queryFn: ({ signal }) => settingsService.getAiPreview(selectedTone, signal),
+    staleTime: 1000 * 60 * 10,
+    enabled: Boolean(enabled),
+  });
+
+  return {
+    previewData,
+    isPreviewLoading,
+    refetchPreview,
+  };
+}
+
+export default useAiSettings;

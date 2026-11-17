@@ -27,6 +27,7 @@ import AuthLayout from './layouts/AuthLayout/AuthLayout';
 import LoginPage from './features/auth/pages/LoginPage';
 import RegisterPage from './features/auth/pages/RegisterPage';
 import AppLoader from './components/feedback/AppLoader/AppLoader';
+import RoleGuard from './components/RoleGuard/RoleGuard';
 import { useAuth } from './features/auth/hooks/useAuth';
 import './App.css';
 
@@ -59,18 +60,80 @@ export default function App() {
           <Route path="/knowledge-base" element={<KbOverviewPage />} />
           <Route path="/knowledge-base/articles" element={<KbArticlesPage />} />
           <Route path="/knowledge-base/categories" element={<KbCategoriesPage />} />
-          <Route path="/knowledge-base/articles/new" element={<KbArticleEditorPage mode="create" />} />
-          <Route path="/knowledge-base/articles/:id/edit" element={<KbArticleEditorPage mode="edit" />} />
+          {/* KB reads are open to all roles, but article authoring is
+              AGENT/ADMIN only (backend authorize("ADMIN", "AGENT")) — the
+              editor routes are guarded so denied roles never reach the form
+              (whose autosave would silently 403). */}
+          <Route
+            path="/knowledge-base/articles/new"
+            element={
+              <RoleGuard feature="kb-editor">
+                <KbArticleEditorPage mode="create" />
+              </RoleGuard>
+            }
+          />
+          <Route
+            path="/knowledge-base/articles/:id/edit"
+            element={
+              <RoleGuard feature="kb-editor">
+                <KbArticleEditorPage mode="edit" />
+              </RoleGuard>
+            }
+          />
           <Route path="/knowledge-base/articles/:id" element={<KbArticleDetailPage />} />
-          <Route path="/reports" element={<ReportsPage />} />
+          {/* RoleGuard mirrors the backend's authorize() rules (see
+              src/lib/accessControl.js): denied roles see the shared
+              AccessDenied screen with no data fetch and no loader flash. */}
+          <Route
+            path="/reports"
+            element={
+              <RoleGuard feature="reports">
+                <ReportsPage />
+              </RoleGuard>
+            }
+          />
           <Route path="/team" element={<TeamLayout />}>
-            <Route index element={<TeamMembersPage />} />
-            <Route path="performance" element={<TeamPerformancePage />} />
-            <Route path="roles" element={<RolesPermissionsPage />} />
+            <Route
+              index
+              element={
+                <RoleGuard feature="team">
+                  <TeamMembersPage />
+                </RoleGuard>
+              }
+            />
+            <Route
+              path="performance"
+              element={
+                <RoleGuard feature="team">
+                  <TeamPerformancePage />
+                </RoleGuard>
+              }
+            />
+            <Route
+              path="roles"
+              element={
+                <RoleGuard feature="team">
+                  <RolesPermissionsPage />
+                </RoleGuard>
+              }
+            />
+            {/* Invite keeps its own canInvite() gate (teamPermissions.js):
+                AGENT/MANAGER are allowed to VIEW team but only MANAGER/ADMIN
+                may invite, so this page needs a narrower rule than /team. */}
             <Route path="members/invite" element={<InviteMemberPage />} />
             <Route path="*" element={<Navigate to="/team" replace />} />
           </Route>
-          <Route path="/settings" element={<SettingsLayout />}>
+          {/* Settings: every authenticated role may view settings (GETs are
+              open); admin-only saves are already disabled inside the pages.
+              The guard documents the rule and is a no-op today. */}
+          <Route
+            path="/settings"
+            element={
+              <RoleGuard feature="settings">
+                <SettingsLayout />
+              </RoleGuard>
+            }
+          >
             <Route index element={<Navigate to="/settings/general" replace />} />
             <Route path="general" element={<GeneralSettingsPage />} />
             <Route path="profile" element={<ProfileSettingsPage />} />

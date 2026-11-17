@@ -4,6 +4,7 @@ import Sidebar from '../Sidebar/Sidebar';
 import Topbar from '../Topbar/Topbar';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
 import { initialNotifications } from '../../data/notificationsData';
+import { useNotificationSettings } from '../../features/settings/hooks/useNotificationSettings';
 import './AppLayout.css';
 
 // Route to title map
@@ -33,6 +34,12 @@ export default function AppLayout() {
   // Notifications state
   const [notifications, setNotifications] = useState(initialNotifications);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+
+  // The user's channel preferences saved in Settings → Notifications:
+  // when in-app notifications are off, the Topbar center stays empty.
+  const { data: notificationPreferences } = useNotificationSettings();
+  const inAppNotificationsEnabled = notificationPreferences?.channels?.in_app !== false;
+  const visibleNotifications = inAppNotificationsEnabled ? notifications : [];
 
   // Sync persisted collapsed state
   const handleToggleCollapse = () => {
@@ -114,7 +121,7 @@ export default function AppLayout() {
           title={pageTitle}
           isMobileOpen={isMobileOpen}
           onToggleMobile={() => setIsMobileOpen((prev) => !prev)}
-          notifications={notifications}
+          notifications={visibleNotifications}
           isNotificationsOpen={isNotificationsOpen}
           onToggleNotifications={() => setIsNotificationsOpen((prev) => !prev)}
           onCloseNotifications={() => setIsNotificationsOpen(false)}

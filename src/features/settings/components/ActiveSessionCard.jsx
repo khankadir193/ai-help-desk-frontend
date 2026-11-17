@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import SettingsCard from './SettingsCard';
 import Modal from '../../../components/ui/Modal/Modal';
 import './ActiveSessionCard.css';
@@ -11,6 +11,13 @@ export default function ActiveSessionCard({
   const [isRevoking, setIsRevoking] = useState(false);
   const [revokeSuccess, setRevokeSuccess] = useState(null);
 
+  // Auto-dismiss the success note; cleared on unmount to avoid leaks
+  useEffect(() => {
+    if (!revokeSuccess) return undefined;
+    const timer = setTimeout(() => setRevokeSuccess(null), 3000);
+    return () => clearTimeout(timer);
+  }, [revokeSuccess]);
+
   const current = sessionData?.current_session || {
     browser: 'Chrome on macOS',
     location: 'San Francisco, US',
@@ -22,7 +29,6 @@ export default function ActiveSessionCard({
       await onRevokeOthers();
       setShowConfirmModal(false);
       setRevokeSuccess('Other sessions revoked.');
-      setTimeout(() => setRevokeSuccess(null), 3000);
     } catch {
       // Handled in hook
     } finally {

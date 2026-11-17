@@ -82,32 +82,29 @@ export default function GeneralSettingsPage() {
     validate: customValidate,
   });
 
-  // Debounced URL check
+  // Debounced URL availability check; aborted when the value changes again,
+  // the component unmounts or the user switches tabs.
   useEffect(() => {
     const clean = form.values.url?.trim().toLowerCase();
     if (!clean || form.values.url === initialValues.url || clean.length < 3) {
       return;
     }
 
-    let isMounted = true;
+    const controller = new AbortController();
     const timer = setTimeout(async () => {
       try {
-        const res = await settingsService.checkWorkspaceUrl(clean);
-        if (isMounted) {
-          setUrlCheckStatus({
-            available: res.available,
-            checkedUrl: clean,
-          });
-        }
+        const res = await settingsService.checkWorkspaceUrl(clean, controller.signal);
+        setUrlCheckStatus({
+          available: res.available,
+          checkedUrl: clean,
+        });
       } catch {
-        if (isMounted) {
-          setUrlCheckStatus(null);
-        }
+        setUrlCheckStatus(null);
       }
     }, 350);
 
     return () => {
-      isMounted = false;
+      controller.abort();
       clearTimeout(timer);
     };
   }, [form.values.url, initialValues.url]);

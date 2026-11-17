@@ -80,7 +80,6 @@ export default function SettingsLayout() {
           <SettingsSaveBar
             isDirty={saveBarProps.isDirty}
             isSaving={saveBarProps.isSaving}
-            isSuccess={saveBarProps.isSuccess}
             saveError={saveBarProps.saveError}
             onSave={saveBarProps.onSave}
             onCancel={saveBarProps.onCancel}

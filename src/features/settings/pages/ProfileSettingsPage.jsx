@@ -262,8 +262,10 @@ export default function ProfileSettingsPage() {
         onChangePassword={changePassword}
       />
 
-      {/* Manage 2FA Dialog */}
+      {/* Manage 2FA Dialog — keyed by the saved 2FA state so the local toggle
+          always re-initializes from the server value, never a stale one */}
       <Manage2faDialog
+        key={profile?.two_factor_enabled ? '2fa-on' : '2fa-off'}
         isOpen={is2faModalOpen}
         onClose={() => setIs2faModalOpen(false)}
         isEnabled={profile?.two_factor_enabled}
