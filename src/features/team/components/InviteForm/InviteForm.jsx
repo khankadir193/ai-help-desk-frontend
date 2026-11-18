@@ -115,7 +115,7 @@ export default function InviteForm({
             </select>
           </div>
           <span id="inv-team-helper" className="inv-field__helper">
-            Managers can invite Support Agents. Ask an Admin for elevated access.
+            Select the team this member will belong to.
           </span>
         </div>
 

@@ -6,18 +6,21 @@ export default function ProtectWorkspaceCard({
   isSaving = false,
   onRequestAccess,
   onSave,
+  onReset,
 }) {
   const statusText = !canEdit
-    ? 'No unsaved changes · Editing requires Admin access'
+    ? 'System policies · Enforced by backend authorization'
     : isDirty
-      ? 'Unsaved changes'
+      ? 'Unsaved changes apply only after you save'
       : 'No unsaved changes';
 
   return (
     <section className="protect-card" aria-label="Protect your workspace">
       <h2 className="protect-card__title">Protect your workspace</h2>
       <p className="protect-card__body">
-        At least one Admin must remain. Permission updates require an Admin review and explicit confirmation before they apply.
+        {canEdit
+          ? 'Saved permissions take effect for every existing and newly created user with that role — across all Admin accounts. At least one Admin must remain active.'
+          : 'Role-based permissions are enforced at the API layer. At least one workspace Admin must remain active.'}
       </p>
 
       <div className="protect-card__footer">
@@ -29,24 +32,36 @@ export default function ProtectWorkspaceCard({
         </div>
 
         <div className="protect-card__actions">
-          <button
-            type="button"
-            className="protect-btn-request"
-            onClick={onRequestAccess}
-          >
-            Request access change
-          </button>
-
-          <button
-            type="button"
-            className={`protect-btn-save ${
-              canEdit && isDirty ? 'protect-btn-save--active' : 'protect-btn-save--disabled'
-            }`}
-            disabled={!canEdit || !isDirty || isSaving}
-            onClick={onSave}
-          >
-            {isSaving ? 'Saving…' : 'Save changes'}
-          </button>
+          {canEdit ? (
+            <>
+              <button
+                type="button"
+                className="protect-btn-request"
+                disabled={!isDirty || isSaving}
+                onClick={onReset}
+              >
+                Discard changes
+              </button>
+              <button
+                type="button"
+                className={`protect-btn-save ${
+                  canEdit && isDirty ? 'protect-btn-save--active' : 'protect-btn-save--disabled'
+                }`}
+                disabled={!canEdit || !isDirty || isSaving}
+                onClick={onSave}
+              >
+                {isSaving ? 'Saving…' : 'Save changes'}
+              </button>
+            </>
+          ) : (
+            <button
+              type="button"
+              className="protect-btn-request"
+              onClick={onRequestAccess}
+            >
+              Request access change
+            </button>
+          )}
         </div>
       </div>
     </section>

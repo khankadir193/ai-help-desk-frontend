@@ -19,7 +19,7 @@ export function useTeams({ enabled = true } = {}) {
   } = useQuery({
     queryKey: ['team', 'teams'],
     queryFn: teamService.getTeams,
-    // The backend restricts GET /team/teams to AGENT/MANAGER/ADMIN; callers
+    // The backend restricts GET /team/teams to AGENT/ADMIN; callers
     // gate the query with their own role check so unauthorized pages never
     // fire a forbidden request (same convention as useAgents).
     enabled,

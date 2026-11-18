@@ -1,12 +1,20 @@
 import { parsePermissionValue } from '../../utils/teamPermissions';
 import './PermissionCell.css';
 
+/**
+ * Editable value options per permission id. Mirrors the backend's
+ * PERMISSION_OPTIONS (utils/permissions.js) — the PATCH endpoint rejects
+ * values outside this vocabulary with 422, so the two must stay in sync.
+ */
 const SCOPE_OPTIONS_MAP = {
-  view_reply_tickets: ['All tickets', 'Team tickets', 'Assigned tickets'],
-  assign_reassign_tickets: ['All teams', 'Own team', 'Self only'],
-  view_reports: ['Workspace', 'Own team', 'Own performance'],
-  invite_members: ['Any role', 'Support Agent only', 'Not allowed'],
-  publish_kb: ['Allowed', 'Draft only', 'Not allowed'],
+  view_tickets: ['All tickets', 'Assigned tickets', 'Own tickets'],
+  reply_tickets: ['All tickets', 'Assigned tickets', 'Own tickets'],
+  update_status: ['All tickets', 'Assigned tickets', 'Own tickets', 'Not allowed'],
+  ticket_history: ['All tickets', 'Assigned tickets', 'Own tickets', 'Not allowed'],
+  ai_tools: ['All tickets', 'Assigned tickets', 'Own tickets', 'Not allowed'],
+  publish_kb: ['Publish & edit', 'Draft only', 'View only', 'Not allowed'],
+  view_reports: ['Workspace', 'Own performance', 'Not allowed'],
+  edit_roles_permissions: ['Allowed', 'View only', 'Not allowed'],
 };
 
 export default function PermissionCell({
@@ -20,8 +28,6 @@ export default function PermissionCell({
 
   // If Admin edit mode is active, allow changing cell
   if (canEdit && onChange) {
-    // If it's a binary Allowed / Not allowed permission
-    const isBinary = type === 'allowed' || type === 'not-allowed';
     const scopeOptions = SCOPE_OPTIONS_MAP[permId];
 
     if (scopeOptions) {
@@ -43,21 +49,20 @@ export default function PermissionCell({
       );
     }
 
-    if (isBinary) {
-      return (
-        <div className="perm-cell perm-cell--edit">
-          <select
-            className={`perm-cell__select ${value === 'Allowed' ? 'perm-cell__select--allowed' : ''}`}
-            value={value}
-            onChange={(e) => onChange(e.target.value)}
-            aria-label={`${permId} for ${roleId}`}
-          >
-            <option value="Allowed">✓ Allowed</option>
-            <option value="Not allowed">— Not allowed</option>
-          </select>
-        </div>
-      );
-    }
+    // Binary Allowed / Not allowed permission
+    return (
+      <div className="perm-cell perm-cell--edit">
+        <select
+          className={`perm-cell__select ${value === 'Allowed' ? 'perm-cell__select--allowed' : ''}`}
+          value={value === 'Allowed' ? 'Allowed' : 'Not allowed'}
+          onChange={(e) => onChange(e.target.value)}
+          aria-label={`${permId} for ${roleId}`}
+        >
+          <option value="Allowed">✓ Allowed</option>
+          <option value="Not allowed">— Not allowed</option>
+        </select>
+      </div>
+    );
   }
 
   // Read-only display matching reference design

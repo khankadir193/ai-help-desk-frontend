@@ -4,11 +4,11 @@
 
 /**
  * Check if the user role can invite new workspace members.
- * Admins and Managers can invite; Support Agents and Customers cannot.
+ * Only Admins can invite; Support Agents and Customers cannot.
  */
 export function canInvite(role) {
   const normalized = String(role || '').toUpperCase();
-  return normalized === 'ADMIN' || normalized === 'MANAGER';
+  return normalized === 'ADMIN';
 }
 
 /**
@@ -27,8 +27,6 @@ export function getRoleLabel(role) {
   switch (String(role || '').toUpperCase()) {
     case 'ADMIN':
       return 'Admin';
-    case 'MANAGER':
-      return 'Manager';
     case 'AGENT':
       return 'Support Agent';
     case 'CUSTOMER':

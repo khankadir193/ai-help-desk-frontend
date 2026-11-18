@@ -16,7 +16,6 @@
  */
 export const FEATURES = {
   // GET /dashboard — authorize("CUSTOMER", "AGENT", "ADMIN")
-  // Note: MANAGER is (still) rejected by the backend here; mirrored as-is.
   dashboard: { label: 'the dashboard', allowedRoles: ['CUSTOMER', 'AGENT', 'ADMIN'] },
 
   // GET /tickets, /tickets/:id — no authorize() call; scoped per role in the service
@@ -36,11 +35,11 @@ export const FEATURES = {
   // GET /reports/analytics — authorize("AGENT", "ADMIN")
   reports: { label: 'reports & analytics', allowedRoles: ['AGENT', 'ADMIN'] },
 
-  // GET /team/members|performance|roles|teams — authorize("AGENT", "MANAGER", "ADMIN")
-  team: { label: 'team management', allowedRoles: ['AGENT', 'MANAGER', 'ADMIN'] },
+  // GET /team/members|performance|roles|teams — authorize("AGENT", "ADMIN")
+  team: { label: 'team management', allowedRoles: ['AGENT', 'ADMIN'] },
 
-  // GET /team/invite-options, POST /team/invitations[...] — authorize("MANAGER", "ADMIN")
-  'team-invite': { label: 'member invitations', allowedRoles: ['MANAGER', 'ADMIN'] },
+  // GET /team/invite-options, POST /team/invitations[...] — authorize("ADMIN")
+  'team-invite': { label: 'member invitations', allowedRoles: ['ADMIN'] },
 
   // GET /settings/* — open to all authenticated roles. Admin-only mutations
   // (workspace/team/ai) are already disabled in the settings UI for other roles.
@@ -63,14 +62,12 @@ export function canAccess(role, feature) {
 }
 
 /**
- * Human-readable role label ("Support Agent", "Manager", ...).
+ * Human-readable role label ("Support Agent", "Admin", ...).
  */
 export function getRoleLabel(role) {
   switch (String(role || '').toUpperCase()) {
     case 'ADMIN':
       return 'Admin';
-    case 'MANAGER':
-      return 'Manager';
     case 'AGENT':
       return 'Support Agent';
     case 'CUSTOMER':

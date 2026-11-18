@@ -31,7 +31,7 @@
   border-collapse: collapse;
   table-layout: fixed;
   font-family: var(--font-family);
-  min-width: 680px;
+  min-width: 760px;
 }
 
 .roles-matrix-table thead tr {

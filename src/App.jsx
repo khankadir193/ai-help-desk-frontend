@@ -118,7 +118,7 @@ export default function App() {
               }
             />
             {/* Invite keeps its own canInvite() gate (teamPermissions.js):
-                AGENT/MANAGER are allowed to VIEW team but only MANAGER/ADMIN
+                AGENT is allowed to VIEW team but only ADMIN
                 may invite, so this page needs a narrower rule than /team. */}
             <Route path="members/invite" element={<InviteMemberPage />} />
             <Route path="*" element={<Navigate to="/team" replace />} />

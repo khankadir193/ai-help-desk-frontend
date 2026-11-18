@@ -80,7 +80,6 @@ export default function RequestAccessDialog({
               disabled={isSubmitting}
             >
               <option value="ADMIN">Admin (Full workspace access)</option>
-              <option value="MANAGER">Manager (Team management & reports)</option>
             </select>
           </div>
 

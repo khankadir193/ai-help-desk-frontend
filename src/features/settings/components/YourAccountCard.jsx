@@ -3,11 +3,11 @@ import Avatar from '../../../components/Avatar/Avatar';
 import './YourAccountCard.css';
 
 export default function YourAccountCard({ user, profile }) {
-  const name = profile?.name || user?.name || 'Maya Chen';
-  const roleName = profile?.role || user?.role || 'Support Manager';
+  const name = profile?.name || user?.name || 'Support Agent';
+  const roleName = profile?.role || user?.role || 'Support Agent';
   const workspaceName = profile?.workspace_name || 'Acme Support';
   const avatarUrl = profile?.avatar_url || user?.avatar_url;
-  const initials = profile?.initials || user?.initials || 'MC';
+  const initials = profile?.initials || user?.initials || 'SA';
 
   return (
     <SettingsCard title="Your account">

@@ -18,12 +18,12 @@ export default function RolesMatrix({
               <tr>
                 <th scope="col" className="roles-col-perm">Permission</th>
                 <th scope="col" className="roles-col-role">Admin</th>
-                <th scope="col" className="roles-col-role">Manager</th>
                 <th scope="col" className="roles-col-role">Support Agent</th>
+                <th scope="col" className="roles-col-role">Customer</th>
               </tr>
             </thead>
             <tbody>
-              {[...Array(9)].map((_, i) => (
+              {[...Array(13)].map((_, i) => (
                 <tr key={i} className="roles-tr--skeleton">
                   <td colSpan={4}>
                     <div className="roles-skeleton-row" />
@@ -47,7 +47,7 @@ export default function RolesMatrix({
       >
         <table className="roles-matrix-table">
           <caption className="sr-only">
-            Workspace permissions mapped across Admin, Manager, and Support Agent roles.
+            Workspace permissions mapped across Admin, Support Agent, and Customer roles.
           </caption>
           <thead>
             <tr>
@@ -69,16 +69,18 @@ export default function RolesMatrix({
                   {perm.name}
                 </th>
 
-                {/* Role Value Cells */}
+                {/* Role Value Cells — the ADMIN column is locked: the
+                    backend rejects changes and admins must never be able to
+                    strip their own essential privileges. */}
                 {roles.map((role) => (
                   <td key={role.id} className="roles-td roles-td--role">
                     <PermissionCell
                       permId={perm.id}
                       roleId={role.id}
-                      value={perm.values[role.id]}
-                      canEdit={canEdit}
+                      value={perm.values?.[role.id] ?? ''}
+                      canEdit={canEdit && role.id !== 'ADMIN'}
                       onChange={
-                        canEdit && onCellChange
+                        canEdit && role.id !== 'ADMIN' && onCellChange
                           ? (newVal) => onCellChange(perm.id, role.id, newVal)
                           : undefined
                       }

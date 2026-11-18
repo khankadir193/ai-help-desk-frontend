@@ -4,11 +4,11 @@ import useRolesMatrix from '../hooks/useRolesMatrix';
 import { useAuth } from '../../auth/hooks/useAuth';
 import { isForbiddenError } from '../../../utils/errorHandler';
 import AccessDenied from '../../../components/AccessDenied/AccessDenied';
+import Modal from '../../../components/ui/Modal/Modal';
 import ReadOnlyBanner from '../components/ReadOnlyBanner/ReadOnlyBanner';
 import RolesMatrix from '../components/RolesMatrix/RolesMatrix';
 import ProtectWorkspaceCard from '../components/ProtectWorkspaceCard/ProtectWorkspaceCard';
 import RequestAccessDialog from '../components/RequestAccessDialog/RequestAccessDialog';
-import Modal from '../../../components/ui/Modal/Modal';
 import './RolesPermissionsPage.css';
 
 export default function RolesPermissionsPage() {
@@ -29,6 +29,7 @@ export default function RolesPermissionsPage() {
     isDirty,
     modifiedPermissions,
     handleCellChange,
+    handleReset,
     savePermissions,
     isSaving,
     requestRoleChange,
@@ -64,6 +65,16 @@ export default function RolesPermissionsPage() {
     return () => clearTimeout(timer);
   }, [toastMessage]);
 
+  const handleRequestSubmit = useCallback(
+    async (reason, requestedRole) => {
+      const res = await requestRoleChange(reason, requestedRole);
+      setToastMessage(res?.message || 'Access change request sent to Admins.');
+      return res;
+    },
+    [requestRoleChange]
+  );
+
+  // Open the confirmation dialog listing exactly what will change
   const handleOpenConfirm = () => {
     if (!isDirty || !canEdit) return;
     setSaveErrorMessage(null);
@@ -75,10 +86,10 @@ export default function RolesPermissionsPage() {
       setSaveErrorMessage(null);
       await savePermissions();
       setIsConfirmSaveOpen(false);
-      setToastMessage('Permissions saved successfully.');
+      setToastMessage('Permissions saved. Changes now apply to every user with each role.');
     } catch (err) {
-      // 403 (role lost admin rights mid-session): generic permission
-      // message instead of the raw server text — retrying cannot help.
+      // 403 (admin rights lost mid-session): generic permission message —
+      // retrying cannot help. Other failures show the server message.
       setSaveErrorMessage(
         isForbiddenError(err)
           ? "You don't have permission to do that."
@@ -87,14 +98,10 @@ export default function RolesPermissionsPage() {
     }
   };
 
-  const handleRequestSubmit = useCallback(
-    async (reason, requestedRole) => {
-      const res = await requestRoleChange(reason, requestedRole);
-      setToastMessage(res?.message || 'Access change request sent to Admins.');
-      return res;
-    },
-    [requestRoleChange]
-  );
+  const handleDiscard = useCallback(() => {
+    handleReset();
+    setToastMessage('Changes discarded.');
+  }, [handleReset]);
 
   if (isError) {
     // No permission (403): shared "No access" screen — no Retry. Header and
@@ -138,7 +145,8 @@ export default function RolesPermissionsPage() {
         onRequestAccess={() => setIsRequestDialogOpen(true)}
       />
 
-      {/* Matrix Table Card */}
+      {/* Matrix Table Card — the ADMIN column stays read-only (locked
+          server-side; admins can configure AGENT and CUSTOMER only) */}
       <RolesMatrix
         roles={roles}
         permissions={permissions}
@@ -154,6 +162,7 @@ export default function RolesPermissionsPage() {
         isSaving={isSaving}
         onRequestAccess={() => setIsRequestDialogOpen(true)}
         onSave={handleOpenConfirm}
+        onReset={handleDiscard}
       />
 
       {/* Request Access Change Dialog */}
@@ -164,7 +173,8 @@ export default function RolesPermissionsPage() {
         isSubmitting={isRequesting}
       />
 
-      {/* Admin Confirm Save Dialog */}
+      {/* Admin Confirm Save Dialog — reviews the global changes before they
+          apply to every user with each role */}
       <Modal
         isOpen={isConfirmSaveOpen}
         onClose={() => !isSaving && setIsConfirmSaveOpen(false)}

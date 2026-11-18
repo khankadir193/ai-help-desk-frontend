@@ -46,7 +46,8 @@ export function useRolesMatrix() {
     });
   }, [serverPermissions, overrides]);
 
-  // Track modified permissions
+  // Track modified permissions (AGENT / CUSTOMER are configurable; the
+  // ADMIN column is locked server-side and read-only in the UI)
   const modifiedPermissions = useMemo(() => {
     if (Object.keys(overrides).length === 0) return [];
     const changed = [];
@@ -54,9 +55,9 @@ export function useRolesMatrix() {
       const orig = serverPermissions.find((p) => p.id === draft.id);
       if (!orig) continue;
       const isAdminChanged = draft.values.ADMIN !== orig.values.ADMIN;
-      const isManagerChanged = draft.values.MANAGER !== orig.values.MANAGER;
       const isAgentChanged = draft.values.AGENT !== orig.values.AGENT;
-      if (isAdminChanged || isManagerChanged || isAgentChanged) {
+      const isCustomerChanged = draft.values.CUSTOMER !== orig.values.CUSTOMER;
+      if (isAdminChanged || isAgentChanged || isCustomerChanged) {
         changed.push({
           id: draft.id,
           name: draft.name,

@@ -40,7 +40,7 @@ export default function ProfileSettingsPage() {
   const initialValues = useMemo(
     () => ({
       name: profile?.name || user?.name || '',
-      job_title: profile?.job_title || 'Customer Support Manager',
+      job_title: profile?.job_title || 'Customer Support Specialist',
       email: profile?.email || user?.email || '',
     }),
     [profile, user]
@@ -164,7 +164,7 @@ export default function ProfileSettingsPage() {
               value={form.values.job_title}
               onChange={(v) => form.handleChange('job_title', v)}
               onBlur={() => form.handleBlur('job_title')}
-              placeholder="Customer Support Manager"
+              placeholder="Customer Support Specialist"
               error={form.errors.job_title}
               disabled={form.isSaving}
             />

@@ -42,13 +42,6 @@ export default function InviteMemberPage() {
       admin_only: false,
     },
     {
-      id: 'MANAGER',
-      name: 'Manager',
-      title: 'Manager',
-      description: 'Manage team workloads and view team reports.',
-      admin_only: true,
-    },
-    {
       id: 'ADMIN',
       name: 'Admin',
       title: 'Admin',
@@ -57,7 +50,7 @@ export default function InviteMemberPage() {
     },
   ];
 
-  const assignableRoles = inviteOptionsData?.assignable_roles || (userRole === 'ADMIN' ? ['AGENT', 'MANAGER', 'ADMIN'] : ['AGENT']);
+  const assignableRoles = inviteOptionsData?.assignable_roles || (userRole === 'ADMIN' ? ['AGENT', 'ADMIN'] : ['AGENT']);
   const expiryDays = inviteOptionsData?.expiry_days || 7;
 
   // Form Hook
@@ -191,7 +184,7 @@ export default function InviteMemberPage() {
 
   // If Support Agent or Customer attempts to access Invite directly:
   // shared "No access" screen (no API calls were made — both data queries
-  // above are gated on isAuthorized). Managers/Admins keep the full form.
+  // above are gated on isAuthorized). Admins keep the full form.
   if (!isAuthorized) {
     const canViewTeam = canAccess(userRole, 'team');
     return (

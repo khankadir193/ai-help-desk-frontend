@@ -16,10 +16,10 @@ import './AccessDenied.css';
  *   - title          heading text (default "You don't have access to this page")
  *   - message        body text; defaults to the generic role/feature template
  *   - featureName    display name of the denied feature (e.g. "team members")
- *   - role           the user's role string (CUSTOMER/AGENT/MANAGER/ADMIN)
+ *   - role           the user's role string (CUSTOMER/AGENT/ADMIN)
  *   - primaryAction  { label, to } for the solid button; null hides it.
  *                    Defaults to "Go to Dashboard" (or the role's allowed
- *                    home route, e.g. tickets for MANAGER).
+ *                    home route).
  *   - secondaryAction true (default "Go back"), false to hide, or { label }
  *   - compact        smaller inline variant for use inside cards
  */

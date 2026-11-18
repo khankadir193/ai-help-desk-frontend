@@ -50,10 +50,10 @@ export default function Topbar({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isUserMenuOpen]);
 
-  const displayName = user?.name || 'Maya Chen';
-  const displayEmail = user?.email || 'maya@helpdesk.ai';
-  const displayRole = user?.role || 'Support Manager';
-  const displayInitials = user?.initials || 'MC';
+  const displayName = user?.name || 'Support Agent';
+  const displayEmail = user?.email || 'agent@example.com';
+  const displayRole = user?.role || 'AGENT';
+  const displayInitials = user?.initials || 'SA';
 
   const handleSignOut = () => {
     setIsUserMenuOpen(false);

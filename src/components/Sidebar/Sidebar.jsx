@@ -35,9 +35,9 @@ export default function Sidebar({
     signOut();
   };
 
-  const displayName = user?.name || 'Maya Chen';
-  const displayRole = user?.role || 'Support Manager';
-  const displayInitials = user?.initials || 'MC';
+  const displayName = user?.name || 'Support Agent';
+  const displayRole = user?.role || 'AGENT';
+  const displayInitials = user?.initials || 'SA';
 
   return (
     <>
