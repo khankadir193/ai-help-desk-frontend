@@ -31,6 +31,11 @@ export const API_ENDPOINTS = {
   DASHBOARD: {
     BASE: '/dashboard',
   },
+  NOTIFICATIONS: {
+    BASE: '/notifications',
+    MARK_READ: (id) => `/notifications/${id}/read`,
+    MARK_ALL_READ: '/notifications/read-all',
+  },
   USERS: {
     // GET /api/v1/users/agents — Admin-only directory of active AGENT users
     AGENTS: '/users/agents',

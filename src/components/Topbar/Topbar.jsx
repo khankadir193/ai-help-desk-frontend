@@ -11,11 +11,17 @@ export default function Topbar({
   title = 'Dashboard',
   isMobileOpen,
   onToggleMobile,
-  notifications,
+  notifications = [],
+  unreadCount: passedUnreadCount,
   isNotificationsOpen,
   onToggleNotifications,
   onCloseNotifications,
   onMarkAllAsRead,
+  onMarkAsRead,
+  isNotificationsLoading = false,
+  isNotificationsError = false,
+  onRetryNotifications,
+  isMarkingAllRead = false,
 }) {
   const { user, signOut } = useAuth();
   const searchInputRef = useRef(null);
@@ -23,7 +29,10 @@ export default function Topbar({
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isCreateTicketOpen, setIsCreateTicketOpen] = useState(false);
 
-  const unreadCount = notifications.filter((n) => n.unread).length;
+  const unreadCount =
+    typeof passedUnreadCount === 'number'
+      ? passedUnreadCount
+      : notifications.filter((n) => n.unread || !n.is_read).length;
 
   // ⌘K on Apple devices, Ctrl+K on Windows/Linux
   const searchShortcutLabel = /Mac|iPhone|iPad/i.test(navigator.userAgent)
@@ -128,7 +137,13 @@ export default function Topbar({
             isOpen={isNotificationsOpen}
             onClose={onCloseNotifications}
             notifications={notifications}
+            unreadCount={unreadCount}
             onMarkAllAsRead={onMarkAllAsRead}
+            onMarkAsRead={onMarkAsRead}
+            isLoading={isNotificationsLoading}
+            isError={isNotificationsError}
+            onRetry={onRetryNotifications}
+            isMarkingAllRead={isMarkingAllRead}
           />
         </div>
 

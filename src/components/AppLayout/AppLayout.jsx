@@ -3,8 +3,7 @@ import { Outlet, useLocation } from 'react-router-dom';
 import Sidebar from '../Sidebar/Sidebar';
 import Topbar from '../Topbar/Topbar';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
-import { initialNotifications } from '../../data/notificationsData';
-import { useNotificationSettings } from '../../features/settings/hooks/useNotificationSettings';
+import { useNotifications } from '../../features/notifications/hooks/useNotifications';
 import './AppLayout.css';
 
 // Route to title map
@@ -31,15 +30,18 @@ export default function AppLayout() {
   // Responsive mobile drawer state (<768px)
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
-  // Notifications state
-  const [notifications, setNotifications] = useState(initialNotifications);
+  // Dynamic notifications state from backend
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
-
-  // The user's channel preferences saved in Settings → Notifications:
-  // when in-app notifications are off, the Topbar center stays empty.
-  const { data: notificationPreferences } = useNotificationSettings();
-  const inAppNotificationsEnabled = notificationPreferences?.channels?.in_app !== false;
-  const visibleNotifications = inAppNotificationsEnabled ? notifications : [];
+  const {
+    notifications,
+    unreadCount,
+    isLoading: isNotificationsLoading,
+    isError: isNotificationsError,
+    refetch: refetchNotifications,
+    markAsRead,
+    markAllAsRead,
+    isMarkingAllRead,
+  } = useNotifications();
 
   // Sync persisted collapsed state
   const handleToggleCollapse = () => {
@@ -85,13 +87,6 @@ export default function AppLayout() {
     };
   }, [isMobileOpen]);
 
-  // Mark all notifications as read
-  const handleMarkAllAsRead = () => {
-    setNotifications((prev) =>
-      prev.map((notif) => ({ ...notif, unread: false }))
-    );
-  };
-
   const pageTitle =
     location.pathname.startsWith('/team')
       ? 'Team'
@@ -121,11 +116,17 @@ export default function AppLayout() {
           title={pageTitle}
           isMobileOpen={isMobileOpen}
           onToggleMobile={() => setIsMobileOpen((prev) => !prev)}
-          notifications={visibleNotifications}
+          notifications={notifications}
+          unreadCount={unreadCount}
           isNotificationsOpen={isNotificationsOpen}
           onToggleNotifications={() => setIsNotificationsOpen((prev) => !prev)}
           onCloseNotifications={() => setIsNotificationsOpen(false)}
-          onMarkAllAsRead={handleMarkAllAsRead}
+          onMarkAllAsRead={markAllAsRead}
+          onMarkAsRead={markAsRead}
+          isNotificationsLoading={isNotificationsLoading}
+          isNotificationsError={isNotificationsError}
+          onRetryNotifications={refetchNotifications}
+          isMarkingAllRead={isMarkingAllRead}
         />
 
         {/* Dynamic Outlet / Page Content */}

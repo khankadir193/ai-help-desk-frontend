@@ -1,0 +1,115 @@
+/* ── Dashboard Skeleton Loading Styles ─────────────────────────────────── */
+
+@keyframes dashboardPulse {
+  0% {
+    opacity: 0.95;
+    background-color: #F1F5F9;
+  }
+  50% {
+    opacity: 0.55;
+    background-color: #E2E8F0;
+  }
+  100% {
+    opacity: 0.95;
+    background-color: #F1F5F9;
+  }
+}
+
+.dashboard-skeleton__pulse {
+  animation: dashboardPulse 1.6s ease-in-out infinite;
+  background-color: #F1F5F9;
+}
+
+/* KPI skeleton card */
+.dashboard-skeleton__kpi-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-card);
+  padding: 20px;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 120px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.dashboard-skeleton__kpi-label {
+  height: 14px;
+  width: 40%;
+  border-radius: 4px;
+}
+
+.dashboard-skeleton__kpi-val {
+  height: 26px;
+  width: 58%;
+  border-radius: 6px;
+  margin: 10px 0;
+}
+
+.dashboard-skeleton__kpi-sub {
+  height: 12px;
+  width: 72%;
+  border-radius: 4px;
+}
+
+/* Ticket volume rectangular skeleton */
+.dashboard-skeleton__chart-rect {
+  width: 100%;
+  height: 220px;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+/* Priority distribution circle skeleton */
+.dashboard-skeleton__donut-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 0;
+  min-height: 220px;
+}
+
+.dashboard-skeleton__donut-circle {
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+}
+
+/* Recent activity skeleton rows */
+.dashboard-skeleton__activity-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px 20px 20px;
+}
+
+.dashboard-skeleton__activity-row {
+  width: 100%;
+  height: 44px;
+  border-radius: 6px;
+}
+
+/* Team performance skeleton rows */
+.dashboard-skeleton__team-table-head {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  padding: 12px 20px 8px;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.dashboard-skeleton__team-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 20px 20px;
+}
+
+.dashboard-skeleton__team-row {
+  width: 100%;
+  height: 38px;
+  border-radius: 6px;
+}

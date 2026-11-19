@@ -5,9 +5,9 @@ import ActivityList from '../components/ActivityList/ActivityList';
 import TeamTable from '../components/TeamTable/TeamTable';
 import TicketVolumeChart from '../components/TicketVolumeChart/TicketVolumeChart';
 import DateRangePicker from '../components/DateRangePicker/DateRangePicker';
+import DashboardSkeleton from '../components/DashboardSkeleton/DashboardSkeleton';
 import Button from '../../../components/ui/Button/Button';
 import Icon from '../../../components/Icon/Icon';
-import Spinner from '../../../components/feedback/Spinner/Spinner';
 import { useAuth } from '../../auth/hooks/useAuth';
 import { useDashboard } from '../hooks/useDashboard';
 import timeAgo from '../../../utils/relativeTime';
@@ -143,13 +143,16 @@ export default function DashboardPage() {
   const currentPage   = Number(pagination.page) || page;
 
   // ── Loading skeleton ──────────────────────────────────────────────────────
-  if (isLoading && !dashboard) {
+  if ((isLoading && !dashboard) || (!dashboard && !isError)) {
     return (
-      <main className="dashboard-content" aria-label="Dashboard">
-        <div className={styles.stateBox}>
-          <Spinner size="lg" label="Loading dashboard..." />
-        </div>
-      </main>
+      <DashboardSkeleton
+        greetingTitle={greetingTitle}
+        subtext={ROLE_SUBTEXTS[effectiveRole] || ROLE_SUBTEXTS.CUSTOMER}
+        startDate={startDate}
+        endDate={endDate}
+        onDateChange={handleDateChange}
+        effectiveRole={effectiveRole}
+      />
     );
   }
 
@@ -273,6 +276,7 @@ export default function DashboardPage() {
             startDate={startDate}
             endDate={endDate}
             onChange={handleDateChange}
+            defaultDays={dashboard?.ticket_volume?.days}
           />
 
           <button

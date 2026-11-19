@@ -25,8 +25,18 @@ function getVolumeDays(volume) {
 export function buildDashboardCsv(dashboard) {
   if (!dashboard) return '';
 
+  const dateRangeStr =
+    dashboard.date_range?.startDate && dashboard.date_range?.endDate
+      ? `${dashboard.date_range.startDate} to ${dashboard.date_range.endDate}`
+      : dashboard.date_range?.startDate
+        ? `From ${dashboard.date_range.startDate}`
+        : dashboard.date_range?.endDate
+          ? `Until ${dashboard.date_range.endDate}`
+          : 'All time';
+
   const rows = [
     ['Overview', 'Role', dashboard.role ?? ''],
+    ['Overview', 'Date range', dateRangeStr],
     ['Overview', 'Total tickets', dashboard.total_tickets ?? 0],
     ['Status', 'Open', dashboard.status_counts?.OPEN ?? 0],
     ['Status', 'In progress', dashboard.status_counts?.IN_PROGRESS ?? 0],
@@ -41,10 +51,15 @@ export function buildDashboardCsv(dashboard) {
     ['Priority', 'Urgent', dashboard.priority_counts?.URGENT ?? 0],
   ];
 
+  const volumeLabel =
+    dashboard.date_range?.startDate || dashboard.date_range?.endDate
+      ? `Ticket volume (${dateRangeStr})`
+      : 'Ticket volume (last 7 days)';
+
   const volumeDays = getVolumeDays(dashboard.ticket_volume);
   for (const day of volumeDays) {
     rows.push([
-      'Ticket volume (last 7 days)',
+      volumeLabel,
       day.date,
       `Created: ${day.created ?? 0}`,
       `Resolved: ${day.resolved ?? 0}`,
@@ -56,7 +71,7 @@ export function buildDashboardCsv(dashboard) {
     const totalResolved = dashboard.ticket_volume?.total_resolved
       ?? volumeDays.reduce((sum, day) => sum + (Number(day.resolved) || 0), 0);
     rows.push([
-      'Ticket volume (last 7 days)',
+      volumeLabel,
       'Total',
       `Created: ${totalCreated}`,
       `Resolved: ${totalResolved}`,

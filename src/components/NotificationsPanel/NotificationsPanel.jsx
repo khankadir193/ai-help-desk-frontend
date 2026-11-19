@@ -1,14 +1,24 @@
 import { useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useClickOutside } from '../../hooks/useClickOutside';
+import Spinner from '../feedback/Spinner/Spinner';
+import timeAgo from '../../utils/relativeTime';
 import './NotificationsPanel.css';
 
 export default function NotificationsPanel({
   isOpen,
   onClose,
-  notifications,
+  notifications = [],
+  unreadCount = 0,
   onMarkAllAsRead,
+  onMarkAsRead,
+  isLoading = false,
+  isError = false,
+  onRetry,
+  isMarkingAllRead = false,
 }) {
   const panelRef = useRef(null);
+  const navigate = useNavigate();
 
   useClickOutside(panelRef, () => {
     if (isOpen) onClose();
@@ -27,6 +37,17 @@ export default function NotificationsPanel({
 
   if (!isOpen) return null;
 
+  const handleItemClick = (item) => {
+    const isUnread = item.unread ?? !item.is_read;
+    if (isUnread && onMarkAsRead) {
+      onMarkAsRead(item.id);
+    }
+    if (item.ticket_id) {
+      onClose();
+      navigate(`/tickets/${item.ticket_id}`);
+    }
+  };
+
   return (
     <div
       ref={panelRef}
@@ -41,46 +62,88 @@ export default function NotificationsPanel({
           type="button"
           className="notifications-panel__mark-read-btn"
           onClick={onMarkAllAsRead}
+          disabled={unreadCount === 0 || isMarkingAllRead}
         >
-          Mark all as read
+          {isMarkingAllRead ? 'Marking...' : 'Mark all as read'}
         </button>
       </div>
 
       <div className="notifications-panel__list">
-        {notifications.length === 0 && (
+        {isLoading && (
+          <div className="notifications-panel__loading">
+            <Spinner size="sm" label="Loading notifications..." />
+          </div>
+        )}
+
+        {!isLoading && isError && (
+          <div className="notifications-panel__error">
+            <p className="notifications-panel__error-text">Failed to load notifications.</p>
+            {onRetry && (
+              <button
+                type="button"
+                className="notifications-panel__retry-btn"
+                onClick={onRetry}
+              >
+                Retry
+              </button>
+            )}
+          </div>
+        )}
+
+        {!isLoading && !isError && notifications.length === 0 && (
           <p className="notifications-panel__empty">
             No notifications right now.
           </p>
         )}
-        {notifications.map((item) => (
-          <div
-            key={item.id}
-            className={`notifications-panel__item ${
-              item.unread ? 'notifications-panel__item--unread' : ''
-            }`}
-          >
-            <div className="notifications-panel__dot-col">
-              <span
-                className={`notifications-panel__dot ${
-                  item.unread
-                    ? 'notifications-panel__dot--unread'
-                    : 'notifications-panel__dot--read'
-                }`}
-                aria-hidden="true"
-              />
-            </div>
 
-            <div className="notifications-panel__content">
-              <div className="notifications-panel__item-title">{item.title}</div>
-              <div className="notifications-panel__item-subtitle">
-                {item.subtitle}
+        {!isLoading &&
+          !isError &&
+          notifications.map((item) => {
+            const isUnread = item.unread ?? !item.is_read;
+            const displayTime = item.time || timeAgo(item.created_at) || '';
+
+            return (
+              <div
+                key={item.id}
+                className={`notifications-panel__item ${
+                  isUnread ? 'notifications-panel__item--unread' : ''
+                }`}
+                role="button"
+                tabIndex={0}
+                onClick={() => handleItemClick(item)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleItemClick(item);
+                  }
+                }}
+              >
+                <div className="notifications-panel__dot-col">
+                  <span
+                    className={`notifications-panel__dot ${
+                      isUnread
+                        ? 'notifications-panel__dot--unread'
+                        : 'notifications-panel__dot--read'
+                    }`}
+                    aria-hidden="true"
+                  />
+                </div>
+
+                <div className="notifications-panel__content">
+                  <div className="notifications-panel__item-title">{item.title}</div>
+                  {item.subtitle && (
+                    <div className="notifications-panel__item-subtitle">
+                      {item.subtitle}
+                    </div>
+                  )}
+                  {displayTime && (
+                    <div className="notifications-panel__item-time">{displayTime}</div>
+                  )}
+                </div>
               </div>
-              <div className="notifications-panel__item-time">{item.time}</div>
-            </div>
-          </div>
-        ))}
+            );
+          })}
       </div>
     </div>
   );
 }
-
