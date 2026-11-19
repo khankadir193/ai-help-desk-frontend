@@ -133,12 +133,12 @@
 
 .team-table__th--agent {
   text-align: left;
-  width: 50%;
+  width: 40%;
 }
 
 .team-table__th--metric {
   text-align: right;
-  width: 16.66%;
+  width: 20%;
   padding-left: 8px;
 }
 
@@ -163,7 +163,7 @@
 
 .team-table__td--agent {
   text-align: left;
-  width: 50%;
+  width: 40%;
 }
 
 .team-table__agent-cell {
@@ -190,7 +190,7 @@
 
 .team-table__td--metric {
   text-align: right;
-  width: 16.66%;
+  width: 20%;
   padding-left: 8px;
   font-size: 13px;
   color: var(--text-primary);

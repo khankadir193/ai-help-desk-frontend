@@ -1,18 +1,19 @@
 import { useNavigate } from 'react-router-dom';
 import Avatar from '../../../../components/Avatar/Avatar';
 import getInitials from '../../utils/initials';
+import { formatDuration } from '../../utils/formatters';
 import './TeamTable.css';
 
 /**
  * TeamTable — Team performance card shown for ADMIN role.
  *
- * Maps agent_workload from the backend:
- *   { agent_id, agent_name, total_assigned, open, in_progress, resolved, closed, csat }
+ * Uses only fields the dashboard API actually returns:
+ *   { agent_id, agent_name, total_assigned, open, in_progress,
+ *     resolved, closed, avg_first_response_hours }
  *
- * Reference columns: Agent | Solved | Resp. | CSAT
- *   • Solved  → agent.resolved
- *   • Resp.   → avg_response_time / resp or pending response proxy
- *   • CSAT    → agent.csat or "–"
+ * Solved  = resolved + closed
+ * Active  = open + in_progress
+ * Avg. reply = avg_first_response_hours (null renders as "–")
  */
 export default function TeamTable({
   data = [],
@@ -44,8 +45,8 @@ export default function TeamTable({
               <tr>
                 <th className="team-table__th team-table__th--agent">Agent</th>
                 <th className="team-table__th team-table__th--metric">Solved</th>
-                <th className="team-table__th team-table__th--metric">Resp.</th>
-                <th className="team-table__th team-table__th--metric">CSAT</th>
+                <th className="team-table__th team-table__th--metric">Active</th>
+                <th className="team-table__th team-table__th--metric">Avg. reply</th>
               </tr>
             </thead>
             <tbody>
@@ -85,22 +86,17 @@ export default function TeamTable({
               <tr>
                 <th className="team-table__th team-table__th--agent">Agent</th>
                 <th className="team-table__th team-table__th--metric">Solved</th>
-                <th className="team-table__th team-table__th--metric">Resp.</th>
-                <th className="team-table__th team-table__th--metric">CSAT</th>
+                <th className="team-table__th team-table__th--metric">Active</th>
+                <th className="team-table__th team-table__th--metric">Avg. reply</th>
               </tr>
             </thead>
             <tbody>
               {data.map((agent) => {
-                const pending =
-                  agent.open != null || agent.in_progress != null
-                    ? (agent.open ?? 0) + (agent.in_progress ?? 0)
-                    : null;
-                const solved = agent.resolved != null ? agent.resolved : null;
-                const resp =
-                  agent.avg_response_time ||
-                  agent.resp ||
-                  (pending != null && pending > 0 ? `${pending}m` : pending);
-                const csat = agent.csat != null ? agent.csat : '–';
+                const solved =
+                  (agent.resolved ?? 0) + (agent.closed ?? 0);
+                const active =
+                  (agent.open ?? 0) + (agent.in_progress ?? 0);
+                const avgReply = formatDuration(agent.avg_first_response_hours);
 
                 return (
                   <tr key={agent.agent_id ?? agent.agent_name} className="team-table__row">
@@ -113,13 +109,13 @@ export default function TeamTable({
                       </div>
                     </td>
                     <td className="team-table__td team-table__td--metric tabular-nums">
-                      {solved != null ? solved : '–'}
+                      {solved}
                     </td>
                     <td className="team-table__td team-table__td--metric tabular-nums">
-                      {resp != null ? resp : '–'}
+                      {active}
                     </td>
-                    <td className="team-table__td team-table__td--metric team-table__td--csat tabular-nums">
-                      {csat}
+                    <td className="team-table__td team-table__td--metric tabular-nums">
+                      {avgReply}
                     </td>
                   </tr>
                 );

@@ -3,15 +3,15 @@ import './PriorityDonut.css';
 
 export default function PriorityDonut({
   data = [],
-  centerLabel = 'open',
+  centerLabel = 'tickets',
   emptyText,
 }) {
   const [hoveredSlice, setHoveredSlice] = useState(null);
 
-  const totalOpen = data.reduce((sum, item) => sum + item.count, 0);
+  const totalCount = data.reduce((sum, item) => sum + item.count, 0);
 
   // Zero-division guard: nothing to draw when the scope has no tickets
-  if (!data || data.length === 0 || totalOpen <= 0) {
+  if (!data || data.length === 0 || totalCount <= 0) {
     return (
       <div className="priority-donut-card">
         <div className="priority-donut-card__header">
@@ -28,21 +28,25 @@ export default function PriorityDonut({
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
 
+  // Only draw non-empty priorities; the legend still lists every bucket.
+  const visibleSlices = data.filter((item) => item.count > 0);
+
   // Gap between slices in pixels on circumference
   const gap = 2.5;
-  const effectiveCircumference = circumference - data.length * gap;
+  const effectiveCircumference = circumference - visibleSlices.length * gap;
 
-  // Pre-calculate pure slice offsets without mutating variables during render
-  const slices = data.map((slice, index) => {
-    const priorPercent = data
+  // Pre-calculate pure slice offsets without mutating variables during render.
+  // Each slice is separated by exactly `gap` pixels, regardless of how
+  // uneven the individual percentages are.
+  const slices = visibleSlices.map((slice, index) => {
+    const priorPercent = visibleSlices
       .slice(0, index)
-      .reduce((sum, item) => sum + item.count / totalOpen, 0);
-    const slicePercent = slice.count / totalOpen;
+      .reduce((sum, item) => sum + item.count / totalCount, 0);
+    const slicePercent = slice.count / totalCount;
     const dashLength = slicePercent * effectiveCircumference;
     const offset =
       circumference -
-      priorPercent * effectiveCircumference -
-      priorPercent * gap * data.length;
+      (priorPercent * effectiveCircumference + index * gap);
 
     return {
       ...slice,
@@ -66,7 +70,7 @@ export default function PriorityDonut({
             viewBox={`0 0 ${size} ${size}`}
             className="priority-donut__svg"
             role="img"
-            aria-label={`Donut chart showing ${totalOpen} tickets across priority levels`}
+            aria-label={`Donut chart showing ${totalCount} tickets across priority levels`}
           >
             <g transform={`rotate(-90 ${size / 2} ${size / 2})`}>
               {slices.map((slice) => {
@@ -99,7 +103,7 @@ export default function PriorityDonut({
               dominantBaseline="central"
               className="priority-donut__center-num tabular-nums"
             >
-              {totalOpen}
+              {totalCount}
             </text>
             <text
               x={size / 2}

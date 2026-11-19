@@ -12,13 +12,28 @@ import { API_ENDPOINTS } from '../../../constants/apiEndpoints';
  *  - CUSTOMER / AGENT / ADMIN:
  *      { role, total_tickets, status_counts: {OPEN, IN_PROGRESS, RESOLVED, CLOSED},
  *        priority_counts: {LOW, MEDIUM, HIGH, URGENT},
- *        recent_tickets: [...], pagination: { page, limit, total_items, total_pages } }
+ *        unassigned_count,
+ *        avg_first_response_hours: number|null,
+ *        avg_resolution_hours: number|null,
+ *        ticket_volume: { days: [{ date: 'YYYY-MM-DD', created, resolved }],
+ *                         total_created, total_resolved },
+ *        recent_tickets: [...], pagination: { page, limit, total_items, total_pages },
+ *        date_range: { startDate: string|null, endDate: string|null } }
  *  - ADMIN additionally:
  *      category_counts: [{ category_id: string|null, category_name, count }]
- *      agent_workload:  [{ agent_id, agent_name, total_assigned, open, in_progress, resolved, closed }]
+ *      agent_workload:  [{ agent_id, agent_name, total_assigned, open, in_progress,
+ *                          resolved, closed, avg_first_response_hours }]
  *
- * Query params: page (>=1, default 1), limit (1–100, default 20) — applied
- * to recent_tickets only.
+ * `ticket_volume.days` spans the requested date range (or the default 7 UTC
+ * calendar days when no range is supplied), zero-filled by the backend.
+ * Averages are null when there are no samples. All aggregates use the same
+ * role scope as `recent_tickets`.
+ *
+ * Query params:
+ *   page       (>=1, default 1)
+ *   limit      (1–100, default 20) — applied to recent_tickets only
+ *   startDate  (YYYY-MM-DD, UTC)   — optional lower bound on created_at
+ *   endDate    (YYYY-MM-DD, UTC)   — optional upper bound on created_at
  */
 export const dashboardService = {
   /**
@@ -26,12 +41,16 @@ export const dashboardService = {
    * @param {Object} [params]
    * @param {number} [params.page=1]
    * @param {number} [params.limit=20]
+   * @param {string|null} [params.startDate] - YYYY-MM-DD (UTC)
+   * @param {string|null} [params.endDate]   - YYYY-MM-DD (UTC)
    * @returns {Promise<Object>} dashboard payload
    */
-  getDashboard: async ({ page, limit } = {}) => {
+  getDashboard: async ({ page, limit, startDate, endDate } = {}) => {
     const query = {};
     if (page) query.page = String(page);
     if (limit) query.limit = String(limit);
+    if (startDate) query.startDate = startDate;
+    if (endDate) query.endDate = endDate;
 
     const response = await apiClient.get(API_ENDPOINTS.DASHBOARD.BASE, { params: query });
     // The shared axios client unwraps the transport response to the server

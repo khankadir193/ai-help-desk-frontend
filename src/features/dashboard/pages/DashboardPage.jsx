@@ -1,9 +1,10 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import KpiCard from '../components/KpiCard/KpiCard';
 import PriorityDonut from '../components/PriorityDonut/PriorityDonut';
 import ActivityList from '../components/ActivityList/ActivityList';
 import TeamTable from '../components/TeamTable/TeamTable';
 import TicketVolumeChart from '../components/TicketVolumeChart/TicketVolumeChart';
+import DateRangePicker from '../components/DateRangePicker/DateRangePicker';
 import Button from '../../../components/ui/Button/Button';
 import Icon from '../../../components/Icon/Icon';
 import Spinner from '../../../components/feedback/Spinner/Spinner';
@@ -13,10 +14,17 @@ import timeAgo from '../../../utils/relativeTime';
 import { getErrorMessage, isForbiddenError } from '../../../utils/errorHandler';
 import AccessDenied from '../../../components/AccessDenied/AccessDenied';
 import getInitials from '../utils/initials';
+import {
+  formatDuration,
+  formatTicketId,
+  formatVolumeRows,
+} from '../utils/formatters';
+import { buildDashboardCsv, downloadCsv } from '../utils/exportDashboard';
 import STATUS_LABELS from '../constants/dashboardDisplay';
 import styles from './DashboardPage.module.css';
 
-const RECENT_LIMIT = 4;
+const RECENT_LIMIT = 5;
+const TEAM_ROW_LIMIT = 5;
 
 const PRIORITY_ITEMS = [
   { key: 'URGENT', label: 'Urgent', color: 'var(--color-danger)' },
@@ -46,55 +54,49 @@ const getGreeting = (name) => {
   return `Good ${period}, ${firstName}`;
 };
 
-/** Derive a readable action verb from ticket status */
-const actionFor = (status) => {
-  switch (status) {
-    case 'RESOLVED': return 'resolved';
-    case 'IN_PROGRESS': return 'replied to';
-    case 'CLOSED': return 'closed';
-    default: return 'opened';
-  }
-};
-
 const truncate = (text, max = 56) => {
   if (!text) return '';
   const flat = String(text).replace(/\s+/g, ' ').trim();
   return flat.length > max ? `${flat.slice(0, max)}…` : flat;
 };
 
-/** Map one backend recent_tickets row → ActivityList item shape */
-const mapTicketToActivity = (ticket, index) => {
+/**
+ * Map one backend recent_tickets row → ActivityList item shape.
+ */
+const mapTicketToRecent = (ticket, index) => {
   if (!ticket || typeof ticket !== 'object') return null;
-  const customerName = ticket.customer?.name;
-  const actorName = customerName || ticket.assigned_agent?.name || 'System';
-  const isAi = actorName.toLowerCase().includes('ai');
 
+  const customerName = ticket.customer?.name || 'Unknown customer';
   return {
     id:          ticket.id ?? index,
-    actor:       actorName,
-    action:      actionFor(ticket.status),
-    ticketId:    `TCK-${String(ticket.id).padStart(4, '0')}`,
+    actor:       customerName,
+    action:      'created',
+    ticketId:    formatTicketId(ticket.id),
     subtitle:    truncate(ticket.title),
     status:      ticket.status,
     statusLabel: STATUS_LABELS[ticket.status] || ticket.status,
     time:        timeAgo(ticket.created_at) ?? '',
-    avatar:      isAi ? '' : getInitials(actorName),
-    avatarType:  isAi ? 'icon' : 'text',
+    avatar:      getInitials(customerName),
+    avatarType:  'text',
   };
-};
-
-/** Format a date range label — uses today as the end of a 7-day window */
-const formatDateRange = () => {
-  const now = new Date();
-  const start = new Date(now);
-  start.setDate(now.getDate() - 6);
-  const fmt = (d) =>
-    d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-  return `${fmt(start)} – ${fmt(now)}`;
 };
 
 export default function DashboardPage() {
   const { user, role } = useAuth();
+
+  // ── Date range filter (YYYY-MM-DD strings, UTC) ───────────────────────────
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+
+  // ── Recent-tickets pagination ─────────────────────────────────────────────
+  const [page, setPage] = useState(1);
+
+  const filters = useMemo(() => {
+    const f = { page, limit: RECENT_LIMIT };
+    if (startDate) f.startDate = startDate;
+    if (endDate)   f.endDate   = endDate;
+    return f;
+  }, [page, startDate, endDate]);
 
   const {
     data: dashboard,
@@ -103,10 +105,9 @@ export default function DashboardPage() {
     error,
     isFetching,
     refetch,
-  } = useDashboard({ limit: RECENT_LIMIT });
+  } = useDashboard(filters);
 
   const greetingTitle = getGreeting(user?.name);
-  const dateRange    = formatDateRange();
 
   // Priority donut segments derived from real counts
   const priorityItems = useMemo(
@@ -120,7 +121,26 @@ export default function DashboardPage() {
     [dashboard],
   );
 
+  // Real seven-day (or date-ranged) created/resolved series from the backend
+  const volumeRows = useMemo(
+    () => formatVolumeRows(dashboard?.ticket_volume),
+    [dashboard],
+  );
+
   const effectiveRole = dashboard?.role ?? role;
+
+  // ── Date range handler: reset page on new filter ──────────────────────────
+  const handleDateChange = ({ startDate: s, endDate: e }) => {
+    setStartDate(s);
+    setEndDate(e);
+    setPage(1); // reset to page 1 when the date window changes
+  };
+
+  // ── Pagination values ─────────────────────────────────────────────────────
+  const pagination    = dashboard?.pagination ?? {};
+  const totalPages    = Number(pagination.total_pages) || 0;
+  const totalItems    = Number(pagination.total_items) || 0;
+  const currentPage   = Number(pagination.page) || page;
 
   // ── Loading skeleton ──────────────────────────────────────────────────────
   if (isLoading && !dashboard) {
@@ -135,9 +155,6 @@ export default function DashboardPage() {
 
   // ── Error state ───────────────────────────────────────────────────────────
   if (isError || !dashboard) {
-    // No permission (403 — e.g. a role the backend dashboard route rejects):
-    // shared "No access" screen, no Retry (retrying a forbidden request
-    // cannot succeed). All other failures keep the normal error state.
     if (isError && isForbiddenError(error)) {
       return (
         <main className="dashboard-content" aria-label="Dashboard">
@@ -165,62 +182,78 @@ export default function DashboardPage() {
   // ── Derived values ────────────────────────────────────────────────────────
   const statusCounts  = dashboard.status_counts ?? {};
   const rawRecent     = Array.isArray(dashboard.recent_tickets) ? dashboard.recent_tickets : [];
-  const recentTickets = rawRecent.slice(0, 4);
+  const recentTickets = rawRecent.slice(0, RECENT_LIMIT);
 
   const isAdmin       = effectiveRole === 'ADMIN';
   const agentWorkload = Array.isArray(dashboard.agent_workload) ? dashboard.agent_workload : [];
+  const teamRows      = agentWorkload.slice(0, TEAM_ROW_LIMIT);
+  const teamTitle     = agentWorkload.length > TEAM_ROW_LIMIT
+    ? `Team performance · top ${TEAM_ROW_LIMIT}`
+    : 'Team performance';
 
-  // KPI card definitions — purely from backend data with reference-matching indicators
+  // KPI cards — every value comes from the scoped dashboard payload.
   const kpiCards = [
     {
       key: 'open',
       label: 'Open tickets',
       value: statusCounts.OPEN ?? 0,
-      trend: '+4.2%',
-      trendDirection: 'neutral',
-      comparison: 'vs last 7 days',
+      context: 'Current backlog',
     },
-    {
-      key: 'unassigned',
-      label: 'Unassigned',
-      value: dashboard.unassigned_count ?? statusCounts.OPEN ?? 0,
-      trend: '+6',
-      trendDirection: 'down',
-      comparison: 'vs last 7 days',
-    },
+    ...(effectiveRole === 'AGENT'
+      ? []
+      : [{
+          key: 'unassigned',
+          label: 'Unassigned',
+          value: dashboard.unassigned_count ?? 0,
+          context: 'Open or in progress',
+        }]),
     {
       key: 'in_prog',
       label: 'In progress',
       value: statusCounts.IN_PROGRESS ?? 0,
-      trend: '-2.0%',
-      trendDirection: 'neutral',
-      comparison: 'vs last 7 days',
+      context: 'Currently being worked',
     },
     {
       key: 'resolved',
       label: 'Resolved',
       value: statusCounts.RESOLVED ?? 0,
-      trend: '+12.4%',
-      trendDirection: 'up',
-      comparison: 'vs last 7 days',
+      context: 'Current resolved state',
     },
+    ...(effectiveRole === 'AGENT'
+      ? [{
+          key: 'closed',
+          label: 'Closed tickets',
+          value: statusCounts.CLOSED ?? 0,
+          context: 'Completed tickets',
+        }]
+      : []),
     {
       key: 'first_resp',
       label: 'Avg. first response',
-      value: dashboard.avg_first_response || (statusCounts.RESOLVED > 0 ? '12m 40s' : '–'),
-      trend: '-8.1%',
-      trendDirection: 'up',
-      comparison: 'vs last 7 days',
+      value: formatDuration(dashboard.avg_first_response_hours),
+      context: 'First non-customer reply',
     },
     {
       key: 'avg_resolution',
       label: 'Avg. resolution',
-      value: dashboard.avg_resolution || (statusCounts.RESOLVED > 0 ? '4h 05m' : '–'),
-      trend: '-5.6%',
-      trendDirection: 'up',
-      comparison: 'vs last 7 days',
+      value: formatDuration(dashboard.avg_resolution_hours),
+      context: 'Created to resolved',
     },
   ];
+
+  const handleExport = () => {
+    const csv = buildDashboardCsv(dashboard);
+    if (!csv) return;
+    const date = new Date().toISOString().slice(0, 10);
+    downloadCsv(csv, `dashboard-${String(effectiveRole).toLowerCase()}-${date}.csv`);
+  };
+
+  // Volume chart: when fetching fresh data show skeleton only on the chart
+  const chartIsLoading = isFetching && !volumeRows.length;
+  const hasDateFilter = !!(startDate || endDate);
+  const volumeEmptyText = hasDateFilter
+    ? 'No ticket activity in the selected date range.'
+    : 'No ticket activity in this 7-day window.';
 
   return (
     <main className="dashboard-content">
@@ -235,13 +268,19 @@ export default function DashboardPage() {
         </div>
 
         <div className="greeting-row__actions">
-          <button type="button" className="btn-date-range" aria-label="Select date range">
-            <Icon name="calendar" size={15} className="btn-date-range__icon" />
-            <span>{dateRange}</span>
-            <Icon name="chevron-down" size={14} className="btn-date-range__chevron" />
-          </button>
+          {/* Date range picker — restored and connected to the API */}
+          <DateRangePicker
+            startDate={startDate}
+            endDate={endDate}
+            onChange={handleDateChange}
+          />
 
-          <button type="button" className="btn-export" aria-label="Export data">
+          <button
+            type="button"
+            className="btn-export"
+            aria-label="Export dashboard data as CSV"
+            onClick={handleExport}
+          >
             Export
           </button>
         </div>
@@ -254,9 +293,7 @@ export default function DashboardPage() {
             key={card.key}
             label={card.label}
             value={String(card.value)}
-            trend={card.trend}
-            trendDirection={card.trendDirection}
-            comparison={card.comparison}
+            footnote={card.context}
           />
         ))}
       </section>
@@ -264,32 +301,68 @@ export default function DashboardPage() {
       {/* ── Row 2: Ticket Volume + Priority Donut ──────────────────────── */}
       <section className="dashboard-grid-row" aria-label="Volume and Priority">
         <TicketVolumeChart
-          statusCounts={statusCounts}
-          isLoading={isFetching && !dashboard}
+          data={volumeRows}
+          isLoading={chartIsLoading}
+          emptyText={volumeEmptyText}
         />
         <PriorityDonut
           data={priorityItems}
-          centerLabel="open"
+          centerLabel="tickets"
           emptyText={RECENT_EMPTY_TEXTS[effectiveRole]}
         />
       </section>
 
-      {/* ── Row 3: Recent Activity + Team Performance ──────────────────── */}
-      <section className="dashboard-grid-row" aria-label="Activity and Team">
+      {/* ── Row 3: Recent Tickets + Team Performance ───────────────────── */}
+      <section
+        className={`dashboard-grid-row ${isAdmin ? '' : styles.singleColumn}`}
+        aria-label="Recent tickets and team"
+      >
         <ActivityList
-          data={recentTickets.map(mapTicketToActivity).filter(Boolean)}
-          title="Recent ticket activity"
+          data={recentTickets.map(mapTicketToRecent).filter(Boolean)}
+          title="Recent tickets"
           emptyText={RECENT_EMPTY_TEXTS[effectiveRole]}
         />
         {isAdmin && (
           <TeamTable
-            data={agentWorkload}
-            title="Team performance"
+            data={teamRows}
+            title={teamTitle}
             emptyText="No agents registered yet."
-            isLoading={isFetching && !dashboard}
+            isLoading={isFetching && !agentWorkload.length}
           />
         )}
       </section>
+
+      {/* ── Pagination for recent tickets ───────────────────────────────── */}
+      {totalPages > 1 && (
+        <div
+          className={styles.paginationBar}
+          aria-label="Recent tickets pagination"
+        >
+          <span className={styles.pageInfo}>
+            Page {currentPage} of {totalPages} · {recentTickets.length} of {totalItems} tickets
+          </span>
+          <div className={styles.pageControls}>
+            <Button
+              variant="secondary"
+              size="sm"
+              disabled={currentPage <= 1 || isFetching}
+              onClick={() => setPage((prev) => Math.max(1, prev - 1))}
+            >
+              <Icon name="chevron-left" size={14} />
+              Previous
+            </Button>
+            <Button
+              variant="secondary"
+              size="sm"
+              disabled={currentPage >= totalPages || isFetching}
+              onClick={() => setPage((prev) => prev + 1)}
+            >
+              Next
+              <Icon name="chevron-right" size={14} />
+            </Button>
+          </div>
+        </div>
+      )}
     </main>
   );
 }

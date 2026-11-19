@@ -3,16 +3,14 @@ import './TicketVolumeChart.css';
 /**
  * TicketVolumeChart
  *
- * Renders a grouped responsive SVG bar chart for ticket volume.
- * Each day has { label, created, resolved }.
- * Status counts are used as fallback if no per-day breakdown is provided.
+ * Renders a grouped responsive SVG bar chart for real ticket volume.
+ * Each day has { date, created, resolved }. No fallback series is invented:
+ * a window with no activity renders an explicit empty state.
  */
-export default function TicketVolumeChart({ data = [], statusCounts = {}, isLoading }) {
-  const rows = data.length > 0
-    ? data
-    : buildFallbackRows(statusCounts);
+export default function TicketVolumeChart({ data = [], isLoading, emptyText }) {
+  const rows = Array.isArray(data) ? data : [];
 
-  const allValues = rows.flatMap((r) => [r.created, r.resolved]);
+  const allValues = rows.flatMap((r) => [r.created ?? 0, r.resolved ?? 0]);
   const dataMax = Math.max(...allValues, 0);
 
   // Nice y-axis ceiling (rounded up to nearest 25 / 50 / 100)
@@ -59,7 +57,7 @@ export default function TicketVolumeChart({ data = [], statusCounts = {}, isLoad
         <div className="tv-card__header">
           <h3 className="tv-card__title">Ticket volume</h3>
         </div>
-        <p className="tv-empty">No ticket volume data available yet.</p>
+        <p className="tv-empty">{emptyText || 'No ticket activity in this 7-day window.'}</p>
       </div>
     );
   }
@@ -115,11 +113,15 @@ export default function TicketVolumeChart({ data = [], statusCounts = {}, isLoad
           {/* Grouped Bars */}
           {rows.map((row, i) => {
             const groupX = LEFT_AXIS + i * slotW + (slotW - (BAR_W * 2 + GAP_BTW)) / 2;
-            const createdH = Math.max(toBarH(row.created), row.created > 0 ? 4 : 0);
-            const resolvedH = Math.max(toBarH(row.resolved), row.resolved > 0 ? 4 : 0);
+            const created = row.created ?? 0;
+            const resolved = row.resolved ?? 0;
+            const createdH = Math.max(toBarH(created), created > 0 ? 4 : 0);
+            const resolvedH = Math.max(toBarH(resolved), resolved > 0 ? 4 : 0);
+            const label = row.label || formatDayLabel(row.date);
+            const key = row.date || row.label || i;
 
             return (
-              <g key={row.label}>
+              <g key={key}>
                 {/* Created bar (indigo) */}
                 <rect
                   x={groupX}
@@ -147,7 +149,7 @@ export default function TicketVolumeChart({ data = [], statusCounts = {}, isLoad
                   textAnchor="middle"
                   className="tv-axis-label"
                 >
-                  {row.label}
+                  {label}
                 </text>
               </g>
             );
@@ -160,20 +162,16 @@ export default function TicketVolumeChart({ data = [], statusCounts = {}, isLoad
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
-function buildFallbackRows(statusCounts) {
-  const created = (statusCounts.OPEN ?? 0) + (statusCounts.IN_PROGRESS ?? 0);
-  const resolved = (statusCounts.RESOLVED ?? 0) + (statusCounts.CLOSED ?? 0);
-
-  if (created === 0 && resolved === 0) return [];
-
-  const DAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-  const weights = [0.18, 0.17, 0.16, 0.17, 0.15, 0.09, 0.08];
-
-  return DAY_LABELS.map((label, i) => ({
-    label,
-    created: Math.round(created * weights[i]),
-    resolved: Math.round(resolved * weights[i]),
-  }));
+/** ISO date ("YYYY-MM-DD") → compact axis label, e.g. "Nov 12". */
+function formatDayLabel(iso) {
+  if (!iso) return '';
+  const [year, month, day] = String(iso).split('-').map(Number);
+  if (!year || !month || !day) return String(iso);
+  return new Date(Date.UTC(year, month - 1, day)).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    timeZone: 'UTC',
+  });
 }
 
 function niceMax(raw) {

@@ -12,7 +12,10 @@ export const DASHBOARD_QUERY_KEYS = {
  * backend from the authenticated session; role-specific sections (category
  * breakdown, agent workload) are present only for ADMIN responses.
  *
- * @param {Object} [filters] - { page, limit }
+ * @param {Object} [filters] - { page, limit, startDate, endDate }
+ *   startDate / endDate are YYYY-MM-DD strings (UTC) and are optional.
+ *   When omitted the backend defaults to the last 7 UTC calendar days for
+ *   the volume chart and all-time aggregates for KPIs.
  * @param {Object} [options]
  * @param {boolean} [options.enabled=true]
  */
