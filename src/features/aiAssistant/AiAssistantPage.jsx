@@ -173,10 +173,13 @@ export default function AiAssistantPage() {
       try {
         const kbResponse = await kbService.listArticles({
           status: 'PUBLISHED',
-          category_id: ticket.category_id || undefined,
+          categoryId: ticket.category_id || undefined,
         });
         if (isSubscribed) {
-          const articles = kbResponse?.articles ?? (Array.isArray(kbResponse) ? kbResponse : []);
+          const articles =
+            kbResponse?.items ??
+            kbResponse?.articles ??
+            (Array.isArray(kbResponse) ? kbResponse : []);
           if (articles.length > 0) {
             setRecommendedKb(articles.slice(0, 3));
           }

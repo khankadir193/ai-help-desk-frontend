@@ -1,12 +1,19 @@
 import axios from 'axios';
 import { getErrorMessage } from '../utils/errorHandler';
 
+// Single source of truth for the API origin. Strip trailing slashes so a
+// value like ".../api/v1/" cannot produce double slashes in request URLs.
+const API_BASE_URL = (
+  import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api/v1'
+).replace(/\/+$/, '');
+
 const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api/v1',
+  baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 15000,
+  // 60s timeout to tolerate Render free-tier cold starts
+  timeout: 60000,
   // Required so HttpOnly session cookies (helpdesk.sid) are sent with requests
   withCredentials: true,
 });

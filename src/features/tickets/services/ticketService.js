@@ -268,7 +268,7 @@ export const ticketService = {
     const response = await apiClient.post(
       API_ENDPOINTS.AI.CLASSIFY(id),
       undefined,
-      { timeout: 30000, signal },
+      { timeout: 60000, signal },
     );
     return response?.data?.suggestion ?? response?.suggestion ?? null;
   },
@@ -302,7 +302,7 @@ export const ticketService = {
     const response = await apiClient.post(
       API_ENDPOINTS.AI.PRIORITY(id),
       undefined,
-      { timeout: 30000, signal },
+      { timeout: 60000, signal },
     );
     return response?.data?.suggestion ?? response?.suggestion ?? null;
   },
@@ -336,7 +336,7 @@ export const ticketService = {
     const response = await apiClient.post(
       API_ENDPOINTS.AI.REPLY_DRAFT(id),
       undefined,
-      { timeout: 30000, signal },
+      { timeout: 60000, signal },
     );
     return response?.data?.suggestion ?? response?.suggestion ?? null;
   },
@@ -372,7 +372,7 @@ export const ticketService = {
     const response = await apiClient.post(
       API_ENDPOINTS.AI.SUMMARY(id),
       undefined,
-      { timeout: 30000, signal },
+      { timeout: 60000, signal },
     );
     return response?.data?.suggestion ?? response?.suggestion ?? null;
   },
