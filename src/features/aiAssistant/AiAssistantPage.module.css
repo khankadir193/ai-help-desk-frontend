@@ -8,6 +8,9 @@
   flex-direction: column;
   gap: 20px;
   box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  overflow-x: clip;
 }
 
 /* Header */
@@ -65,6 +68,13 @@
 
 .statusError {
   color: #DC2626;
+}
+
+.errorChipIcon {
+  font-size: 10px;
+  line-height: 1;
+  color: #DC2626;
+  display: inline-block;
 }
 
 .statusUnavailable {
@@ -154,29 +164,25 @@
   line-height: 1;
 }
 
-.changeTicketBtn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  height: 36px;
-  padding: 0 12px;
+.changeTicketLink {
+  background: none;
+  border: none;
+  color: #4F46E5;
   font-size: 13px;
   font-weight: 500;
-  color: #4F46E5;
-  background-color: #EEF2FF;
-  border: 1px solid #C7D2FE;
-  border-radius: 8px;
   cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
   transition: all 150ms ease;
-  box-sizing: border-box;
+  white-space: nowrap;
 }
 
-.changeTicketBtn:hover {
-  background-color: #E0E7FF;
-  border-color: #A5B4FC;
+.changeTicketLink:hover {
+  background-color: #EEF2FF;
+  color: #4338CA;
 }
 
-.changeTicketBtn:focus-visible {
+.changeTicketLink:focus-visible {
   outline: 2px solid #4F46E5;
   outline-offset: 2px;
 }
@@ -212,27 +218,39 @@
 /* 3-Column Grid */
 .gridContainer {
   display: grid;
-  grid-template-columns: 1fr 1.4fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) minmax(0, 1fr);
   gap: 20px;
   align-items: start;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .leftColumn {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .middleColumn {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .rightColumn {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 /* Base White Cards */
@@ -245,6 +263,10 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-wrap: anywhere;
 }
 
 .cardHead {
@@ -388,6 +410,10 @@
   display: flex;
   flex-direction: column;
   gap: 14px;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-wrap: anywhere;
 }
 
 .aiCardTitle {
@@ -578,6 +604,18 @@
   display: flex;
   align-items: flex-start;
   gap: 10px;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.errorAlertIcon {
+  font-size: 11px;
+  line-height: 1;
+  color: #DC2626;
+  margin-top: 3px;
+  flex-shrink: 0;
+  display: inline-block;
 }
 
 .errorText {
@@ -755,12 +793,12 @@
 /* 1024px - 1279px: right column drops below middle */
 @media (max-width: 1279px) and (min-width: 768px) {
   .gridContainer {
-    grid-template-columns: 1fr 1.4fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
   }
   .rightColumn {
     grid-column: 1 / -1;
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 20px;
   }
 }
@@ -768,20 +806,22 @@
 /* <768px: single column ordered: ticket bar, AI card, composer, context, insights */
 @media (max-width: 767px) {
   .page {
-    padding: 16px;
+    padding: 16px 12px 24px;
     gap: 16px;
-    overflow-x: hidden;
+    overflow-x: clip;
   }
 
   .gridContainer {
     display: flex;
     flex-direction: column;
     gap: 16px;
-    overflow-x: hidden;
+    width: 100%;
+    min-width: 0;
   }
 
   .ticketBarCard {
     order: 1;
+    padding: 14px 16px;
   }
 
   .middleColumn {
@@ -790,22 +830,37 @@
 
   .aiStateSection {
     order: 2;
+    width: 100%;
+    min-width: 0;
   }
 
   .composerSection {
     order: 3;
+    width: 100%;
+    min-width: 0;
   }
 
   .leftColumn {
     order: 4;
+    width: 100%;
+    min-width: 0;
   }
 
   .continueSection {
     order: 5;
+    width: 100%;
+    min-width: 0;
   }
 
   .rightColumn {
     order: 6;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .card,
+  .aiCard {
+    padding: 16px 14px;
   }
 
   .draftActions,

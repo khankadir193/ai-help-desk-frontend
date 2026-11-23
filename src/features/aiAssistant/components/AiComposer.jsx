@@ -48,7 +48,7 @@ export default function AiComposer({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!canSubmit) return;
+    if (!canSubmit || isSending) return;
 
     const isInternal = activeTab === 'note';
     const success = await onSendReply(composerText.trim(), isInternal, isReviewed);

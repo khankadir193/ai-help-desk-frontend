@@ -56,8 +56,22 @@ export default function App() {
           <Route path="/categories" element={<Navigate to="/knowledge-base/categories" replace />} />
           <Route path="/tickets" element={<TicketsPage />} />
           <Route path="/tickets/:id" element={<TicketDetailPage />} />
-          <Route path="/ai-assistant" element={<AiAssistantPage />} />
-          <Route path="/ai-assistant/:ticketId" element={<AiAssistantPage />} />
+          <Route
+            path="/ai-assistant"
+            element={
+              <RoleGuard feature="ai-assistant">
+                <AiAssistantPage />
+              </RoleGuard>
+            }
+          />
+          <Route
+            path="/ai-assistant/:ticketId"
+            element={
+              <RoleGuard feature="ai-assistant">
+                <AiAssistantPage />
+              </RoleGuard>
+            }
+          />
           <Route path="/knowledge-base" element={<KbOverviewPage />} />
           <Route path="/knowledge-base/articles" element={<KbArticlesPage />} />
           <Route path="/knowledge-base/categories" element={<KbCategoriesPage />} />

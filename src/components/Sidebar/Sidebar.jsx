@@ -4,7 +4,7 @@ import Icon from '../Icon/Icon';
 import Avatar from '../Avatar/Avatar';
 import { navigationSections } from '../../data/navigationData';
 import { useAuth } from '../../features/auth/hooks/useAuth';
-import { canAccess } from '../../lib/accessControl';
+import { canAccess, getRoleLabel } from '../../lib/accessControl';
 import { useClickOutside } from '../../hooks/useClickOutside';
 import './Sidebar.css';
 
@@ -36,7 +36,7 @@ export default function Sidebar({
   };
 
   const displayName = user?.name || 'Support Agent';
-  const displayRole = user?.role || 'AGENT';
+  const displayRole = getRoleLabel(user?.role) || 'Support Agent';
   const displayInitials = user?.initials || 'SA';
 
   return (

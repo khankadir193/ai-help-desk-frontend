@@ -519,7 +519,7 @@ export default function AiAssistantPage() {
           )}
           {currentState === 'error' && (
             <span className={`${styles.statusChip} ${styles.statusError}`}>
-              <Icon name="alert-circle" size={13} strokeWidth={2} />
+              <span className={styles.errorChipIcon} aria-hidden="true">▲</span>
               Generation failed
             </span>
           )}
@@ -546,14 +546,13 @@ export default function AiAssistantPage() {
           <div className={styles.ticketBarRight}>
             <button
               type="button"
-              className={styles.changeTicketBtn}
+              className={styles.changeTicketLink}
               onClick={() => {
                 setSelectedTicketId(null);
                 navigate('/ai-assistant');
               }}
               aria-label="Change ticket"
             >
-              <Icon name="refresh" size={13} />
               Change ticket
             </button>
             <span className={styles.statusPillOpen}>
@@ -654,56 +653,67 @@ export default function AiAssistantPage() {
           <div className={styles.aiStateSection} aria-live="polite">
             {/* STATE 1: READY */}
             {currentState === 'ready' && (
-              <div className={styles.aiCard} aria-label="AI suggestions">
-                {/* AI Summary Part */}
-                <div className={styles.cardHead}>
-                  <h3 className={styles.aiCardTitle}>
-                    AI-generated summary
-                  </h3>
-                  <button
-                    type="button"
-                    className={styles.outlineBtn}
-                    onClick={handleRegenerate}
-                    disabled={isGenerating}
-                  >
-                    <span>{isGenerating ? 'Regenerating...' : 'Regenerate'}</span>
-                  </button>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                {/* Card 1: AI Summary */}
+                <div className={styles.aiCard} aria-label="AI summary">
+                  <div className={styles.cardHead}>
+                    <h3 className={styles.aiCardTitle}>
+                      AI-generated summary
+                    </h3>
+                    <button
+                      type="button"
+                      className={styles.outlineBtn}
+                      onClick={handleRegenerate}
+                      disabled={isGenerating}
+                    >
+                      {isGenerating ? (
+                        <>
+                          <Spinner size="xs" label="" />
+                          <span>Regenerating...</span>
+                        </>
+                      ) : (
+                        <span>Regenerate</span>
+                      )}
+                    </button>
+                  </div>
+                  <p className={styles.messageBody}>
+                    {resolvedSummaryText}
+                  </p>
                 </div>
-                <p className={styles.messageBody}>
-                  {resolvedSummaryText}
-                </p>
 
-                {/* Suggested Reply Part */}
-                <div className={styles.cardHead} style={{ marginTop: 8 }}>
-                  <h3 className={styles.aiCardTitle}>
-                    <Icon name="sparkle" size={15} />
-                    Suggested reply
-                  </h3>
-                  <span className={styles.aiBadge}>AI-generated</span>
-                </div>
+                {/* Card 2: Suggested Reply */}
+                <div className={styles.aiCard} aria-label="Suggested reply">
+                  <div className={styles.cardHead}>
+                    <h3 className={styles.aiCardTitle}>
+                      <Icon name="sparkle" size={15} />
+                      Suggested reply
+                    </h3>
+                    <span className={styles.aiBadge}>AI-generated</span>
+                  </div>
 
-                <div className={styles.draftBox}>{resolvedDraft}</div>
+                  <div className={styles.draftBox}>{resolvedDraft}</div>
 
-                <p className={styles.draftNote}>
-                  AI-generated · Review required · Inserting never sends a reply.
-                </p>
+                  <p className={styles.draftNote}>
+                    AI-generated · Review required · Inserting never sends a reply.
+                  </p>
 
-                <div className={styles.draftActions}>
-                  <button
-                    type="button"
-                    className={styles.solidBtn}
-                    onClick={handleInsertDraft}
-                  >
-                    <span>Insert into reply composer</span>
-                  </button>
-                  <button
-                    type="button"
-                    className={styles.outlineBtn}
-                    onClick={handleCopyDraft}
-                  >
-                    <Icon name={copiedDraft ? 'check' : 'copy'} size={14} />
-                    <span>{copiedDraft ? 'Copied' : 'Copy'}</span>
-                  </button>
+                  <div className={styles.draftActions}>
+                    <button
+                      type="button"
+                      className={styles.solidBtn}
+                      onClick={handleInsertDraft}
+                    >
+                      <span>Insert into reply composer</span>
+                    </button>
+                    <button
+                      type="button"
+                      className={styles.outlineBtn}
+                      onClick={handleCopyDraft}
+                    >
+                      <Icon name={copiedDraft ? 'check' : 'copy'} size={14} />
+                      <span>{copiedDraft ? 'Copied' : 'Copy'}</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             )}
@@ -758,7 +768,7 @@ export default function AiAssistantPage() {
                   </div>
 
                   <div className={styles.errorAlertBox} role="alert">
-                    <Icon name="alert-circle" size={16} style={{ flexShrink: 0, marginTop: 1, color: '#DC2626' }} />
+                    <span className={styles.errorAlertIcon} aria-hidden="true">▲</span>
                     <div className={styles.errorText}>
                       {serverErrorMessage || 'The AI request timed out. No summary or reply was generated.'} Your ticket and reply are unchanged.
                     </div>
