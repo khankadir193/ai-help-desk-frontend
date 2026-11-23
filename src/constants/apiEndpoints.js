@@ -19,6 +19,8 @@ export const API_ENDPOINTS = {
     HISTORY: (id) => `/tickets/${id}/history`,
   },
   AI: {
+    // Mounted under /tickets on the backend: GET /api/v1/tickets/ai/health
+    HEALTH: '/tickets/ai/health',
     // Mounted under /tickets on the backend: POST /api/v1/tickets/:id/ai/classify
     CLASSIFY: (id) => `/tickets/${id}/ai/classify`,
     // Mounted under /tickets on the backend: POST /api/v1/tickets/:id/ai/priority

@@ -181,11 +181,14 @@ export const ticketService = {
    * @param {boolean} [data.is_internal=false] - AGENT/ADMIN only
    * @returns {Promise<Object>} created comment
    */
-  addComment: async (id, { message, is_internal }) => {
+  addComment: async (id, { message, is_internal, human_reviewed }) => {
     const payload = {
       message: (message || '').trim(),
       is_internal: is_internal === true,
     };
+    if (typeof human_reviewed === 'boolean') {
+      payload.human_reviewed = human_reviewed;
+    }
 
     const response = await apiClient.post(API_ENDPOINTS.TICKETS.COMMENTS(id), payload);
     return response?.data?.comment ?? response?.comment ?? response;
@@ -216,11 +219,56 @@ export const ticketService = {
    * @param {string|number} id
    * @returns {Promise<Object>} suggestion object (suggestion_type CLASSIFICATION)
    */
-  classifyTicket: async (id) => {
+  /**
+   * Check AI service availability.
+   * Calls GET /api/v1/tickets/ai/health.
+   *
+   * @returns {Promise<boolean>}
+   */
+  checkAiHealth: async () => {
+    try {
+      const response = await apiClient.get(API_ENDPOINTS.AI.HEALTH, {
+        timeout: 5000,
+        validateStatus: (status) => status < 600,
+      });
+      return response?.data?.available ?? response?.available ?? false;
+    } catch {
+      return false;
+    }
+  },
+
+  /**
+   * Request an AI category suggestion for a ticket.
+   *
+   * Backend contract (ai.routes.js / ai.controller.js — the source of truth):
+   *   POST /api/v1/tickets/:id/ai/classify
+   *   - No request body: ticket content, active categories and the requesting
+   *     user are all resolved server-side.
+   *   - Roles: AGENT (must be the assigned agent) or ADMIN; enforced by the
+   *     backend, ownership is re-scoped in the AI service.
+   *   - 200 { status: "success", data: { suggestion } } where suggestion is
+   *     stored with status PENDING and result:
+   *       { suggestedCategory, suggestedCategoryId, confidence (0-1), reason }
+   *   - Errors are { status: "error", message } (403/404/429/502/503/504…).
+   *   - Advisory only: the suggestion is stored in ai_suggestions as PENDING
+   *     and the ticket is never modified automatically. There is no GET
+   *     endpoint for suggestions (review endpoints are not implemented yet).
+   *
+   * A dedicated 30s timeout is used for this call because the backend's own
+   * AI provider timeout defaults to 15s (GROQ_TIMEOUT_MS); the shared 15s
+   * Axios timeout could otherwise abort the request just as the backend
+   * finishes storing the pending suggestion.
+   *
+   * @param {string|number} id
+   * @param {Object} [options]
+   * @param {AbortSignal} [options.signal]
+   * @returns {Promise<Object>} suggestion object (suggestion_type CLASSIFICATION)
+   */
+  classifyTicket: async (id, { signal } = {}) => {
     const response = await apiClient.post(
       API_ENDPOINTS.AI.CLASSIFY(id),
       undefined,
-      { timeout: 30000 },
+      { timeout: 30000, signal },
     );
     return response?.data?.suggestion ?? response?.suggestion ?? null;
   },
@@ -246,13 +294,15 @@ export const ticketService = {
    * timeout defaults to 15s).
    *
    * @param {string|number} id
+   * @param {Object} [options]
+   * @param {AbortSignal} [options.signal]
    * @returns {Promise<Object>} suggestion object (suggestion_type PRIORITY)
    */
-  suggestTicketPriority: async (id) => {
+  suggestTicketPriority: async (id, { signal } = {}) => {
     const response = await apiClient.post(
       API_ENDPOINTS.AI.PRIORITY(id),
       undefined,
-      { timeout: 30000 },
+      { timeout: 30000, signal },
     );
     return response?.data?.suggestion ?? response?.suggestion ?? null;
   },
@@ -278,13 +328,15 @@ export const ticketService = {
    * timeout defaults to 15s).
    *
    * @param {string|number} id
+   * @param {Object} [options]
+   * @param {AbortSignal} [options.signal]
    * @returns {Promise<Object>} suggestion object (suggestion_type REPLY_DRAFT)
    */
-  generateReplyDraft: async (id) => {
+  generateReplyDraft: async (id, { signal } = {}) => {
     const response = await apiClient.post(
       API_ENDPOINTS.AI.REPLY_DRAFT(id),
       undefined,
-      { timeout: 30000 },
+      { timeout: 30000, signal },
     );
     return response?.data?.suggestion ?? response?.suggestion ?? null;
   },
@@ -312,13 +364,15 @@ export const ticketService = {
    * timeout defaults to 15s).
    *
    * @param {string|number} id
+   * @param {Object} [options]
+   * @param {AbortSignal} [options.signal]
    * @returns {Promise<Object>} suggestion object (suggestion_type SUMMARY)
    */
-  generateSummary: async (id) => {
+  generateSummary: async (id, { signal } = {}) => {
     const response = await apiClient.post(
       API_ENDPOINTS.AI.SUMMARY(id),
       undefined,
-      { timeout: 30000 },
+      { timeout: 30000, signal },
     );
     return response?.data?.suggestion ?? response?.suggestion ?? null;
   },

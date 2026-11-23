@@ -1,0 +1,188 @@
+.composerCard {
+  background: var(--bg-card, #FFFFFF);
+  border: 1px solid var(--border-color, #E2E8F0);
+  border-radius: var(--radius-card, 12px);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-shadow: var(--shadow-card, 0 1px 2px rgba(15, 23, 42, 0.05));
+}
+
+/* Tabs */
+.tabsList {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  border-bottom: 1px solid var(--border-color, #E2E8F0);
+  padding-bottom: 10px;
+}
+
+.tabBtn {
+  background: none;
+  border: none;
+  padding: 4px 2px 8px;
+  font-family: var(--font-family);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--text-muted, #64748B);
+  cursor: pointer;
+  position: relative;
+  transition: color var(--transition-fast, 150ms ease);
+}
+
+.tabBtn:hover {
+  color: var(--text-primary, #0F172A);
+}
+
+.tabBtn:focus-visible {
+  outline: 2px solid var(--color-primary, #4F46E5);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+.activeTab {
+  color: var(--color-primary, #4F46E5);
+  font-weight: 600;
+}
+
+.activeTab::after {
+  content: '';
+  position: absolute;
+  bottom: -11px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: var(--color-primary, #4F46E5);
+  border-radius: 2px;
+}
+
+/* Body */
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.labelRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.fieldLabel {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-secondary, #475569);
+}
+
+.textarea {
+  width: 100%;
+  min-height: 56px;
+  max-height: 280px;
+  padding: 12px 14px;
+  font-family: var(--font-family);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--text-primary, #0F172A);
+  background-color: #FFFFFF;
+  border: 1px solid var(--border-color, #E2E8F0);
+  border-radius: 8px;
+  resize: vertical;
+  transition: border-color var(--transition-fast, 150ms ease), box-shadow var(--transition-fast, 150ms ease);
+  box-sizing: border-box;
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: var(--color-primary, #4F46E5);
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+}
+
+.textarea::placeholder {
+  color: var(--text-subtle, #94A3B8);
+}
+
+/* Recipient and Checkbox */
+.metaRow {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.recipientText {
+  font-size: 0.8125rem;
+  color: var(--text-muted, #64748B);
+}
+
+.checkboxLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8125rem;
+  color: var(--text-secondary, #475569);
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkboxInput {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  border: 1px solid var(--border-color, #CBD5E1);
+  accent-color: var(--color-primary, #4F46E5);
+  cursor: pointer;
+}
+
+.checkboxInput:focus-visible {
+  outline: 2px solid var(--color-primary, #4F46E5);
+  outline-offset: 2px;
+}
+
+/* Footer */
+.composerFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 4px;
+  padding-top: 10px;
+}
+
+.footerStatus {
+  font-size: 0.75rem;
+  color: var(--text-muted, #64748B);
+}
+
+.sendBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 38px;
+  padding: 0 18px;
+  background-color: var(--color-primary, #4F46E5);
+  color: #FFFFFF;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font-family: var(--font-family);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast, 150ms ease);
+}
+
+.sendBtn:hover:not(:disabled) {
+  background-color: var(--color-primary-hover, #4338CA);
+}
+
+.sendBtn:focus-visible {
+  outline: 2px solid var(--color-primary, #4F46E5);
+  outline-offset: 2px;
+}
+
+.sendBtn:disabled {
+  background-color: #F1F5F9;
+  color: #94A3B8;
+  cursor: not-allowed;
+  border-color: transparent;
+}

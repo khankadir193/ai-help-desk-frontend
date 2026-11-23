@@ -142,8 +142,8 @@ export function useAddComment() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, message, isInternal }) =>
-      ticketService.addComment(id, { message, is_internal: isInternal }),
+    mutationFn: ({ id, message, isInternal, human_reviewed }) =>
+      ticketService.addComment(id, { message, is_internal: isInternal, human_reviewed }),
     onSuccess: (data, variables) => {
       if (variables.id) {
         queryClient.invalidateQueries({
@@ -176,7 +176,7 @@ export function useClassifyTicket() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id }) => ticketService.classifyTicket(id),
+    mutationFn: ({ id, signal }) => ticketService.classifyTicket(id, { signal }),
     onSuccess: (suggestion, variables) => {
       if (variables?.id != null) {
         queryClient.setQueryData(AI_CLASSIFICATION_KEY(variables.id), suggestion);
@@ -225,7 +225,7 @@ export function useSuggestTicketPriority() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id }) => ticketService.suggestTicketPriority(id),
+    mutationFn: ({ id, signal }) => ticketService.suggestTicketPriority(id, { signal }),
     onSuccess: (suggestion, variables) => {
       if (variables?.id != null) {
         queryClient.setQueryData(AI_PRIORITY_KEY(variables.id), suggestion);
@@ -272,7 +272,7 @@ export function useGenerateReplyDraft() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id }) => ticketService.generateReplyDraft(id),
+    mutationFn: ({ id, signal }) => ticketService.generateReplyDraft(id, { signal }),
     onSuccess: (suggestion, variables) => {
       if (variables?.id != null) {
         queryClient.setQueryData(AI_REPLY_DRAFT_KEY(variables.id), suggestion);
@@ -320,7 +320,7 @@ export function useGenerateSummary() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id }) => ticketService.generateSummary(id),
+    mutationFn: ({ id, signal }) => ticketService.generateSummary(id, { signal }),
     onSuccess: (suggestion, variables) => {
       if (variables?.id != null) {
         queryClient.setQueryData(AI_SUMMARY_KEY(variables.id), suggestion);
