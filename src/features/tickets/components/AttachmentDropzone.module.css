@@ -1,0 +1,143 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.fieldLabel {
+  font-size: 13px;
+  font-weight: 500;
+  color: #0F172A;
+}
+
+.dropzone {
+  border: 1px dashed #CBD5E1;
+  border-radius: 8px;
+  background: #F8FAFC;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  transition: all 0.15s ease;
+}
+
+.dropzone:hover {
+  background: #F1F5F9;
+  border-color: #94A3B8;
+}
+
+.dropzoneContent {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.paperclipCircle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #E2E8F0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748B;
+}
+
+.textGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mainPrompt {
+  font-size: 13px;
+  font-weight: 500;
+  color: #0F172A;
+}
+
+.subPrompt {
+  font-size: 12px;
+  color: #64748B;
+}
+
+.browseBtn {
+  background: #ffffff;
+  border: 1px solid #CBD5E1;
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #4F46E5;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.browseBtn:hover {
+  background: #EEF2FF;
+  border-color: #C7D2FE;
+}
+
+.hiddenInput {
+  display: none;
+}
+
+.filesList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.fileItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+  padding: 10px 14px;
+}
+
+.fileMeta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.fileIcon {
+  color: #64748B;
+}
+
+.fileText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.fileName {
+  font-size: 13px;
+  font-weight: 500;
+  color: #0F172A;
+}
+
+.fileStatus {
+  font-size: 11px;
+  color: #64748B;
+}
+
+.removeBtn {
+  background: none;
+  border: none;
+  color: #4F46E5;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.removeBtn:hover {
+  text-decoration: underline;
+  color: #DC2626;
+}

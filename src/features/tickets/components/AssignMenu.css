@@ -1,0 +1,93 @@
+.assign-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  min-width: 230px;
+  background-color: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  padding: 6px;
+  z-index: 60;
+}
+
+.assign-menu__header {
+  font-size: 11px;
+  font-weight: 600;
+  color: #94A3B8;
+  letter-spacing: 0.05em;
+  padding: 6px 10px 4px 10px;
+}
+
+.assign-menu__list {
+  max-height: 220px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.assign-menu__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 6px 10px;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #0F172A;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.1s ease;
+}
+
+.assign-menu__item:hover {
+  background-color: #F8FAFC;
+}
+
+.assign-menu__item-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.assign-menu__avatar {
+  width: 24px;
+  height: 24px;
+  font-size: 10px;
+  flex-shrink: 0;
+}
+
+.assign-menu__agent-name {
+  font-weight: 500;
+}
+
+.assign-menu__open-count {
+  font-size: 11px;
+  color: #64748B;
+  font-variant-numeric: tabular-nums;
+}
+
+.assign-menu__divider {
+  height: 1px;
+  background-color: #F1F5F9;
+  margin: 4px 0;
+}
+
+.assign-menu__item--unassign {
+  color: #475569;
+}
+
+.assign-menu__unassign-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px dashed #CBD5E1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #94A3B8;
+  flex-shrink: 0;
+}

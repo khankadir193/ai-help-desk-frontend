@@ -1,0 +1,70 @@
+.tickets-error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 56px 20px;
+  text-align: center;
+}
+
+.tickets-error-state__icon-circle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: #FEF2F2;
+  color: #DC2626;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.tickets-error-state__title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #0F172A;
+  margin: 0 0 6px 0;
+  line-height: 1.4;
+}
+
+.tickets-error-state__desc {
+  font-size: 13px;
+  color: #64748B;
+  margin: 0 0 20px 0;
+  max-width: 400px;
+  line-height: 1.5;
+}
+
+.tickets-error-state__actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.tickets-error-state__btn-retry {
+  height: 38px;
+  padding: 0 18px;
+  background-color: #4F46E5;
+  border: 1px solid #4F46E5;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #FFFFFF;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.tickets-error-state__btn-retry:hover {
+  background-color: #4338CA;
+}
+
+.tickets-error-state__link-support {
+  font-size: 13px;
+  font-weight: 500;
+  color: #4F46E5;
+  text-decoration: none;
+}
+
+.tickets-error-state__link-support:hover {
+  text-decoration: underline;
+}

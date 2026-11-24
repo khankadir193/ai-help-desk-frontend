@@ -1,7 +1,5 @@
-import TicketList from '../components/TicketList';
+import TicketsListPage from './TicketsListPage';
 
 export default function TicketsPage() {
-  return (
-    <TicketList />
-  );
+  return <TicketsListPage />;
 }

@@ -1,29 +1,58 @@
 import Icon from '../Icon/Icon';
 import './StatusPill.css';
 
-export default function StatusPill({ status, label }) {
-  // Backend enums use underscores (IN_PROGRESS); CSS modifier classes use hyphens
-  const normalized = status.toLowerCase().replace(/_/g, '-');
+export default function StatusPill({ status, priority, label, className = '' }) {
+  const value = String(priority || status || '').toLowerCase().replace(/_/g, '-');
+  const displayLabel = label || (
+    value === 'in-progress'
+      ? 'In Progress'
+      : value.charAt(0).toUpperCase() + value.slice(1)
+  );
+
+  const isPriority = Boolean(priority);
 
   return (
-    <span className={`status-pill status-pill--${normalized}`}>
-      {normalized === 'in-progress' && (
-        <Icon name="play" size={8} className="status-pill__icon" />
+    <span
+      className={`status-pill status-pill--${value} ${isPriority ? 'status-pill--priority' : ''} ${className}`.trim()}
+    >
+      {/* Priority icons */}
+      {value === 'urgent' && (
+        <Icon name="alert-triangle" size={11} strokeWidth={2.2} className="status-pill__icon" />
       )}
-      {normalized === 'open' && (
-        <span className="status-pill__dot" aria-hidden="true" />
+      {value === 'high' && (
+        <Icon name="arrow-up" size={11} strokeWidth={2.5} className="status-pill__icon" />
       )}
-      {normalized === 'resolved' && (
+      {value === 'medium' && (
+        <Icon name="minus" size={11} strokeWidth={2.5} className="status-pill__icon" />
+      )}
+      {value === 'low' && (
+        <Icon name="arrow-down" size={11} strokeWidth={2.5} className="status-pill__icon" />
+      )}
+
+      {/* Status icons */}
+      {value === 'open' && (
+        <span className="status-pill__circle-dot" aria-hidden="true" />
+      )}
+      {value === 'in-progress' && (
+        <span className="status-pill__half-dot" aria-hidden="true" />
+      )}
+      {value === 'pending' && (
+        <span className="status-pill__dot status-pill__dot--pending" aria-hidden="true" />
+      )}
+      {value === 'resolved' && (
         <Icon name="check" size={11} strokeWidth={2.5} className="status-pill__icon" />
       )}
-      {normalized === 'active' && (
+      {value === 'closed' && (
+        <span className="status-pill__square" aria-hidden="true" />
+      )}
+      {value === 'active' && (
         <span className="status-pill__dot status-pill__dot--active" aria-hidden="true" />
       )}
-      {normalized === 'inactive' && (
+      {value === 'inactive' && (
         <span className="status-pill__dot status-pill__dot--inactive" aria-hidden="true" />
       )}
-      <span className="status-pill__label">{label || status}</span>
+
+      <span className="status-pill__label">{displayLabel}</span>
     </span>
   );
 }
-

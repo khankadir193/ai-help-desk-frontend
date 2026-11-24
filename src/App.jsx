@@ -5,6 +5,7 @@ import AppLayout from './components/AppLayout/AppLayout';
 import DashboardPage from './features/dashboard/pages/DashboardPage';
 import TicketsPage from './features/tickets/pages/TicketsPage';
 import TicketDetailPage from './features/tickets/pages/TicketDetailPage';
+import TicketFormPage from './features/tickets/pages/TicketFormPage';
 import AiAssistantPage from './features/aiAssistant/AiAssistantPage';
 import KbOverviewPage from './features/knowledge-base/pages/KbOverviewPage';
 import KbArticlesPage from './features/knowledge-base/pages/KbArticlesPage';
@@ -55,6 +56,8 @@ export default function App() {
           <Route path="/" element={<DashboardPage />} />
           <Route path="/categories" element={<Navigate to="/knowledge-base/categories" replace />} />
           <Route path="/tickets" element={<TicketsPage />} />
+          <Route path="/tickets/new" element={<TicketFormPage mode="create" />} />
+          <Route path="/tickets/:id/edit" element={<TicketFormPage mode="edit" />} />
           <Route path="/tickets/:id" element={<TicketDetailPage />} />
           <Route
             path="/ai-assistant"

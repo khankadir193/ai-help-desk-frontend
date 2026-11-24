@@ -1,0 +1,154 @@
+.composerCard {
+  background: #ffffff;
+  border: 1px solid var(--color-border, #E2E8F0);
+  border-radius: 12px;
+  padding: 16px 20px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.tabsRow {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  border-bottom: 1px solid #E2E8F0;
+  margin: -4px 0 2px 0;
+}
+
+.tabBtn {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 8px 2px 10px 2px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #64748B;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.tabBtn:hover {
+  color: #0F172A;
+}
+
+.activeTab {
+  color: #4F46E5;
+  border-bottom-color: #4F46E5;
+  font-weight: 600;
+}
+
+.formContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.labelRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.fieldLabel {
+  font-size: 13px;
+  font-weight: 500;
+  color: #475569;
+}
+
+.textarea {
+  width: 100%;
+  min-height: 90px;
+  border: 1px solid #CBD5E1;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #0F172A;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.textarea:focus {
+  border-color: #4F46E5;
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+}
+
+.internalTextarea {
+  background: #FFFDF5;
+  border-color: #FCD34D;
+}
+
+.contextLine {
+  font-size: 12px;
+  color: #64748B;
+}
+
+.checkboxLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  margin: 4px 0;
+  user-select: none;
+}
+
+.checkboxInput {
+  accent-color: #4F46E5;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.checkboxText {
+  font-size: 13px;
+  color: #1E293B;
+  font-weight: 500;
+}
+
+.errorText {
+  font-size: 12px;
+  color: #DC2626;
+  margin: 0;
+}
+
+.footerRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+
+.statusMuted {
+  font-size: 12px;
+  color: #64748B;
+}
+
+.sendButton {
+  background: #4F46E5;
+  color: #ffffff;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 8px 18px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: background-color 0.15s ease;
+}
+
+.sendButton:hover:not(:disabled) {
+  background: #4338CA;
+}
+
+.sendButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

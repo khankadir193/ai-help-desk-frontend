@@ -1,0 +1,24 @@
+.card {
+  background: #F0F7FF;
+  border: 1px solid #BFDBFE;
+  border-radius: 8px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1E40AF;
+  margin: 0;
+}
+
+.bodyText {
+  font-size: 12px;
+  line-height: 1.5;
+  color: #1E3A8A;
+  margin: 0;
+}

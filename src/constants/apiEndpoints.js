@@ -17,6 +17,12 @@ export const API_ENDPOINTS = {
     ASSIGNMENT: (id) => `/tickets/${id}/assignment`,
     COMMENTS: (id) => `/tickets/${id}/comments`,
     HISTORY: (id) => `/tickets/${id}/history`,
+    EXPORT: '/tickets/export',
+    CUSTOMERS: '/tickets/customers',
+    AGENTS_OPEN: '/tickets/agents',
+    BULK_STATUS: '/tickets/bulk/status',
+    BULK_ASSIGN: '/tickets/bulk/assign',
+    BULK_DELETE: '/tickets/bulk/delete',
   },
   AI: {
     // Mounted under /tickets on the backend: GET /api/v1/tickets/ai/health

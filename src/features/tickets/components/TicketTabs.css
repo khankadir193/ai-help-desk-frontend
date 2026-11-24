@@ -1,0 +1,50 @@
+.ticket-tabs {
+  margin-bottom: 20px;
+  border-bottom: 1px solid #E2E8F0;
+}
+
+.ticket-tabs__list {
+  display: flex;
+  gap: 28px;
+  align-items: center;
+}
+
+.ticket-tabs__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 0 12px 0;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #64748B;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.ticket-tabs__item:hover {
+  color: #0F172A;
+}
+
+.ticket-tabs__item--active {
+  color: #4F46E5;
+  font-weight: 600;
+  border-bottom-color: #4F46E5;
+}
+
+.ticket-tabs__count {
+  font-size: 12px;
+  font-weight: 500;
+  color: #64748B;
+  font-variant-numeric: tabular-nums;
+  margin-left: 2px;
+}
+
+.ticket-tabs__count--active {
+  color: #4F46E5;
+  font-weight: 600;
+}

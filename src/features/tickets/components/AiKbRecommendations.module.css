@@ -1,0 +1,42 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.heading {
+  font-size: 13px;
+  font-weight: 600;
+  color: #4F46E5;
+  margin: 0;
+}
+
+.linksList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.articleLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #4F46E5;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.articleLink:hover {
+  text-decoration: underline;
+  color: #4338CA;
+}
+
+.arrowIcon {
+  font-size: 14px;
+}
+
+.linkText {
+  line-height: 1.4;
+}

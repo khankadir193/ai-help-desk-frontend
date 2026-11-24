@@ -1,0 +1,173 @@
+.ticket-row {
+  height: 44px;
+  border-bottom: 1px solid #F1F5F9;
+  transition: background-color 0.1s ease;
+  user-select: none;
+}
+
+.ticket-row:hover {
+  background-color: #F8FAFC;
+}
+
+.ticket-row--selected {
+  background-color: #EEF2FF !important;
+}
+
+.ticket-row__cell {
+  padding: 8px 12px;
+  vertical-align: middle;
+  font-size: 13px;
+  color: #0F172A;
+}
+
+.ticket-row__cell--checkbox {
+  width: 36px;
+  padding-left: 16px;
+  padding-right: 0;
+  text-align: center;
+}
+
+.ticket-row__checkbox {
+  width: 16px;
+  height: 16px;
+  accent-color: #4F46E5;
+  cursor: pointer;
+  vertical-align: middle;
+}
+
+.ticket-row__cell--id {
+  width: 90px;
+  white-space: nowrap;
+}
+
+.ticket-row__id-text {
+  font-size: 12px;
+  font-weight: 500;
+  color: #64748B;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+.ticket-row__cell--subject {
+  min-width: 180px;
+  max-width: 260px;
+}
+
+.ticket-row__subject-link {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: #0F172A;
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color 0.1s ease;
+}
+
+.ticket-row__subject-link:hover {
+  color: #4F46E5;
+}
+
+.ticket-row__cell--customer {
+  min-width: 120px;
+  white-space: nowrap;
+}
+
+.ticket-row__person {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ticket-row__avatar {
+  width: 24px;
+  height: 24px;
+  font-size: 10px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.ticket-row__avatar--customer {
+  background-color: #E0E7FF;
+  color: #4338CA;
+}
+
+.ticket-row__avatar--agent {
+  background-color: #EDE9FE;
+  color: #6D28D9;
+}
+
+.ticket-row__person-name {
+  font-size: 13px;
+  color: #0F172A;
+  font-weight: 400;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ticket-row__unassigned {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ticket-row__unassigned-circle {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1px dashed #CBD5E1;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.ticket-row__unassigned-text {
+  font-size: 13px;
+  color: #94A3B8;
+}
+
+.ticket-row__cell--priority {
+  width: 95px;
+  white-space: nowrap;
+}
+
+.ticket-row__cell--status {
+  width: 105px;
+  white-space: nowrap;
+}
+
+.ticket-row__cell--agent {
+  min-width: 120px;
+  white-space: nowrap;
+}
+
+.ticket-row__cell--category {
+  width: 100px;
+  white-space: nowrap;
+}
+
+.ticket-row__category-text {
+  font-size: 13px;
+  color: #475569;
+}
+
+.ticket-row__cell--date {
+  width: 80px;
+  white-space: nowrap;
+}
+
+.ticket-row__date-text {
+  font-size: 12px;
+  color: #64748B;
+}
+
+.ticket-row__cell--updated {
+  width: 85px;
+  white-space: nowrap;
+}
+
+.ticket-row__updated-text {
+  font-size: 12px;
+  color: #64748B;
+}

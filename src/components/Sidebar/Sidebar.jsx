@@ -4,6 +4,7 @@ import Icon from '../Icon/Icon';
 import Avatar from '../Avatar/Avatar';
 import { navigationSections } from '../../data/navigationData';
 import { useAuth } from '../../features/auth/hooks/useAuth';
+import { useTickets } from '../../features/tickets/hooks/useTickets';
 import { canAccess, getRoleLabel } from '../../lib/accessControl';
 import { useClickOutside } from '../../hooks/useClickOutside';
 import './Sidebar.css';
@@ -17,6 +18,10 @@ export default function Sidebar({
   const { user, signOut } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef(null);
+
+  // Dynamic ticket count from the API
+  const { data: ticketsData } = useTickets({ limit: 1 }, { enabled: Boolean(user) });
+  const dynamicTicketsCount = ticketsData?.counts?.all ?? ticketsData?.pagination?.total_items;
 
   useClickOutside(menuRef, () => setIsMenuOpen(false));
 
@@ -101,6 +106,8 @@ export default function Sidebar({
                   // visit is still blocked by RoleGuard and shows AccessDenied.
                   const isAccessible = canAccess(user?.role, item.feature);
 
+                  const badgeValue = item.id === 'tickets' ? (dynamicTicketsCount ?? item.badge) : item.badge;
+
                   return (
                     <li key={item.id} className="sidebar__item">
                       {isAccessible ? (
@@ -129,15 +136,15 @@ export default function Sidebar({
                                 <span className="sidebar__link-label">{item.label}</span>
                               )}
 
-                              {!collapsed && item.badge && (
-                                <span className="sidebar__badge">{item.badge}</span>
+                              {!collapsed && Boolean(badgeValue) && (
+                                <span className="sidebar__badge">{badgeValue}</span>
                               )}
 
                               {/* Collapsed Tooltip */}
                               {collapsed && (
                                 <span className="sidebar__tooltip" role="tooltip">
                                   {item.label}
-                                  {item.badge && ` (${item.badge})`}
+                                  {Boolean(badgeValue) && ` (${badgeValue})`}
                                 </span>
                               )}
                             </>
