@@ -10,10 +10,9 @@ export function useTicketPermissions(ticket) {
 
   return useMemo(() => {
     const isAdmin = normalizedRole === 'ADMIN';
-    const isManager = normalizedRole === 'MANAGER';
     const isAgent = normalizedRole === 'AGENT';
     const isCustomer = normalizedRole === 'CUSTOMER';
-    const isStaff = isAdmin || isManager || isAgent;
+    const isStaff = isAdmin || isAgent;
 
     const isClosed = ticket?.status === 'CLOSED';
     const isOpen = ticket?.status === 'OPEN';
@@ -29,7 +28,6 @@ export function useTicketPermissions(ticket) {
       role: normalizedRole,
       isStaff,
       isAdmin,
-      isManager,
       isAgent,
       isCustomer,
 
@@ -42,14 +40,14 @@ export function useTicketPermissions(ticket) {
       // Action permissions
       canReply: isStaff || (isCustomer && isOwner && !isClosed),
       canPostInternalNote: isStaff && !isClosed,
-      canUpdateStatus: (isAdmin || isManager || (isAgent && isAssignee)) && !isClosed,
-      canAssign: isAdmin || isManager || (isAgent && (!ticket?.assigned_agent || isAssignee)),
+      canUpdateStatus: (isAdmin || (isAgent && isAssignee)) && !isClosed,
+      canAssign: isAdmin || (isAgent && (!ticket?.assigned_agent || isAssignee)),
       canAssignAnywhere: isAdmin,
       canDelete: isAdmin,
-      canExport: true,
+      canExport: isStaff,
 
       // Edit permissions
-      canEdit: !isClosed && (isAdmin || isManager || (isAgent && isAssignee) || (isCustomer && isOwner && isOpen)),
+      canEdit: !isClosed && (isAdmin || (isAgent && isAssignee) || (isCustomer && isOwner && isOpen)),
       canEditCustomerFields: !isCustomer,
     };
   }, [normalizedRole, user?.id, ticket]);

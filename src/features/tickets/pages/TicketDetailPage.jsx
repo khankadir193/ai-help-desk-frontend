@@ -85,12 +85,14 @@ export default function TicketDetailPage() {
         </div>
 
         <div className={styles.headerRight}>
-          <Link
-            to={`/tickets/${ticket.id}/edit`}
-            className={styles.editButton}
-          >
-            Edit ticket
-          </Link>
+          {isStaff && (
+            <Link
+              to={`/tickets/${ticket.id}/edit`}
+              className={styles.editButton}
+            >
+              Edit ticket
+            </Link>
+          )}
         </div>
       </div>
 
@@ -125,7 +127,7 @@ export default function TicketDetailPage() {
         {/* Right Column: Customer & Ticket info */}
         <aside className={styles.rightColumn}>
           <CustomerCard ticket={ticket} />
-          <TicketInfoCard ticket={ticket} />
+          <TicketInfoCard ticket={ticket} isStaff={isStaff} />
         </aside>
       </div>
     </div>

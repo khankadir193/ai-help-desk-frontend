@@ -14,6 +14,7 @@ export default function TicketRow({
   ticket,
   isSelected = false,
   onToggleSelect,
+  isStaff = true,
 }) {
   const customerName = ticket.customer?.name || ticket.customer_name || 'Customer';
   const customerInitials = formatInitials(customerName);
@@ -39,22 +40,24 @@ export default function TicketRow({
       className={`ticket-row ${isSelected ? 'ticket-row--selected' : ''}`}
       tabIndex={0}
       onKeyDown={(e) => {
-        if (e.key === ' ' && e.target === e.currentTarget) {
+        if (isStaff && e.key === ' ' && e.target === e.currentTarget) {
           e.preventDefault();
           onToggleSelect(ticket.id);
         }
       }}
     >
-      {/* Selection Checkbox */}
-      <td className="ticket-row__cell ticket-row__cell--checkbox" onClick={(e) => e.stopPropagation()}>
-        <input
-          type="checkbox"
-          checked={isSelected}
-          onChange={() => onToggleSelect(ticket.id)}
-          aria-label={`Select ticket ${formatTicketId(ticket.id)}`}
-          className="ticket-row__checkbox"
-        />
-      </td>
+      {/* Selection Checkbox (Staff only) */}
+      {isStaff && (
+        <td className="ticket-row__cell ticket-row__cell--checkbox" onClick={(e) => e.stopPropagation()}>
+          <input
+            type="checkbox"
+            checked={isSelected}
+            onChange={() => onToggleSelect(ticket.id)}
+            aria-label={`Select ticket ${formatTicketId(ticket.id)}`}
+            className="ticket-row__checkbox"
+          />
+        </td>
+      )}
 
       {/* Ticket ID */}
       <td className="ticket-row__cell ticket-row__cell--id">

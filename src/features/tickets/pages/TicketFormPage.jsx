@@ -1,4 +1,5 @@
 import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../../auth/hooks/useAuth';
 import { useTicket, useCreateTicket, useUpdateTicket } from '../hooks/useTickets';
 import { formatTicketId, formatShortDate } from '../utils/ticketFormatters';
 import TicketForm from '../components/TicketForm';
@@ -9,11 +10,22 @@ import styles from './TicketFormPage.module.css';
 export default function TicketFormPage({ mode = 'create' }) {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { role } = useAuth();
   const isEditMode = mode === 'edit';
 
   const { data: ticket, isLoading, isError, error } = useTicket(isEditMode ? id : null);
   const createMutation = useCreateTicket();
   const updateMutation = useUpdateTicket();
+
+  if (isEditMode && role === 'CUSTOMER') {
+    return (
+      <AccessDenied
+        title="Access restricted"
+        message="You do not have permission to edit this ticket."
+        returnPath="/tickets"
+      />
+    );
+  }
 
   if (isEditMode && isLoading) {
     return (

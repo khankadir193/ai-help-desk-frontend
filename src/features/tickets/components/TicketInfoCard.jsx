@@ -14,7 +14,7 @@ function formatDateTime(dateStr) {
   }
 }
 
-export default function TicketInfoCard({ ticket }) {
+export default function TicketInfoCard({ ticket, isStaff = true }) {
   if (!ticket) return null;
 
   const agentName = ticket.assigned_agent_name || null;
@@ -29,20 +29,22 @@ export default function TicketInfoCard({ ticket }) {
       <h3 className={styles.title}>Ticket information</h3>
 
       <div className={styles.fieldsList}>
-        <div className={styles.fieldItem}>
-          <span className={styles.fieldLabel}>Assigned agent</span>
-          {agentName ? (
-            <div className={styles.agentValue}>
-              <Avatar initials={agentInitials} size="xs" />
-              <span className={styles.agentName}>{agentName}</span>
-            </div>
-          ) : (
-            <div className={styles.unassignedValue}>
-              <span className={styles.unassignedIcon}>○</span>
-              <span>Unassigned</span>
-            </div>
-          )}
-        </div>
+        {isStaff && (
+          <div className={styles.fieldItem}>
+            <span className={styles.fieldLabel}>Assigned agent</span>
+            {agentName ? (
+              <div className={styles.agentValue}>
+                <Avatar initials={agentInitials} size="xs" />
+                <span className={styles.agentName}>{agentName}</span>
+              </div>
+            ) : (
+              <div className={styles.unassignedValue}>
+                <span className={styles.unassignedIcon}>○</span>
+                <span>Unassigned</span>
+              </div>
+            )}
+          </div>
+        )}
 
         <div className={styles.fieldItem}>
           <span className={styles.fieldLabel}>Category</span>
@@ -54,20 +56,22 @@ export default function TicketInfoCard({ ticket }) {
           <span className={styles.fieldValue}>{channel}</span>
         </div>
 
-        <div className={styles.fieldItem}>
-          <span className={styles.fieldLabel}>Tags</span>
-          {tags.length > 0 ? (
-            <div className={styles.tagsContainer}>
-              {tags.map((tag, idx) => (
-                <span key={idx} className={styles.tagChip}>
-                  {tag}
-                </span>
-              ))}
-            </div>
-          ) : (
-            <span className={styles.emptyTags}>None</span>
-          )}
-        </div>
+        {isStaff && (
+          <div className={styles.fieldItem}>
+            <span className={styles.fieldLabel}>Tags</span>
+            {tags.length > 0 ? (
+              <div className={styles.tagsContainer}>
+                {tags.map((tag, idx) => (
+                  <span key={idx} className={styles.tagChip}>
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            ) : (
+              <span className={styles.emptyTags}>None</span>
+            )}
+          </div>
+        )}
 
         <div className={styles.fieldItem}>
           <span className={styles.fieldLabel}>Last updated</span>

@@ -29,7 +29,7 @@ export default function TicketsListPage() {
 
   const isCustomer = role === 'CUSTOMER';
   const isAdmin = role === 'ADMIN';
-  const isStaff = role === 'ADMIN' || role === 'AGENT' || role === 'MANAGER';
+  const isStaff = role === 'ADMIN' || role === 'AGENT';
 
   // Read state from URL search params
   const tab = searchParams.get('tab') || 'all';
@@ -253,7 +253,7 @@ export default function TicketsListPage() {
       {/* Header */}
       <TicketsHeader
         activeTab={tab}
-        canExport={true}
+        canExport={isStaff}
         onExportCsv={handleExportCsv}
         isExporting={isExporting}
       />

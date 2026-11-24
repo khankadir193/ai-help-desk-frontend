@@ -96,16 +96,18 @@ export default function TicketsTable({
         <table className="tickets-table">
           <thead>
             <tr className="tickets-table__head-row">
-              <th scope="col" className="tickets-table__th tickets-table__th--checkbox">
-                <input
-                  ref={selectAllCheckboxRef}
-                  type="checkbox"
-                  checked={isAllSelected}
-                  onChange={onToggleSelectAll}
-                  aria-label="Select all tickets on this page"
-                  className="tickets-table__checkbox"
-                />
-              </th>
+              {isStaff && (
+                <th scope="col" className="tickets-table__th tickets-table__th--checkbox">
+                  <input
+                    ref={selectAllCheckboxRef}
+                    type="checkbox"
+                    checked={isAllSelected}
+                    onChange={onToggleSelectAll}
+                    aria-label="Select all tickets on this page"
+                    className="tickets-table__checkbox"
+                  />
+                </th>
+              )}
               <th scope="col" className="tickets-table__th tickets-table__th--id">
                 ID
               </th>
@@ -146,19 +148,19 @@ export default function TicketsTable({
           <tbody>
             {isLoading ? (
               <tr>
-                <td colSpan={10} className="tickets-table__state-cell">
+                <td colSpan={isStaff ? 10 : 9} className="tickets-table__state-cell">
                   <TicketsSkeleton rowCount={9} />
                 </td>
               </tr>
             ) : isError ? (
               <tr>
-                <td colSpan={10} className="tickets-table__state-cell">
+                <td colSpan={isStaff ? 10 : 9} className="tickets-table__state-cell">
                   <TicketsErrorState onRetry={onRetry} />
                 </td>
               </tr>
             ) : tickets.length === 0 ? (
               <tr>
-                <td colSpan={10} className="tickets-table__state-cell">
+                <td colSpan={isStaff ? 10 : 9} className="tickets-table__state-cell">
                   <TicketsEmptyState
                     isFiltered={isFiltered}
                     onClearFilters={onClearFilters}

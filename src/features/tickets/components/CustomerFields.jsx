@@ -9,6 +9,7 @@ export default function CustomerFields({
   onChange,
   disabled = false,
   isEditMode = false,
+  inputRef = null,
 }) {
   const [searchResults, setSearchResults] = useState([]);
   const [isDismissed, setIsDismissed] = useState(false);
@@ -62,6 +63,7 @@ export default function CustomerFields({
         <div className={styles.inputWrapper}>
           <input
             id="customer-name-input"
+            ref={inputRef}
             type="text"
             className={styles.input}
             value={customerName}
@@ -70,6 +72,9 @@ export default function CustomerFields({
             onChange={(e) =>
               onChange({ customerName: e.target.value, customerEmail, customerId: null })
             }
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') e.preventDefault();
+            }}
             autoComplete="off"
             required
           />
@@ -111,6 +116,9 @@ export default function CustomerFields({
           onChange={(e) =>
             onChange({ customerName, customerEmail: e.target.value })
           }
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') e.preventDefault();
+          }}
           required
         />
         <span className={`${styles.subtext} ${emailValid ? styles.validText : ''}`}>

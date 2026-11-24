@@ -68,7 +68,14 @@ export default function Modal({
 
   if (!isOpen) return null;
 
-  const sizeClass = size === 'sm' ? styles.modalSm : size === 'lg' ? styles.modalLg : '';
+  const sizeClass =
+    size === 'sm'
+      ? styles.modalSm
+      : size === 'lg'
+      ? styles.modalLg
+      : size === 'xl'
+      ? styles.modalXl
+      : '';
 
   const modalContent = (
     <div
@@ -85,6 +92,7 @@ export default function Modal({
         role="dialog"
         aria-modal="true"
         aria-labelledby={title ? 'modal-title' : undefined}
+        aria-describedby={description ? 'modal-description' : undefined}
         ref={modalRef}
         tabIndex={-1}
       >
@@ -95,7 +103,11 @@ export default function Modal({
                 {title}
               </h2>
             )}
-            {description && <p className={styles.description}>{description}</p>}
+            {description && (
+              <p id="modal-description" className={styles.description}>
+                {description}
+              </p>
+            )}
           </div>
           <button
             type="button"

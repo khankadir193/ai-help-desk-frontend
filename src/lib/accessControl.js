@@ -21,8 +21,8 @@ export const FEATURES = {
   // GET /tickets, /tickets/:id — no authorize() call; scoped per role in the service
   tickets: { label: 'tickets', allowedRoles: null },
 
-  // AI Assistant is internal agent/admin/manager tooling; server returns 403 for CUSTOMER
-  'ai-assistant': { label: 'the AI assistant', allowedRoles: ['AGENT', 'ADMIN', 'MANAGER'] },
+  // AI Assistant is internal agent/admin tooling; server returns 403 for CUSTOMER
+  'ai-assistant': { label: 'the AI assistant', allowedRoles: ['AGENT', 'ADMIN'] },
 
   // GET /kb/* — no authorize() call; readable by every authenticated role
   'knowledge-base': { label: 'the knowledge base', allowedRoles: null },
@@ -67,8 +67,6 @@ export function getRoleLabel(role) {
   switch (String(role || '').toUpperCase()) {
     case 'ADMIN':
       return 'Admin';
-    case 'MANAGER':
-      return 'Support Manager';
     case 'AGENT':
       return 'Support Agent';
     case 'CUSTOMER':

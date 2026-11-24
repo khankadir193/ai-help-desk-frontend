@@ -1,6 +1,6 @@
 .row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(220px, 1fr) minmax(220px, 1fr);
   gap: 16px;
   width: 100%;
 }
@@ -10,12 +10,14 @@
   flex-direction: column;
   gap: 6px;
   position: relative;
+  min-width: 0;
 }
 
 .label {
   font-size: 13px;
   font-weight: 500;
   color: #0F172A;
+  white-space: nowrap;
 }
 
 .required {
@@ -25,6 +27,7 @@
 .inputWrapper {
   position: relative;
   width: 100%;
+  min-width: 0;
 }
 
 .input {
@@ -38,6 +41,7 @@
   outline: none;
   background: #ffffff;
   transition: all 0.15s ease;
+  box-sizing: border-box;
 }
 
 .input:focus {
@@ -58,6 +62,8 @@
 .subtext {
   font-size: 12px;
   color: #64748B;
+  overflow-wrap: anywhere;
+  line-height: 1.4;
 }
 
 .validText {

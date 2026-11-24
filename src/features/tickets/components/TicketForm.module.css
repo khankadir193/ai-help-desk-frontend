@@ -3,11 +3,12 @@
   flex-direction: column;
   gap: 20px;
   width: 100%;
+  min-height: 100%;
 }
 
 .gridColumns {
   display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1.9fr) minmax(0, 1fr);
   gap: 20px;
   align-items: start;
 }
@@ -21,6 +22,7 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+  min-width: 0;
 }
 
 .cardTitle {
@@ -36,12 +38,14 @@
   flex-direction: column;
   gap: 6px;
   position: relative;
+  min-width: 0;
 }
 
 .label {
   font-size: 13px;
   font-weight: 500;
   color: #0F172A;
+  white-space: nowrap;
 }
 
 .required {
@@ -59,6 +63,7 @@
   outline: none;
   background: #ffffff;
   transition: all 0.15s ease;
+  box-sizing: border-box;
 }
 
 .input:focus {
@@ -78,7 +83,9 @@
   outline: none;
   background: #ffffff;
   resize: vertical;
+  min-height: 120px;
   transition: all 0.15s ease;
+  box-sizing: border-box;
 }
 
 .textarea:focus {
@@ -89,18 +96,55 @@
 .subtext {
   font-size: 12px;
   color: #64748B;
+  overflow-wrap: anywhere;
+  line-height: 1.4;
 }
 
 .settingsRow {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 12px;
+  min-width: 0;
 }
 
-.selectWrapper {
+.pillSelectWrapper {
   position: relative;
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 40px;
+  background: #ffffff;
+  border: 1px solid #CBD5E1;
+  border-radius: 8px;
+  padding: 0 12px;
+  box-sizing: border-box;
+  transition: all 0.15s ease;
+  min-width: 0;
+}
+
+.pillSelectWrapper:focus-within {
+  border-color: #4F46E5;
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+}
+
+.pillSelectNative {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 2;
+  font-size: 14px;
+}
+
+.pillSelectChevron {
+  color: #64748B;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
 }
 
 .select {
@@ -108,25 +152,26 @@
   height: 40px;
   border: 1px solid #CBD5E1;
   border-radius: 8px;
-  padding: 0 12px;
+  padding: 0 32px 0 12px;
   font-size: 14px;
   color: #0F172A;
   outline: none;
-  background: #ffffff;
+  background-color: #ffffff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
   appearance: none;
   cursor: pointer;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
   transition: all 0.15s ease;
+  box-sizing: border-box;
 }
 
 .select:focus {
   border-color: #4F46E5;
   box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
-}
-
-.pillPreview {
-  position: absolute;
-  right: 12px;
-  pointer-events: none;
 }
 
 .errorBanner {
@@ -140,13 +185,18 @@
 }
 
 .bottomBar {
+  position: sticky;
+  bottom: 0;
+  background: #ffffff;
+  z-index: 10;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding-top: 12px;
+  padding: 16px 0;
   border-top: 1px solid #E2E8F0;
   flex-wrap: wrap;
+  margin-top: auto;
 }
 
 .bottomStatus {
@@ -203,6 +253,12 @@
 
 @media (max-width: 900px) {
   .gridColumns {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .settingsRow {
     grid-template-columns: 1fr;
   }
 }

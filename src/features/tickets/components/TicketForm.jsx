@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { useAuth } from '../../auth/hooks/useAuth';
 import { useCategories, useAgentsWithCounts } from '../hooks/useTickets';
 import CustomerFields from './CustomerFields';
@@ -6,6 +6,7 @@ import AttachmentDropzone from './AttachmentDropzone';
 import TagsInput from './TagsInput';
 import WhatHappensNextCard from './WhatHappensNextCard';
 import StatusPill from '../../../components/StatusPill/StatusPill';
+import Icon from '../../../components/Icon/Icon';
 import Spinner from '../../../components/feedback/Spinner/Spinner';
 import { isValidEmail } from '../utils/ticketValidators';
 import styles from './TicketForm.module.css';
@@ -20,38 +21,60 @@ export default function TicketForm({
   onSubmit,
   onCancel,
   isSubmitting = false,
+  onDirtyChange = null,
 }) {
   const { user, role } = useAuth();
   const isCustomer = role === 'CUSTOMER';
+  const isAgent = role === 'AGENT';
   const isEditMode = mode === 'edit';
+
+  const firstInputRef = useRef(null);
+  const subjectInputRef = useRef(null);
 
   const { data: categories = [] } = useCategories();
   const { data: agents = [] } = useAgentsWithCounts({ enabled: !isCustomer });
 
-  // Form State
-  const [customerName, setCustomerName] = useState(
-    initialData?.customer_name || (isCustomer ? user?.name : '') || ''
-  );
-  const [customerEmail, setCustomerEmail] = useState(
-    initialData?.customer_email || (isCustomer ? user?.email : '') || ''
-  );
-  const [customerId, setCustomerId] = useState(
-    initialData?.customer_id || (isCustomer ? user?.id : null)
-  );
+  // Filter agents for agent role: only Unassigned and Self are permitted
+  const availableAgents = useMemo(() => {
+    if (isCustomer) return [];
+    if (isAgent) {
+      const selfMatch = agents.filter((a) => String(a.id) === String(user?.id));
+      if (selfMatch.length > 0) return selfMatch;
+      if (user?.id) {
+        return [{ id: String(user.id), name: user.name || 'Me', open_tickets_count: 0 }];
+      }
+      return [];
+    }
+    return agents;
+  }, [agents, isAgent, isCustomer, user]);
 
-  const [title, setTitle] = useState(initialData?.title || '');
-  const [description, setDescription] = useState(initialData?.description || '');
-  const [status, setStatus] = useState(initialData?.status || 'OPEN');
-  const [priority, setPriority] = useState(initialData?.priority || 'MEDIUM');
-  const [categoryId, setCategoryId] = useState(
-    initialData?.category_id ? String(initialData.category_id) : ''
-  );
-  const [assignedAgentId, setAssignedAgentId] = useState(
-    initialData?.assigned_agent_id ? String(initialData.assigned_agent_id) : ''
-  );
-  const [source, setSource] = useState(initialData?.source || 'Email');
-  const [tags, setTags] = useState(initialData?.tags || []);
-  const [attachments, setAttachments] = useState(initialData?.attachments || []);
+  // Form State
+  const initialCustomerName = initialData?.customer_name || (isCustomer ? user?.name : '') || '';
+  const initialCustomerEmail = initialData?.customer_email || (isCustomer ? user?.email : '') || '';
+  const initialCustomerId = initialData?.customer_id || (isCustomer ? user?.id : null);
+  const initialTitle = initialData?.title || '';
+  const initialDescription = initialData?.description || '';
+  const initialStatus = initialData?.status || 'OPEN';
+  const initialPriority = initialData?.priority || 'MEDIUM';
+  const initialCategoryId = initialData?.category_id ? String(initialData.category_id) : '';
+  const initialAssignedAgentId = initialData?.assigned_agent_id ? String(initialData.assigned_agent_id) : '';
+  const initialSource = initialData?.source || (isCustomer ? 'Portal' : 'Email');
+  const initialTags = initialData?.tags || [];
+  const initialAttachments = initialData?.attachments || [];
+
+  const [customerName, setCustomerName] = useState(initialCustomerName);
+  const [customerEmail, setCustomerEmail] = useState(initialCustomerEmail);
+  const [customerId, setCustomerId] = useState(initialCustomerId);
+
+  const [title, setTitle] = useState(initialTitle);
+  const [description, setDescription] = useState(initialDescription);
+  const [status, setStatus] = useState(initialStatus);
+  const [priority, setPriority] = useState(initialPriority);
+  const [categoryId, setCategoryId] = useState(initialCategoryId);
+  const [assignedAgentId, setAssignedAgentId] = useState(initialAssignedAgentId);
+  const [source, setSource] = useState(initialSource);
+  const [tags, setTags] = useState(initialTags);
+  const [attachments, setAttachments] = useState(initialAttachments);
   const [errorMessage, setErrorMessage] = useState('');
 
   // Default to first available category if not explicitly chosen
@@ -66,7 +89,71 @@ export default function TicketForm({
 
   const isFormValid = isTitleValid && isDescValid && isEmailValid && isNameValid && isCategoryValid;
 
-  const selectedAgent = agents.find((a) => String(a.id) === String(assignedAgentId));
+  // Calculate missing required fields count
+  let missingCount = 0;
+  if (!isNameValid) missingCount++;
+  if (!isEmailValid) missingCount++;
+  if (!isTitleValid) missingCount++;
+  if (!isDescValid) missingCount++;
+  if (!isCategoryValid) missingCount++;
+
+  // Calculate dirty state
+  const isDirty = useMemo(() => {
+    return (
+      title !== initialTitle ||
+      description !== initialDescription ||
+      customerName !== initialCustomerName ||
+      customerEmail !== initialCustomerEmail ||
+      effectiveCategoryId !== initialCategoryId ||
+      assignedAgentId !== initialAssignedAgentId ||
+      status !== initialStatus ||
+      priority !== initialPriority ||
+      source !== initialSource ||
+      tags.length !== initialTags.length ||
+      attachments.length !== initialAttachments.length
+    );
+  }, [
+    title,
+    initialTitle,
+    description,
+    initialDescription,
+    customerName,
+    initialCustomerName,
+    customerEmail,
+    initialCustomerEmail,
+    effectiveCategoryId,
+    initialCategoryId,
+    assignedAgentId,
+    initialAssignedAgentId,
+    status,
+    initialStatus,
+    priority,
+    initialPriority,
+    source,
+    initialSource,
+    tags.length,
+    initialTags.length,
+    attachments.length,
+    initialAttachments.length,
+  ]);
+
+  useEffect(() => {
+    onDirtyChange?.(isDirty);
+  }, [isDirty, onDirtyChange]);
+
+  // Initial focus on the first relevant input
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (isCustomer) {
+        subjectInputRef.current?.focus();
+      } else {
+        firstInputRef.current?.focus();
+      }
+    }, 60);
+    return () => clearTimeout(timer);
+  }, [isCustomer]);
+
+  const selectedAgent = availableAgents.find((a) => String(a.id) === String(assignedAgentId));
   const assignedAgentName = selectedAgent ? selectedAgent.name : 'Unassigned';
 
   const handleSubmit = async (e) => {
@@ -77,20 +164,27 @@ export default function TicketForm({
     }
     setErrorMessage('');
 
+    // Prepare payload respecting role constraints
     const payload = {
       title: title.trim(),
       description: description.trim(),
-      status,
-      priority,
       category_id: effectiveCategoryId,
-      assigned_agent_id: assignedAgentId ? assignedAgentId : null,
-      source,
-      tags,
       attachments,
       customer_id: customerId || undefined,
       customer_name: customerName.trim(),
       customer_email: customerEmail.trim(),
     };
+
+    if (isCustomer) {
+      // Customer cannot set staff-controlled fields
+      payload.source = 'Portal';
+    } else {
+      payload.status = status;
+      payload.priority = priority;
+      payload.assigned_agent_id = assignedAgentId ? assignedAgentId : null;
+      payload.source = source;
+      payload.tags = tags;
+    }
 
     try {
       await onSubmit(payload);
@@ -111,6 +205,7 @@ export default function TicketForm({
             customerEmail={customerEmail}
             disabled={isCustomer}
             isEditMode={isEditMode}
+            inputRef={firstInputRef}
             onChange={({ customerName: cName, customerEmail: cEmail, customerId: cId }) => {
               setCustomerName(cName);
               setCustomerEmail(cEmail);
@@ -125,16 +220,20 @@ export default function TicketForm({
             </label>
             <input
               id="subject-input"
+              ref={subjectInputRef}
               type="text"
               maxLength={150}
               className={styles.input}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') e.preventDefault();
+              }}
               placeholder="e.g. Unable to download October invoice"
               required
             />
             <span className={styles.subtext}>
-              {isEditMode
+              {title.length > 0
                 ? `Use a clear, specific subject. ${title.length} / 150 characters.`
                 : 'Use a clear, specific subject. Maximum 150 characters.'}
             </span>
@@ -173,55 +272,60 @@ export default function TicketForm({
         <div className={styles.card}>
           <h3 className={styles.cardTitle}>Ticket settings</h3>
 
-          {/* Status & Priority Row */}
-          <div className={styles.settingsRow}>
-            <div className={styles.fieldCol}>
-              <label htmlFor="status-select" className={styles.label}>
-                Status <span className={styles.required}>*</span>
-              </label>
-              <div className={styles.selectWrapper}>
-                <select
-                  id="status-select"
-                  className={styles.select}
-                  value={status}
-                  onChange={(e) => setStatus(e.target.value)}
-                  disabled={isCustomer}
-                >
-                  {STATUS_OPTIONS.map((opt) => (
-                    <option key={opt} value={opt}>
-                      {opt.charAt(0) + opt.slice(1).toLowerCase().replace('_', ' ')}
-                    </option>
-                  ))}
-                </select>
-                <div className={styles.pillPreview}>
+          {/* Status & Priority Row (Staff only) */}
+          {!isCustomer && (
+            <div className={styles.settingsRow}>
+              <div className={styles.fieldCol}>
+                <label htmlFor="status-select" className={styles.label}>
+                  Status <span className={styles.required}>*</span>
+                </label>
+                <div className={styles.pillSelectWrapper}>
                   <StatusPill status={status} />
+                  <span className={styles.pillSelectChevron} aria-hidden="true">
+                    <Icon name="chevron-down" size={16} />
+                  </span>
+                  <select
+                    id="status-select"
+                    className={styles.pillSelectNative}
+                    value={status}
+                    onChange={(e) => setStatus(e.target.value)}
+                    aria-label="Status"
+                  >
+                    {STATUS_OPTIONS.map((opt) => (
+                      <option key={opt} value={opt}>
+                        {opt.charAt(0) + opt.slice(1).toLowerCase().replace('_', ' ')}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
-            </div>
 
-            <div className={styles.fieldCol}>
-              <label htmlFor="priority-select" className={styles.label}>
-                Priority <span className={styles.required}>*</span>
-              </label>
-              <div className={styles.selectWrapper}>
-                <select
-                  id="priority-select"
-                  className={styles.select}
-                  value={priority}
-                  onChange={(e) => setPriority(e.target.value)}
-                >
-                  {PRIORITY_OPTIONS.map((opt) => (
-                    <option key={opt} value={opt}>
-                      {opt.charAt(0) + opt.slice(1).toLowerCase()}
-                    </option>
-                  ))}
-                </select>
-                <div className={styles.pillPreview}>
+              <div className={styles.fieldCol}>
+                <label htmlFor="priority-select" className={styles.label}>
+                  Priority <span className={styles.required}>*</span>
+                </label>
+                <div className={styles.pillSelectWrapper}>
                   <StatusPill priority={priority} />
+                  <span className={styles.pillSelectChevron} aria-hidden="true">
+                    <Icon name="chevron-down" size={16} />
+                  </span>
+                  <select
+                    id="priority-select"
+                    className={styles.pillSelectNative}
+                    value={priority}
+                    onChange={(e) => setPriority(e.target.value)}
+                    aria-label="Priority"
+                  >
+                    {PRIORITY_OPTIONS.map((opt) => (
+                      <option key={opt} value={opt}>
+                        {opt.charAt(0) + opt.slice(1).toLowerCase()}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
             </div>
-          </div>
+          )}
 
           {/* Category */}
           <div className={styles.fieldCol}>
@@ -244,7 +348,7 @@ export default function TicketForm({
             </select>
           </div>
 
-          {/* Assigned Agent */}
+          {/* Assigned Agent (Staff only) */}
           {!isCustomer && (
             <div className={styles.fieldCol}>
               <label htmlFor="agent-select" className={styles.label}>
@@ -257,7 +361,7 @@ export default function TicketForm({
                 onChange={(e) => setAssignedAgentId(e.target.value)}
               >
                 <option value="">Unassigned</option>
-                {agents.map((ag) => (
+                {availableAgents.map((ag) => (
                   <option key={ag.id} value={ag.id}>
                     {ag.name} ({ag.open_tickets_count || 0} open)
                   </option>
@@ -266,32 +370,37 @@ export default function TicketForm({
             </div>
           )}
 
-          {/* Source */}
-          <div className={styles.fieldCol}>
-            <label htmlFor="source-select" className={styles.label}>
-              Source <span className={styles.required}>*</span>
-            </label>
-            <select
-              id="source-select"
-              className={styles.select}
-              value={source}
-              onChange={(e) => setSource(e.target.value)}
-            >
-              {SOURCE_OPTIONS.map((src) => (
-                <option key={src} value={src}>
-                  {src}
-                </option>
-              ))}
-            </select>
-          </div>
+          {/* Source (Staff only) */}
+          {!isCustomer && (
+            <div className={styles.fieldCol}>
+              <label htmlFor="source-select" className={styles.label}>
+                Source <span className={styles.required}>*</span>
+              </label>
+              <select
+                id="source-select"
+                className={styles.select}
+                value={source}
+                onChange={(e) => setSource(e.target.value)}
+              >
+                {SOURCE_OPTIONS.map((src) => (
+                  <option key={src} value={src}>
+                    {src}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
-          {/* Tags */}
-          <TagsInput tags={tags} onChange={(t) => setTags(t)} />
+          {/* Tags (Staff only) */}
+          {!isCustomer && (
+            <TagsInput tags={tags} onChange={(t) => setTags(t)} />
+          )}
 
           {/* What happens next */}
           <WhatHappensNextCard
             isEditMode={isEditMode}
             assignedAgentName={assignedAgentName}
+            isCustomer={isCustomer}
           />
         </div>
       </div>
@@ -305,7 +414,7 @@ export default function TicketForm({
             ? isEditMode
               ? 'All required fields are valid. Changes stay local until saved.'
               : 'All required fields are complete. Ready to create.'
-            : 'Please complete all required fields (*).'}
+            : `${missingCount} required ${missingCount === 1 ? 'field' : 'fields'} missing.`}
         </div>
 
         <div className={styles.bottomActions}>

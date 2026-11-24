@@ -1,6 +1,21 @@
 import styles from './WhatHappensNextCard.module.css';
 
-export default function WhatHappensNextCard({ isEditMode = false, assignedAgentName = '' }) {
+export default function WhatHappensNextCard({
+  isEditMode = false,
+  assignedAgentName = '',
+  isCustomer = false,
+}) {
+  if (isCustomer) {
+    return (
+      <div className={styles.card} aria-label="What happens next info">
+        <h4 className={styles.title}>What happens next</h4>
+        <p className={styles.bodyText}>
+          Your request will be sent to our support team.
+        </p>
+      </div>
+    );
+  }
+
   const agentDisplay = assignedAgentName && assignedAgentName !== 'Unassigned'
     ? assignedAgentName.split(' ')[0]
     : 'support queue';
@@ -18,3 +33,4 @@ export default function WhatHappensNextCard({ isEditMode = false, assignedAgentN
     </div>
   );
 }
+
