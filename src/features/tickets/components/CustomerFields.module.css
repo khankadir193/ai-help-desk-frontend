@@ -125,3 +125,9 @@
     grid-template-columns: 1fr;
   }
 }
+
+.fieldErrorText {
+  font-size: 12px;
+  color: #EF4444;
+  margin-top: 2px;
+}

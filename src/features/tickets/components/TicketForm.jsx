@@ -2,7 +2,6 @@ import { useState, useRef, useEffect, useMemo } from 'react';
 import { useAuth } from '../../auth/hooks/useAuth';
 import { useCategories, useAgentsWithCounts } from '../hooks/useTickets';
 import CustomerFields from './CustomerFields';
-import AttachmentDropzone from './AttachmentDropzone';
 import TagsInput from './TagsInput';
 import WhatHappensNextCard from './WhatHappensNextCard';
 import StatusPill from '../../../components/StatusPill/StatusPill';
@@ -60,7 +59,6 @@ export default function TicketForm({
   const initialAssignedAgentId = initialData?.assigned_agent_id ? String(initialData.assigned_agent_id) : '';
   const initialSource = initialData?.source || (isCustomer ? 'Portal' : 'Email');
   const initialTags = initialData?.tags || [];
-  const initialAttachments = initialData?.attachments || [];
 
   const [customerName, setCustomerName] = useState(initialCustomerName);
   const [customerEmail, setCustomerEmail] = useState(initialCustomerEmail);
@@ -74,8 +72,8 @@ export default function TicketForm({
   const [assignedAgentId, setAssignedAgentId] = useState(initialAssignedAgentId);
   const [source, setSource] = useState(initialSource);
   const [tags, setTags] = useState(initialTags);
-  const [attachments, setAttachments] = useState(initialAttachments);
   const [errorMessage, setErrorMessage] = useState('');
+  const [fieldErrors, setFieldErrors] = useState({});
 
   // Default to first available category if not explicitly chosen
   const effectiveCategoryId = categoryId || (categories.length > 0 ? String(categories[0].id) : '');
@@ -109,8 +107,7 @@ export default function TicketForm({
       status !== initialStatus ||
       priority !== initialPriority ||
       source !== initialSource ||
-      tags.length !== initialTags.length ||
-      attachments.length !== initialAttachments.length
+      tags.length !== initialTags.length
     );
   }, [
     title,
@@ -133,8 +130,6 @@ export default function TicketForm({
     initialSource,
     tags.length,
     initialTags.length,
-    attachments.length,
-    initialAttachments.length,
   ]);
 
   useEffect(() => {
@@ -158,38 +153,63 @@ export default function TicketForm({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isSubmitting) return;
     if (!isFormValid) {
       setErrorMessage('Please complete all required fields.');
       return;
     }
     setErrorMessage('');
+    setFieldErrors({});
 
-    // Prepare payload respecting role constraints
-    const payload = {
-      title: title.trim(),
-      description: description.trim(),
-      category_id: effectiveCategoryId,
-      attachments,
-      customer_id: customerId || undefined,
-      customer_name: customerName.trim(),
-      customer_email: customerEmail.trim(),
-    };
-
+    let payload;
     if (isCustomer) {
-      // Customer cannot set staff-controlled fields
-      payload.source = 'Portal';
+      payload = {
+        title: title.trim(),
+        description: description.trim(),
+        category_id: effectiveCategoryId || null,
+        source: 'Portal',
+      };
     } else {
-      payload.status = status;
-      payload.priority = priority;
-      payload.assigned_agent_id = assignedAgentId ? assignedAgentId : null;
-      payload.source = source;
-      payload.tags = tags;
+      payload = {
+        title: title.trim(),
+        description: description.trim(),
+        category_id: effectiveCategoryId || null,
+        priority,
+        source: source || 'Email',
+      };
+
+      if (customerId) {
+        payload.customer_id = customerId;
+      } else {
+        if (customerName.trim()) payload.customer_name = customerName.trim();
+        if (customerEmail.trim()) payload.customer_email = customerEmail.trim();
+      }
+
+      if (tags && tags.length > 0) {
+        payload.tags = tags;
+      }
     }
 
     try {
-      await onSubmit(payload);
+      await onSubmit(payload, {
+        status,
+        assignedAgentId: assignedAgentId || null,
+      });
     } catch (err) {
-      setErrorMessage(err?.response?.data?.message || err?.message || 'Failed to save ticket.');
+      if (err?.response?.status === 403) {
+        setErrorMessage("You don't have permission to do that");
+      } else if (err?.response?.status === 422 && Array.isArray(err?.response?.data?.errors)) {
+        const errorMap = {};
+        for (const item of err.response.data.errors) {
+          if (item.field) {
+            errorMap[item.field] = item.message;
+          }
+        }
+        setFieldErrors(errorMap);
+        setErrorMessage(err?.response?.data?.message || 'Validation failed. Please correct the highlighted errors.');
+      } else {
+        setErrorMessage(err?.response?.data?.message || err?.message || 'Failed to save ticket.');
+      }
     }
   };
 
@@ -206,6 +226,7 @@ export default function TicketForm({
             disabled={isCustomer}
             isEditMode={isEditMode}
             inputRef={firstInputRef}
+            fieldErrors={fieldErrors}
             onChange={({ customerName: cName, customerEmail: cEmail, customerId: cId }) => {
               setCustomerName(cName);
               setCustomerEmail(cEmail);
@@ -237,6 +258,9 @@ export default function TicketForm({
                 ? `Use a clear, specific subject. ${title.length} / 150 characters.`
                 : 'Use a clear, specific subject. Maximum 150 characters.'}
             </span>
+            {fieldErrors.title && (
+              <span className={styles.fieldErrorText}>{fieldErrors.title}</span>
+            )}
           </div>
 
           {/* Description */}
@@ -258,14 +282,10 @@ export default function TicketForm({
                 ? 'Ticket description only. Existing conversation messages are preserved when you save.'
                 : 'Include what happened and the expected outcome. Do not include passwords or card details.'}
             </span>
+            {fieldErrors.description && (
+              <span className={styles.fieldErrorText}>{fieldErrors.description}</span>
+            )}
           </div>
-
-          {/* Attachments */}
-          <AttachmentDropzone
-            attachments={attachments}
-            isEditMode={isEditMode}
-            onChange={(newAtts) => setAttachments(newAtts)}
-          />
         </div>
 
         {/* Right Column: Ticket Settings */}
@@ -323,6 +343,9 @@ export default function TicketForm({
                     ))}
                   </select>
                 </div>
+                {fieldErrors.priority && (
+                  <span className={styles.fieldErrorText}>{fieldErrors.priority}</span>
+                )}
               </div>
             </div>
           )}
@@ -346,6 +369,9 @@ export default function TicketForm({
                 </option>
               ))}
             </select>
+            {fieldErrors.category_id && (
+              <span className={styles.fieldErrorText}>{fieldErrors.category_id}</span>
+            )}
           </div>
 
           {/* Assigned Agent (Staff only) */}
@@ -388,6 +414,9 @@ export default function TicketForm({
                   </option>
                 ))}
               </select>
+              {fieldErrors.source && (
+                <span className={styles.fieldErrorText}>{fieldErrors.source}</span>
+              )}
             </div>
           )}
 

@@ -1,6 +1,7 @@
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../auth/hooks/useAuth';
 import { useTicket, useCreateTicket, useUpdateTicket } from '../hooks/useTickets';
+import ticketService from '../services/ticketService';
 import { formatTicketId, formatShortDate } from '../utils/ticketFormatters';
 import TicketForm from '../components/TicketForm';
 import Spinner from '../../../components/feedback/Spinner/Spinner';
@@ -57,13 +58,33 @@ export default function TicketFormPage({ mode = 'create' }) {
   const ticketCode = ticket ? formatTicketId(ticket.id) : '';
   const createdDate = ticket ? formatShortDate(ticket.created_at) : '';
 
-  const handleSubmit = async (formData) => {
+  const handleSubmit = async (formData, meta = {}) => {
     if (isEditMode) {
-      await updateMutation.mutateAsync({ id, data: formData });
+      const updatePayload = {
+        title: formData.title,
+        description: formData.description,
+        category_id: formData.category_id,
+        priority: formData.priority,
+      };
+      await updateMutation.mutateAsync({ id, data: updatePayload });
+
+      if (meta.status && meta.status !== ticket?.status) {
+        await ticketService.updateTicketStatus(id, meta.status);
+      }
+      if (meta.assignedAgentId !== undefined && meta.assignedAgentId !== (ticket?.assigned_agent_id ?? null)) {
+        await ticketService.updateTicketAssignment(id, meta.assignedAgentId);
+      }
       navigate(`/tickets/${id}`);
     } else {
       const created = await createMutation.mutateAsync(formData);
-      const newId = created?.id || created?.data?.id;
+      const newId = created?.id || created?.data?.id || created?.data?.ticket?.id;
+      if (newId && meta.assignedAgentId) {
+        try {
+          await ticketService.updateTicketAssignment(newId, meta.assignedAgentId);
+        } catch (err) {
+          console.error('Failed to assign agent on creation:', err);
+        }
+      }
       if (newId) {
         navigate(`/tickets/${newId}`);
       } else {

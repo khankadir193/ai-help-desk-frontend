@@ -10,6 +10,7 @@ export default function CustomerFields({
   disabled = false,
   isEditMode = false,
   inputRef = null,
+  fieldErrors = {},
 }) {
   const [searchResults, setSearchResults] = useState([]);
   const [isDismissed, setIsDismissed] = useState(false);
@@ -99,6 +100,12 @@ export default function CustomerFields({
             ? `Customer: ${customerName} · Existing customer`
             : 'Search customers or enter a new name.'}
         </span>
+        {fieldErrors.customer_name && (
+          <span className={styles.fieldErrorText}>{fieldErrors.customer_name}</span>
+        )}
+        {fieldErrors.customer_id && (
+          <span className={styles.fieldErrorText}>{fieldErrors.customer_id}</span>
+        )}
       </div>
 
       {/* Customer Email */}
@@ -124,6 +131,9 @@ export default function CustomerFields({
         <span className={`${styles.subtext} ${emailValid ? styles.validText : ''}`}>
           {emailValid ? '✓ Valid email address' : 'Used for ticket updates and replies.'}
         </span>
+        {fieldErrors.customer_email && (
+          <span className={styles.fieldErrorText}>{fieldErrors.customer_email}</span>
+        )}
       </div>
     </div>
   );
