@@ -404,14 +404,62 @@ body:has(.layoutContainer),
 
 .formTopBar {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
+  gap: var(--space-3);
   margin-bottom: clamp(var(--space-2), 1.5vh, var(--space-4));
   width: 100%;
   flex-shrink: 0;
 }
 
-.backLink {
+.demoTopContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
+  width: 100%;
+  max-width: 440px;
+}
+
+.demoDisclosureBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--color-text-secondary);
+  background: transparent;
+  border: 1px solid transparent;
+  padding: 4px 8px;
+  margin-left: -8px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: color var(--transition-fast), background var(--transition-fast), border-color var(--transition-fast);
+  line-height: var(--line-height-normal);
+}
+
+.demoDisclosureBtn:hover {
+  color: var(--color-primary);
+  background: var(--color-primary-50);
+  border-color: var(--color-primary-100);
+}
+
+.demoDisclosureBtn:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+}
+
+.demoChevron {
+  width: 14px;
+  height: 14px;
+  transition: transform var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.demoChevronOpen {
+  transform: rotate(180deg);
+}
+
+.demoTopLink {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
@@ -419,11 +467,40 @@ body:has(.layoutContainer),
   font-weight: var(--font-medium);
   color: var(--color-text-secondary);
   text-decoration: none;
-  transition: color var(--transition-fast);
+  padding: 4px 8px;
+  margin-left: -8px;
+  border-radius: var(--radius-md);
+  transition: color var(--transition-fast), background var(--transition-fast);
+  line-height: var(--line-height-normal);
 }
 
-.backLink:hover {
+.demoTopLink:hover {
   color: var(--color-primary);
+  background: var(--color-primary-50);
+}
+
+.demoTopLink:hover .demoTopArrow {
+  transform: translateX(3px);
+}
+
+.demoTopArrow {
+  transition: transform var(--transition-fast);
+}
+
+.demoPanelInline {
+  width: 100%;
+  animation: demoFadeIn 150ms ease-out;
+}
+
+@keyframes demoFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .mobileBrand {

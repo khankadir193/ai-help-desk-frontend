@@ -1,8 +1,30 @@
-import { Outlet, Link } from 'react-router-dom';
+import { useState } from 'react';
+import { Outlet, Link, useLocation } from 'react-router-dom';
 import { ROUTES } from '../../constants/routes';
+import { isDemoAccountsEnabled } from '../../data/demoAccounts';
+import DemoAccountsPanel from '../../features/auth/components/DemoAccountsPanel';
 import styles from './AuthLayout.module.css';
 
 export default function AuthLayout() {
+  const location = useLocation();
+  const [isDemoOpen, setIsDemoOpen] = useState(false);
+
+  const isSignIn = location.pathname === ROUTES.LOGIN;
+  const isSignUp = location.pathname === ROUTES.REGISTER;
+  const showDemo = isDemoAccountsEnabled();
+
+  const handleSelectDemoAccount = (account) => {
+    window.dispatchEvent(
+      new CustomEvent('helpdesk:demo-select', {
+        detail: {
+          email: account.email,
+          password: account.password,
+          role: account.role,
+        },
+      })
+    );
+  };
+
   return (
     <div className={styles.layoutContainer}>
       {/* Visual / Feature Showcase Panel (Visible on Desktop / Laptop >= 1024px) */}
@@ -99,13 +121,43 @@ export default function AuthLayout() {
       {/* Form Section */}
       <main className={styles.formSection}>
         <div className={styles.formTopBar}>
-          <Link to={ROUTES.HOME} className={styles.backLink}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="19" y1="12" x2="5" y2="12" />
-              <polyline points="12 19 5 12 12 5" />
-            </svg>
-            <span>Back to Home</span>
-          </Link>
+          {isSignIn && showDemo ? (
+            <div className={styles.demoTopContainer}>
+              <button
+                type="button"
+                className={styles.demoDisclosureBtn}
+                aria-expanded={isDemoOpen}
+                aria-controls="demo-accounts-panel"
+                onClick={() => setIsDemoOpen((prev) => !prev)}
+              >
+                <span>Recruiters: try a demo account</span>
+                <svg
+                  className={`${styles.demoChevron} ${isDemoOpen ? styles.demoChevronOpen : ''}`}
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </button>
+              {isDemoOpen && (
+                <div className={styles.demoPanelInline}>
+                  <DemoAccountsPanel onSelectAccount={handleSelectDemoAccount} />
+                </div>
+              )}
+            </div>
+          ) : isSignUp && showDemo ? (
+            <Link to={ROUTES.LOGIN} className={styles.demoTopLink}>
+              <span>Use a demo account instead</span>
+              <span className={styles.demoTopArrow} aria-hidden="true">&rarr;</span>
+            </Link>
+          ) : (
+            <div />
+          )}
 
           {/* Mobile / Tablet Brand Logo */}
           <Link to={ROUTES.HOME} className={styles.mobileBrand}>

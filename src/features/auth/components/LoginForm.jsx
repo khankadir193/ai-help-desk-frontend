@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { validateLoginForm } from '../authValidation';
@@ -24,6 +24,28 @@ export default function LoginForm({ onSuccess }) {
 
   const [validationErrors, setValidationErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(() => {
+    const handleDemoSelect = (e) => {
+      const { email, password } = e.detail || {};
+      if (email && password) {
+        setFormData({ email, password });
+        setValidationErrors({});
+        setLoginError(null);
+        setSuccessMessage(null);
+
+        const submitBtn = document.getElementById('login-submit-btn');
+        if (submitBtn) {
+          submitBtn.focus();
+        }
+      }
+    };
+
+    window.addEventListener('helpdesk:demo-select', handleDemoSelect);
+    return () => {
+      window.removeEventListener('helpdesk:demo-select', handleDemoSelect);
+    };
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -163,6 +185,7 @@ export default function LoginForm({ onSuccess }) {
         </div>
 
         <Button
+          id="login-submit-btn"
           type="submit"
           variant="primary"
           size="md"
