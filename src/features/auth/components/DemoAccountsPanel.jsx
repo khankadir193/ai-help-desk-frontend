@@ -19,7 +19,7 @@ export default function DemoAccountsPanel({ onSelectAccount, id = 'demo-accounts
         setCopiedKey((prev) => (prev === key ? null : prev));
       }, 1500);
     } catch {
-      // Fallback if clipboard API is not available
+      // Graceful fallback if clipboard API is not available
     }
   };
 
@@ -47,13 +47,16 @@ export default function DemoAccountsPanel({ onSelectAccount, id = 'demo-accounts
   };
 
   return (
-    <div id={id} className={styles.panelCard} role="region" aria-label="Demo accounts for testing">
+    <div
+      id={id}
+      className={styles.panelCard}
+      role="dialog"
+      aria-modal="false"
+      aria-label="Demo accounts"
+    >
       <div className={styles.header}>
-        <div className={styles.titleRow}>
-          <span className={styles.titleBadge}>Preview</span>
-          <h2 className={styles.title}>Try a demo account</h2>
-        </div>
-        <p className={styles.subtitle}>Click a role to fill the credentials.</p>
+        <h2 className={styles.title}>Demo accounts</h2>
+        <p className={styles.subtitle}>Choose a role to fill the sign-in form.</p>
       </div>
 
       <div className={styles.rowsContainer}>

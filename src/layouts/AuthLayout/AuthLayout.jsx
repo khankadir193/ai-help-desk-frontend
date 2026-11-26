@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { ROUTES } from '../../constants/routes';
+import { useClickOutside } from '../../hooks/useClickOutside';
 import { isDemoAccountsEnabled } from '../../data/demoAccounts';
 import DemoAccountsPanel from '../../features/auth/components/DemoAccountsPanel';
 import styles from './AuthLayout.module.css';
@@ -8,12 +9,38 @@ import styles from './AuthLayout.module.css';
 export default function AuthLayout() {
   const location = useLocation();
   const [isDemoOpen, setIsDemoOpen] = useState(false);
+  const demoContainerRef = useRef(null);
+  const toggleBtnRef = useRef(null);
 
   const isSignIn = location.pathname === ROUTES.LOGIN;
   const isSignUp = location.pathname === ROUTES.REGISTER;
   const showDemo = isDemoAccountsEnabled();
 
-  const handleSelectDemoAccount = (account) => {
+  const closeDemo = useCallback(() => {
+    setIsDemoOpen(false);
+  }, []);
+
+  useClickOutside(demoContainerRef, closeDemo);
+
+  useEffect(() => {
+    if (!isDemoOpen) return;
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setIsDemoOpen(false);
+        toggleBtnRef.current?.focus();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isDemoOpen]);
+
+
+  const handleSelectDemoAccount = useCallback((account) => {
+    setIsDemoOpen(false);
     window.dispatchEvent(
       new CustomEvent('helpdesk:demo-select', {
         detail: {
@@ -23,7 +50,7 @@ export default function AuthLayout() {
         },
       })
     );
-  };
+  }, []);
 
   return (
     <div className={styles.layoutContainer}>
@@ -122,15 +149,16 @@ export default function AuthLayout() {
       <main className={styles.formSection}>
         <div className={styles.formTopBar}>
           {isSignIn && showDemo ? (
-            <div className={styles.demoTopContainer}>
+            <div ref={demoContainerRef} className={styles.demoTopContainer}>
               <button
+                ref={toggleBtnRef}
                 type="button"
                 className={styles.demoDisclosureBtn}
                 aria-expanded={isDemoOpen}
                 aria-controls="demo-accounts-panel"
                 onClick={() => setIsDemoOpen((prev) => !prev)}
               >
-                <span>Recruiters: try a demo account</span>
+                <span>Explore with a demo account</span>
                 <svg
                   className={`${styles.demoChevron} ${isDemoOpen ? styles.demoChevronOpen : ''}`}
                   viewBox="0 0 24 24"
@@ -145,9 +173,7 @@ export default function AuthLayout() {
                 </svg>
               </button>
               {isDemoOpen && (
-                <div className={styles.demoPanelInline}>
-                  <DemoAccountsPanel onSelectAccount={handleSelectDemoAccount} />
-                </div>
+                <DemoAccountsPanel onSelectAccount={handleSelectDemoAccount} />
               )}
             </div>
           ) : isSignUp && showDemo ? (

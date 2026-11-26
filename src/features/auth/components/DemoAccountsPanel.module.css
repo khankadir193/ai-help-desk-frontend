@@ -1,35 +1,48 @@
 .panelCard {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 50;
   background: var(--color-bg-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   padding: clamp(10px, 1.4vh, 14px) clamp(12px, 1.8vw, 16px);
   box-sizing: border-box;
-  width: 100%;
-  max-width: 440px;
-  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+  width: min(440px, calc(100vw - 32px));
+  max-height: calc(100dvh - 96px);
+  overflow-y: auto;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12);
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border-strong) transparent;
+  animation: demoFadeIn 150ms ease-out;
+}
+
+.panelCard::-webkit-scrollbar {
+  width: 6px;
+}
+
+.panelCard::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.panelCard::-webkit-scrollbar-thumb {
+  background-color: var(--color-border-strong);
+  border-radius: var(--radius-full);
+}
+
+@keyframes demoFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .header {
   margin-bottom: clamp(6px, 1vh, 8px);
-}
-
-.titleRow {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-}
-
-.titleBadge {
-  font-size: 10px;
-  font-weight: var(--font-semibold);
-  color: var(--color-primary);
-  background: var(--color-primary-50);
-  border: 1px solid var(--color-primary-100);
-  padding: 1px 6px;
-  border-radius: var(--radius-full);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  line-height: 1.3;
 }
 
 .title {
@@ -256,7 +269,26 @@
 }
 
 @media (max-width: 480px) {
+  .panelCard {
+    width: calc(100vw - 32px);
+  }
+
+  .accountRow {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+  }
+
+  .rowAction {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .useButton {
+    width: 100%;
+  }
+
   .credValue {
-    max-width: 100px;
+    max-width: 110px;
   }
 }

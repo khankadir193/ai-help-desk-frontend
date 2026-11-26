@@ -1,5 +1,5 @@
 /**
- * Demo accounts for recruiter testing and visitor preview.
+ * Demo accounts for visitor testing and evaluation.
  * Display and auto-fill only; never hardcoded into auth logic.
  */
 
