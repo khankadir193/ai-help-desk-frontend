@@ -20,8 +20,8 @@ import './InviteMemberPage.css';
 export default function InviteMemberPage() {
   const { setHeaderProps } = useOutletContext();
   const navigate = useNavigate();
-  const { role: userRole } = useAuth();
-  const isAuthorized = canInvite(userRole);
+  const { role: userRole, user } = useAuth();
+  const isAuthorized = canInvite(user || userRole);
 
   // Fetch invite options from API
   const { data: inviteOptionsData } = useQuery({
@@ -186,7 +186,7 @@ export default function InviteMemberPage() {
   // shared "No access" screen (no API calls were made — both data queries
   // above are gated on isAuthorized). Admins keep the full form.
   if (!isAuthorized) {
-    const canViewTeam = canAccess(userRole, 'team');
+    const canViewTeam = canAccess(user || userRole, 'team');
     return (
       <AccessDenied
         featureName="member invitations"

@@ -1,5 +1,6 @@
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../auth/hooks/useAuth';
+import { canCreateTickets } from '../../../lib/accessControl';
 import { useTicket, useCreateTicket, useUpdateTicket } from '../hooks/useTickets';
 import ticketService from '../services/ticketService';
 import { formatTicketId, formatShortDate } from '../utils/ticketFormatters';
@@ -11,12 +12,22 @@ import styles from './TicketFormPage.module.css';
 export default function TicketFormPage({ mode = 'create' }) {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { role } = useAuth();
+  const { role, user } = useAuth();
   const isEditMode = mode === 'edit';
 
   const { data: ticket, isLoading, isError, error } = useTicket(isEditMode ? id : null);
   const createMutation = useCreateTicket();
   const updateMutation = useUpdateTicket();
+
+  if (!isEditMode && !canCreateTickets(user)) {
+    return (
+      <AccessDenied
+        featureName="ticket creation"
+        role={role}
+        returnPath="/tickets"
+      />
+    );
+  }
 
   if (isEditMode && role === 'CUSTOMER') {
     return (

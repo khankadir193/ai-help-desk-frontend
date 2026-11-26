@@ -18,6 +18,7 @@ import {
 import { ticketService } from '../tickets/services/ticketService';
 import { kbService } from '../knowledge-base/services/kbService';
 import { useAuth } from '../auth/hooks/useAuth';
+import { hasPermission } from '../../lib/accessControl';
 import Icon from '../../components/Icon/Icon';
 import Spinner from '../../components/feedback/Spinner/Spinner';
 import AccessDenied from '../../components/AccessDenied/AccessDenied';
@@ -79,8 +80,9 @@ export default function AiAssistantPage() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { role } = useAuth();
+  const { role, user } = useAuth();
   const isStaff = role === 'AGENT' || role === 'ADMIN';
+  const canViewInternalNotes = (role === 'ADMIN' || hasPermission(user, 'internal_notes')) && role !== 'CUSTOMER';
 
   // URL state override for inspection/testing (?state=ready|loading|error|unavailable)
   const forcedState = searchParams.get('state');
@@ -633,17 +635,19 @@ export default function AiAssistantPage() {
               </div>
 
               {/* Card 3: Latest Internal Note */}
-              <div className={styles.card} aria-label="Latest internal note">
-                <div className={styles.cardHead}>
-                  <h3 className={styles.cardTitle}>Latest internal note</h3>
-                </div>
-                <div>
-                  <div className={styles.ticketBarMeta} style={{ marginBottom: 6 }}>
-                    {latestInternalNote.author?.name || agentName} · {formatTime(latestInternalNote.created_at)} · Private
+              {canViewInternalNotes && (
+                <div className={styles.card} aria-label="Latest internal note">
+                  <div className={styles.cardHead}>
+                    <h3 className={styles.cardTitle}>Latest internal note</h3>
                   </div>
-                  <p className={styles.messageBody}>{latestInternalNote.message}</p>
+                  <div>
+                    <div className={styles.ticketBarMeta} style={{ marginBottom: 6 }}>
+                      {latestInternalNote.author?.name || agentName} · {formatTime(latestInternalNote.created_at)} · Private
+                    </div>
+                    <p className={styles.messageBody}>{latestInternalNote.message}</p>
+                  </div>
                 </div>
-              </div>
+              )}
             </>
           )}
         </div>

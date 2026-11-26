@@ -16,8 +16,8 @@ export default function TeamMembersPage() {
   const { setHeaderProps } = useOutletContext();
   const navigate = useNavigate();
   const location = useLocation();
-  const { role: userRole } = useAuth();
-  const isAuthorizedToInvite = canInvite(userRole);
+  const { role: userRole, user } = useAuth();
+  const isAuthorizedToInvite = canInvite(user || userRole);
 
   const {
     members,

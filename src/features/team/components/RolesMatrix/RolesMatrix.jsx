@@ -73,7 +73,11 @@ export default function RolesMatrix({
                     backend rejects changes and admins must never be able to
                     strip their own essential privileges. */}
                 {roles.map((role) => (
-                  <td key={role.id} className="roles-td roles-td--role">
+                  <td
+                    key={role.id}
+                    className={`roles-td roles-td--role ${role.id === 'ADMIN' ? 'roles-td--admin-locked' : ''}`}
+                    title={role.id === 'ADMIN' ? 'Admin permissions are locked to prevent workspace lockout' : undefined}
+                  >
                     <PermissionCell
                       permId={perm.id}
                       roleId={role.id}

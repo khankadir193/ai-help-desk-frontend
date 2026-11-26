@@ -17,11 +17,11 @@ import './KbArticleDetailPage.css';
 export default function KbArticleDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { role } = useAuth();
+  const { role, user } = useAuth();
   // Editing is AGENT/ADMIN only (backend authorize("ADMIN", "AGENT")) — the
   // route itself is guarded; the button is disabled with a tooltip so the
   // control is never a surprise.
-  const canEditArticle = canAccess(role, 'kb-editor');
+  const canEditArticle = canAccess(user || role, 'kb-editor');
   const [copySuccess, setCopySuccess] = useState(false);
 
   const {

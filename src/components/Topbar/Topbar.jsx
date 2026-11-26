@@ -4,6 +4,7 @@ import Avatar from '../Avatar/Avatar';
 import NotificationsPanel from '../NotificationsPanel/NotificationsPanel';
 import CreateTicketModal from '../../features/tickets/components/CreateTicketModal';
 import { useAuth } from '../../features/auth/hooks/useAuth';
+import { canCreateTickets } from '../../lib/accessControl';
 import { useClickOutside } from '../../hooks/useClickOutside';
 import './Topbar.css';
 
@@ -24,6 +25,7 @@ export default function Topbar({
   isMarkingAllRead = false,
 }) {
   const { user, signOut } = useAuth();
+  const canCreate = canCreateTickets(user);
   const searchInputRef = useRef(null);
   const userMenuRef = useRef(null);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
@@ -106,14 +108,16 @@ export default function Topbar({
 
       {/* Right Controls */}
       <div className="topbar__right">
-        <button
-          type="button"
-          className="topbar__btn-new-ticket"
-          onClick={() => setIsCreateTicketOpen(true)}
-          aria-label="Create new ticket"
-        >
-          <span className="topbar__btn-new-ticket-label">New ticket</span>
-        </button>
+        {canCreate && (
+          <button
+            type="button"
+            className="topbar__btn-new-ticket"
+            onClick={() => setIsCreateTicketOpen(true)}
+            aria-label="Create new ticket"
+          >
+            <span className="topbar__btn-new-ticket-label">New ticket</span>
+          </button>
+        )}
 
         {/* Notifications Trigger & Dropdown */}
         <div className="topbar__notif-wrapper">

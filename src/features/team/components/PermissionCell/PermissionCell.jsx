@@ -67,7 +67,10 @@ export default function PermissionCell({
 
   // Read-only display matching reference design
   return (
-    <div className={`perm-cell perm-cell--${type}`}>
+    <div
+      className={`perm-cell perm-cell--${type}${roleId === 'ADMIN' ? ' perm-cell--admin-locked' : ''}`}
+      title={roleId === 'ADMIN' ? 'Admin permissions are locked to prevent workspace lockout' : undefined}
+    >
       {type === 'allowed' && (
         <span className="perm-cell__badge perm-cell__badge--allowed">
           ✓ Allowed

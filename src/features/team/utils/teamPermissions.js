@@ -3,21 +3,34 @@
  */
 
 /**
- * Check if the user role can invite new workspace members.
- * Only Admins can invite; Support Agents and Customers cannot.
+ * Check if the user or role can invite new workspace members.
+ * Reads live permissions from user object if available.
  */
-export function canInvite(role) {
-  const normalized = String(role || '').toUpperCase();
-  return normalized === 'ADMIN';
+export function canInvite(userOrRole) {
+  if (!userOrRole) return false;
+  if (typeof userOrRole === 'string') {
+    return userOrRole.toUpperCase() === 'ADMIN';
+  }
+  const role = String(userOrRole.role || '').toUpperCase();
+  if (role === 'ADMIN') return true;
+  return userOrRole.permissions?.invite_members === 'Allowed';
 }
 
 /**
- * Check if the user role can edit permissions.
- * Only Admins can edit permissions.
+ * Check if the user or role can edit permissions matrix.
+ * Reads live permissions from user object if available.
  */
-export function canEditRoles(role) {
-  const normalized = String(role || '').toUpperCase();
-  return normalized === 'ADMIN';
+export function canEditRoles(userOrRole) {
+  if (!userOrRole) return false;
+  if (typeof userOrRole === 'string') {
+    return userOrRole.toUpperCase() === 'ADMIN';
+  }
+  const role = String(userOrRole.role || '').toUpperCase();
+  if (role === 'ADMIN') return true;
+  return (
+    userOrRole.permissions?.edit_roles_permissions === 'Allowed' ||
+    userOrRole.permission_scopes?.edit_roles_permissions === 'EDIT'
+  );
 }
 
 /**

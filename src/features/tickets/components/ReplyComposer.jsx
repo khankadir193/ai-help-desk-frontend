@@ -1,14 +1,18 @@
 import { useState, useRef, useEffect } from 'react';
 import { useAddComment } from '../hooks/useTickets';
 import { useAuth } from '../../auth/hooks/useAuth';
+import { useTicketPermissions } from '../hooks/useTicketPermissions';
 import Spinner from '../../../components/feedback/Spinner/Spinner';
 import styles from './ReplyComposer.module.css';
 
 export default function ReplyComposer({ ticket, draftText = '', onDraftCleared }) {
   const { role } = useAuth();
+  const permissions = useTicketPermissions(ticket);
+  const canReply = permissions.canReply;
+  const canPostInternalNote = permissions.canPostInternalNote;
   const isStaff = role === 'AGENT' || role === 'ADMIN';
 
-  const [activeTab, setActiveTab] = useState('reply'); // 'reply' | 'internal'
+  const [activeTab, setActiveTab] = useState(canReply ? 'reply' : canPostInternalNote ? 'internal' : 'reply'); // 'reply' | 'internal'
   const [message, setMessage] = useState('');
   const [hasDraftLoaded, setHasDraftLoaded] = useState(false);
   const [reviewedDraft, setReviewedDraft] = useState(false);
@@ -85,9 +89,13 @@ export default function ReplyComposer({ ticket, draftText = '', onDraftCleared }
     }
   };
 
+  if (!canReply && !canPostInternalNote) {
+    return null;
+  }
+
   return (
     <div className={styles.composerCard} aria-label="Reply composer">
-      {isStaff && (
+      {isStaff && canPostInternalNote && canReply && (
         <div className={styles.tabsRow}>
           <button
             type="button"

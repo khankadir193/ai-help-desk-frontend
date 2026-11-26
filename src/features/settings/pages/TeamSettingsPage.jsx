@@ -17,8 +17,8 @@ import './TeamSettingsPage.css';
 
 export default function TeamSettingsPage() {
   const { setSaveBarProps } = useOutletContext();
-  const { role } = useAuth();
-  const isAdmin = role === 'ADMIN';
+  const { role, user } = useAuth();
+  const isAdmin = role === 'ADMIN' || user?.permissions?.billing_security_settings === 'Allowed';
 
   const {
     team,

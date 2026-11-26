@@ -1,63 +1,159 @@
 /**
- * accessControl.js — single frontend source of truth for role-based access.
+ * accessControl.js — single frontend source of truth for permission-based and role-based access.
  *
- * The matrix below MIRRORS the backend's `authorize(...)` rules (the server
- * remains the source of truth and still returns 403 for every denied call —
- * this file only lets the UI avoid fetching pages the user cannot use).
- * Sources (do not edit without checking the routes files first):
- *   - backend/src/modules/team/team.routes.js        (team)
- *   - backend/src/modules/reports/reports.routes.js  (reports)
- *   - backend/src/modules/kb/kb.routes.js            (kb read / kb editor)
- *   - backend/src/modules/settings/settings.routes.js (settings view vs admin save)
- *   - backend/src/modules/dashboard/dashboard.routes.js (dashboard)
- *   - backend/src/modules/tickets/ticket.routes.js   (tickets / ai actions)
- *
- * A feature with `allowedRoles: null` is open to every authenticated role.
+ * Checks access against the live permissions returned on the current user session (auth/me)
+ * or falls back to static role rules when only a role string is provided.
  */
 export const FEATURES = {
-  // GET /dashboard — authorize("CUSTOMER", "AGENT", "ADMIN")
+  // GET /dashboard
   dashboard: { label: 'the dashboard', allowedRoles: ['CUSTOMER', 'AGENT', 'ADMIN'] },
 
-  // GET /tickets, /tickets/:id — no authorize() call; scoped per role in the service
+  // GET /tickets
   tickets: { label: 'tickets', allowedRoles: null },
 
-  // AI Assistant is internal agent/admin tooling; server returns 403 for CUSTOMER
+  // AI Assistant
   'ai-assistant': { label: 'the AI assistant', allowedRoles: ['AGENT', 'ADMIN'] },
 
-  // GET /kb/* — no authorize() call; readable by every authenticated role
+  // Knowledge Base viewing
   'knowledge-base': { label: 'the knowledge base', allowedRoles: null },
 
-  // POST/PATCH/DELETE /kb/articles|categories|publish|ai/suggest —
-  // authorize("ADMIN", "AGENT")
+  // KB authoring/editing
   'kb-editor': { label: 'knowledge base editing', allowedRoles: ['AGENT', 'ADMIN'] },
 
-  // GET /reports/analytics — authorize("AGENT", "ADMIN")
+  // Reports & Analytics
   reports: { label: 'reports & analytics', allowedRoles: ['AGENT', 'ADMIN'] },
 
-  // GET /team/members|performance|roles|teams — authorize("AGENT", "ADMIN")
+  // Team section
   team: { label: 'team management', allowedRoles: ['AGENT', 'ADMIN'] },
 
-  // GET /team/invite-options, POST /team/invitations[...] — authorize("ADMIN")
+  // Member invitations
   'team-invite': { label: 'member invitations', allowedRoles: ['ADMIN'] },
 
-  // GET /settings/* — open to all authenticated roles. Admin-only mutations
-  // (workspace/team/ai) are already disabled in the settings UI for other roles.
+  // Workspace Settings
   settings: { label: 'workspace settings', allowedRoles: null },
 };
 
 /**
- * Whether `role` may use `feature`. Roles are normalized (uppercase) exactly
- * like the backend middleware does. A missing feature or an open feature
- * resolves to "allowed" so unknown/new pages never get accidentally locked.
+ * Extract role, permissions map, and scopes map from user object or role string.
  */
-export function canAccess(role, feature) {
+function extractUserMeta(userOrRole) {
+  if (!userOrRole) return { role: '', permissions: null, scopes: null };
+  if (typeof userOrRole === 'string') {
+    return { role: userOrRole.toUpperCase(), permissions: null, scopes: null };
+  }
+  return {
+    role: String(userOrRole.role || '').toUpperCase(),
+    permissions: userOrRole.permissions || null,
+    scopes: userOrRole.permission_scopes || null,
+  };
+}
+
+/**
+ * Check whether a user or role has a specific raw permission value.
+ */
+export function hasPermission(userOrRole, permissionId, expectedValue = 'Allowed') {
+  const { role, permissions } = extractUserMeta(userOrRole);
+  if (role === 'ADMIN') return true;
+  if (!permissions) return false;
+  const val = permissions[permissionId];
+  if (expectedValue === 'Allowed') {
+    return val === 'Allowed' || val === 'Publish & edit' || val === 'Workspace';
+  }
+  return val === expectedValue;
+}
+
+/**
+ * Get permission scope ('ALL', 'ASSIGNED', 'OWN', 'NONE', 'FULL', 'DRAFT', 'WORKSPACE', 'EDIT', 'VIEW').
+ */
+export function getPermissionScope(userOrRole, permissionId) {
+  const { role, scopes, permissions } = extractUserMeta(userOrRole);
+  if (role === 'ADMIN') {
+    if (permissionId === 'publish_kb') return 'FULL';
+    if (permissionId === 'view_reports') return 'WORKSPACE';
+    if (permissionId === 'edit_roles_permissions') return 'EDIT';
+    return 'ALL';
+  }
+  if (scopes && scopes[permissionId]) return scopes[permissionId];
+  const val = permissions?.[permissionId];
+  if (!val || val === 'Not allowed') return 'NONE';
+  if (val === 'All tickets') return 'ALL';
+  if (val === 'Assigned tickets') return 'ASSIGNED';
+  if (val === 'Own tickets') return 'OWN';
+  if (val === 'Publish & edit') return 'FULL';
+  if (val === 'Draft only') return 'DRAFT';
+  if (val === 'Workspace') return 'WORKSPACE';
+  if (val === 'Own performance') return 'OWN';
+  if (val === 'Allowed') return 'EDIT';
+  if (val === 'View only') return 'VIEW';
+  return 'NONE';
+}
+
+/**
+ * Convenience helper: whether user may create tickets.
+ */
+export function canCreateTickets(userOrRole) {
+  const { role, permissions } = extractUserMeta(userOrRole);
+  if (role === 'ADMIN') return true;
+  if (permissions) {
+    return permissions.create_tickets === 'Allowed';
+  }
+  return role === 'CUSTOMER';
+}
+
+/**
+ * Whether `userOrRole` may use `feature`.
+ * If a full user object with `permissions` is available, access is decided
+ * by the effective permissions. Otherwise falls back to static role lists.
+ */
+export function canAccess(userOrRole, feature) {
+  const { role, permissions, scopes } = extractUserMeta(userOrRole);
+  if (!role) return true; // defensive while session restores
+  if (role === 'ADMIN') return true;
+
+  // Live matrix evaluation when user.permissions is present
+  if (permissions) {
+    switch (feature) {
+      case 'dashboard':
+      case 'tickets':
+        return permissions.view_tickets !== 'Not allowed';
+
+      case 'ticket-create':
+        return permissions.create_tickets === 'Allowed';
+
+      case 'ai-assistant':
+        return permissions.ai_tools !== 'Not allowed' && scopes?.ai_tools !== 'NONE';
+
+      case 'knowledge-base':
+        return true;
+
+      case 'kb-editor':
+        return permissions.publish_kb === 'Publish & edit' || permissions.publish_kb === 'Draft only';
+
+      case 'reports':
+        return permissions.view_reports !== 'Not allowed' && scopes?.view_reports !== 'NONE';
+
+      case 'team': {
+        const canInvite = permissions.invite_members === 'Allowed';
+        const canViewRoles = permissions.edit_roles_permissions !== 'Not allowed';
+        const canViewPerf = permissions.view_reports !== 'Not allowed';
+        return canInvite || canViewRoles || canViewPerf;
+      }
+
+      case 'team-invite':
+        return permissions.invite_members === 'Allowed';
+
+      case 'settings':
+        return true;
+
+      default:
+        break;
+    }
+  }
+
+  // Fallback to static role configuration
   const entry = FEATURES[feature];
   if (!entry || !entry.allowedRoles) return true;
-
-  const normalized = String(role || '').toUpperCase();
-  if (!normalized) return true; // defensive: never lock the whole UI while auth restores
-
-  return entry.allowedRoles.includes(normalized);
+  return entry.allowedRoles.includes(role);
 }
 
 /**

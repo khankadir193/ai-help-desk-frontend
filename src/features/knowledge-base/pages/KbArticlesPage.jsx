@@ -18,10 +18,8 @@ import './KbArticlesPage.css';
 
 export default function KbArticlesPage() {
   const navigate = useNavigate();
-  const { role } = useAuth();
-  // Article authoring is AGENT/ADMIN only (backend authorize("ADMIN", "AGENT"));
-  // other roles get a disabled control with a tooltip instead of a 403.
-  const canAuthor = canAccess(role, 'kb-editor');
+  const { role, user } = useAuth();
+  const canAuthor = canAccess(user || role, 'kb-editor');
   const [isExporting, setIsExporting] = useState(false);
   const {
     articles,

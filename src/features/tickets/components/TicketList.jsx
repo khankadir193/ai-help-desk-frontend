@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useTickets } from '../hooks/useTickets';
 import { useAuth } from '../../auth/hooks/useAuth';
+import { canCreateTickets } from '../../../lib/accessControl';
 import { useCategories } from '../../categories/hooks/useCategories';
 import { TICKET_STATUSES, TICKET_PRIORITIES } from '../services/ticketService';
 import StatusPill from '../../../components/StatusPill/StatusPill';
@@ -54,7 +55,8 @@ const formatDate = (dateStr) => {
 };
 
 export default function TicketList() {
-  const { role } = useAuth();
+  const { role, user } = useAuth();
+  const canCreate = canCreateTickets(user);
 
   // Filter state — status, priority, category are enforced server-side
   const [statusFilter, setStatusFilter] = useState('');
@@ -176,7 +178,7 @@ export default function TicketList() {
               <Icon name="rotate-cw" size={16} className={isFetching ? 'spin' : ''} />
             </button>
 
-            {role === 'CUSTOMER' && (
+            {canCreate && (
               <Button
                 variant="primary"
                 onClick={() => setIsCreateModalOpen(true)}

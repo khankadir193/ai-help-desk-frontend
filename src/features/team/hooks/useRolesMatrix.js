@@ -94,6 +94,7 @@ export function useRolesMatrix() {
       setOverrides({});
       queryClient.setQueryData(['team', 'roles'], updatedData);
       queryClient.invalidateQueries({ queryKey: ['team', 'roles'] });
+      queryClient.invalidateQueries({ queryKey: ['auth', 'me'] });
     },
   });
 
@@ -103,8 +104,8 @@ export function useRolesMatrix() {
   });
 
   const savePermissions = useCallback(async () => {
-    return await saveMutation.mutateAsync(permissions);
-  }, [saveMutation, permissions]);
+    return await saveMutation.mutateAsync(modifiedPermissions);
+  }, [saveMutation, modifiedPermissions]);
 
   const requestRoleChange = useCallback(async (reason, requestedRole) => {
     return await requestMutation.mutateAsync({ reason, requested_role: requestedRole });

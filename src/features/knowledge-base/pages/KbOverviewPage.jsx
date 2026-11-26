@@ -16,10 +16,8 @@ import './KbOverviewPage.css';
 
 export default function KbOverviewPage() {
   const navigate = useNavigate();
-  const { role } = useAuth();
-  // Article authoring is AGENT/ADMIN only (backend authorize("ADMIN", "AGENT"));
-  // other roles get a disabled control with a tooltip instead of a 403.
-  const canAuthor = canAccess(role, 'kb-editor');
+  const { role, user } = useAuth();
+  const canAuthor = canAccess(user || role, 'kb-editor');
   const [keywordSearch, setKeywordSearch] = useState('');
   const { data, isLoading, isError, error, refetch, isFetching } = useKbOverview();
   const showSkeleton = useDelayedSkeleton(isLoading);

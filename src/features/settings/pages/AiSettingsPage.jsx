@@ -13,8 +13,8 @@ import './AiSettingsPage.css';
 
 export default function AiSettingsPage() {
   const { setSaveBarProps } = useOutletContext();
-  const { role } = useAuth();
-  const isAdmin = role === 'ADMIN';
+  const { role, user } = useAuth();
+  const isAdmin = role === 'ADMIN' || user?.permissions?.billing_security_settings === 'Allowed';
 
   const initialValues = useMemo(
     () => ({

@@ -11,11 +11,11 @@ import { canAccess } from '../../../lib/accessControl';
 import './KbCategoriesPage.css';
 
 export default function KbCategoriesPage() {
-  const { role } = useAuth();
+  const { role, user } = useAuth();
   // Category management (create/update/reorder) is AGENT/ADMIN only
   // (backend authorize("ADMIN", "AGENT")). Other roles can still browse and
   // select categories; the mutating controls are disabled with a tooltip.
-  const canManageCategories = canAccess(role, 'kb-editor');
+  const canManageCategories = canAccess(user || role, 'kb-editor');
   const {
     categories = [],
     uncategorizedCount = 0,

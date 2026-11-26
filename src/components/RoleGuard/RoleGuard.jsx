@@ -21,9 +21,9 @@ import AccessDenied from '../AccessDenied/AccessDenied';
  * permission and keeps returning 403.
  */
 export default function RoleGuard({ feature, children }) {
-  const { role } = useAuth();
+  const { role, user } = useAuth();
 
-  if (canAccess(role, feature)) {
+  if (canAccess(user || role, feature)) {
     return children ?? <Outlet />;
   }
 

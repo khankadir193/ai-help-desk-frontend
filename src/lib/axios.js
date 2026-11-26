@@ -44,6 +44,11 @@ apiClient.interceptors.response.use(
       }
     }
 
+    // If a request returns 403, notify the auth layer to refetch fresh permissions
+    if (error.response?.status === 403) {
+      window.dispatchEvent(new CustomEvent('auth:permission-denied'));
+    }
+
     return Promise.reject(error);
   }
 );

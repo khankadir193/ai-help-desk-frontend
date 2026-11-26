@@ -104,7 +104,7 @@ export default function Sidebar({
                   // from the shared matrix (src/lib/accessControl.js), which
                   // mirrors the backend's authorize() rules; a direct URL
                   // visit is still blocked by RoleGuard and shows AccessDenied.
-                  const isAccessible = canAccess(user?.role, item.feature);
+                  const isAccessible = canAccess(user, item.feature);
 
                   const badgeValue = item.id === 'tickets' ? (dynamicTicketsCount ?? item.badge) : item.badge;
 

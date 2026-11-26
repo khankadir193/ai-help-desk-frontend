@@ -23,9 +23,10 @@ export default function AuthProvider({ children }) {
         throw err;
       }
     },
-    staleTime: 1000 * 60 * 15, // 15 minutes
+    staleTime: 1000 * 60 * 2, // 2 minutes (fresh permissions)
     retry: false,
-    refetchOnWindowFocus: false,
+    refetchOnWindowFocus: true,
+    refetchInterval: 1000 * 60 * 3, // Auto-refetch every 3 minutes
   });
 
   // Login mutation
@@ -98,16 +99,22 @@ export default function AuthProvider({ children }) {
     }
   }, [logoutMutation]);
 
-  // Listen to session expiry event dispatched by Axios interceptor
+  // Listen to session expiry and permission-denied events dispatched by Axios interceptor
   useEffect(() => {
     const handleSessionExpired = () => {
       queryClient.setQueryData(AUTH_QUERY_KEY, null);
       queryClient.clear();
     };
 
+    const handlePermissionDenied = () => {
+      queryClient.invalidateQueries({ queryKey: AUTH_QUERY_KEY });
+    };
+
     window.addEventListener('auth:session-expired', handleSessionExpired);
+    window.addEventListener('auth:permission-denied', handlePermissionDenied);
     return () => {
       window.removeEventListener('auth:session-expired', handleSessionExpired);
+      window.removeEventListener('auth:permission-denied', handlePermissionDenied);
     };
   }, [queryClient]);
 

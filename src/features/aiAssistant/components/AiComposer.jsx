@@ -1,4 +1,6 @@
 import { useState, useRef } from 'react';
+import { useAuth } from '../../auth/hooks/useAuth';
+import { hasPermission } from '../../../lib/accessControl';
 import Spinner from '../../../components/feedback/Spinner/Spinner';
 import styles from './AiComposer.module.css';
 
@@ -20,6 +22,8 @@ export default function AiComposer({
   isSending = false,
   textareaRef,
 }) {
+  const { user, role } = useAuth();
+  const canNote = (role === 'ADMIN' || hasPermission(user, 'internal_notes')) && role !== 'CUSTOMER';
   const [activeTab, setActiveTab] = useState('reply'); // 'reply' | 'note'
   const [isReviewed, setIsReviewed] = useState(false);
   const tabReplyRef = useRef(null);
@@ -76,20 +80,22 @@ export default function AiComposer({
           Reply to customer
         </button>
 
-        <button
-          ref={tabNoteRef}
-          type="button"
-          role="tab"
-          id="tab-note"
-          aria-selected={activeTab === 'note'}
-          aria-controls="panel-composer"
-          tabIndex={activeTab === 'note' ? 0 : -1}
-          className={`${styles.tabBtn} ${activeTab === 'note' ? styles.activeTab : ''}`}
-          onClick={() => setActiveTab('note')}
-          onKeyDown={(e) => handleKeyDownTab(e, 'note')}
-        >
-          Internal note
-        </button>
+        {canNote && (
+          <button
+            ref={tabNoteRef}
+            type="button"
+            role="tab"
+            id="tab-note"
+            aria-selected={activeTab === 'note'}
+            aria-controls="panel-composer"
+            tabIndex={activeTab === 'note' ? 0 : -1}
+            className={`${styles.tabBtn} ${activeTab === 'note' ? styles.activeTab : ''}`}
+            onClick={() => setActiveTab('note')}
+            onKeyDown={(e) => handleKeyDownTab(e, 'note')}
+          >
+            Internal note
+          </button>
+        )}
       </div>
 
       <form
